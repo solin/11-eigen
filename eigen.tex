@@ -1,0 +1,814 @@
+%%
+%% Copyright 2007, 2008, 2009 Elsevier Ltd
+%%
+%% This file is part of the 'Elsarticle Bundle'.
+%% ---------------------------------------------
+%%
+%% It may be distributed under the conditions of the LaTeX Project Public
+%% License, either version 1.2 of this license or (at your option) any
+%% later version.  The latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.2 or later is part of all distributions of LaTeX
+%% version 1999/12/01 or later.
+%%
+%% The list of all files belonging to the 'Elsarticle Bundle' is
+%% given in the file `manifest.txt'.
+%%
+
+%% Template article for Elsevier's document class `elsarticle'
+%% with numbered style bibliographic references
+%% SP 2008/03/01
+%%
+%%
+%%
+%% $Id: elsarticle-template-num.tex 4 2009-10-24 08:22:58Z rishi $
+%%
+%%
+\documentclass[preprint ,12pt]{elsarticle}
+
+%% Use the option review to obtain double line spacing
+%% \documentclass[preprint,review,12pt]{elsarticle}
+
+%% Use the options 1p,twocolumn; 3p; 3p,twocolumn; 5p; or 5p,twocolumn
+%% for a journal layout:
+%% \documentclass[final,1p,times]{elsarticle}
+%% \documentclass[final,1p,times,twocolumn]{elsarticle}
+%% \documentclass[final,3p,times]{elsarticle}
+%% \documentclass[final,3p,times,twocolumn]{elsarticle}
+%% \documentclass[final,5p,times]{elsarticle}
+%% \documentclass[final,5p,times,twocolumn]{elsarticle}
+
+%% if you use PostScript figures in your article
+%% use the graphics package for simple commands
+%% \usepackage{graphics}
+%% or use the graphicx package for more complicated commands
+\usepackage{amsmath,amssymb,amsfonts,stmaryrd,amsthm}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{pstricks}
+\usepackage{eepic}
+\usepackage{float}
+
+%% or use the epsfig package if you prefer to use the old commands
+%% \usepackage{epsfig}
+
+%% The amssymb package provides various useful mathematical symbols
+%\usepackage{amssymb}
+%% The amsthm package provides extended theorem environments
+%% \usepackage{amsthm}
+
+%% The lineno packages adds line numbers. Start line numbering with
+%% \begin{linenumbers}, end it with \end{linenumbers}. Or switch it on
+%% for the whole article with \linenumbers after \end{frontmatter}.
+%% \usepackage{lineno}
+
+%% natbib.sty is loaded by default. However, natbib options can be
+%% provided with \biboptions{...} command. Following options are
+%% valid:
+
+%%   round  -  round parentheses are used (default)
+%%   square -  square brackets are used   [option]
+%%   curly  -  curly braces are used      {option}
+%%   angle  -  angle brackets are used    <option>
+%%   semicolon  -  multiple citations separated by semi-colon
+%%   colon  - same as semicolon, an earlier confusion
+%%   comma  -  separated by comma
+%%   numbers-  selects numerical citations
+%%   super  -  numerical citations as superscripts
+%%   sort   -  sorts multiple citations according to order in ref. list
+%%   sort&compress   -  like sort, but also compresses numerical citations
+%%   compress - compresses without sorting
+%%
+%% \biboptions{comma,round}
+
+% \biboptions{}
+
+
+\journal{Applied Mathematics and Computation}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{assumption}[theorem]{Assumption}
+
+\newcommand{\cS}{\mathcal{S}}
+\newcommand{\tU}{\tilde{U}}
+\newcommand{\ta}{\tilde{a}}
+\newcommand{\tk}{\tilde{k}}
+\newcommand{\bfb}{\mathbf{b}}
+\newcommand{\tB}{\tilde{\mathcal{B}}}
+\newcommand{\cV}{\mathcal{V}}
+\newcommand{\cT}{\mathcal{T}}
+\newcommand{\calB}{\mathcal{B}}
+ \newcommand{\cB}{{B}}
+\newcommand{\cL}{\mathcal{L}}
+\newcommand{\cK}{\mathcal{K}}
+\newcommand{\cE}{\mathcal{E}}
+\newcommand{\cI}{\mathcal{I}}
+\newcommand{\cA}{{A}}
+\newcommand{\calA}{\mathcal{A}}
+\newcommand{\cO}{\mathcal{O}}
+\newcommand{\osc}{\mathrm{osc}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\bk}{\mathbf{k}}
+\newcommand{\br}{\mathbf{r}}
+\newcommand{\tcb}{\textcolor{blue}}
+
+
+\begin{document}
+
+\begin{frontmatter}
+
+%% Title, authors and addresses
+
+%% use the tnoteref command within \title for footnotes;
+%% use the tnotetext command for the associated footnote;
+%% use the fnref command within \author or \address for footnotes;
+%% use the fntext command for the associated footnote;
+%% use the corref command within \author for corresponding author footnotes;
+%% use the cortext command for the associated footnote;
+%% use the ead command for the email address,
+%% and the form \ead[url] for the home page:
+%%
+%% \title{Title\tnoteref{label1}}
+%% \tnotetext[label1]{}
+%% \author{Pavel Solin\corref{cor1}\fnref{label2}}
+%% \ead{solin@unr.edu}
+%% \ead[url]{http://hpfem.org/\tilde pavel}
+%%\fntext[label2]{}
+%% \cortext[cor1]{}
+%% \address{\fnref{label3}}
+%% \fntext[label3]{}
+
+\title{Adaptive Multimesh $hp$-FEM for PDE Eigenproblems}
+
+%% use optional labels to link authors explicitly to addresses:
+\author[label1,label2]{Pavel Solin}
+\ead{solin@unr.edu}
+\author[label3]{Stefano Giani}
+\ead{stefano.giani@nottingham.ac.uk}
+\address[label1]{Department of Mathematics and Statistics, University of Nevada, Reno, USA}
+\address[label2]{Institute of Thermomechanics, Academy of Sciences of the Czech Republic, Prague}
+\address[label3]{School of Mathematical Sciences, University of Nottingham, United Kingdom}
+
+
+%\address{Department of Mathematics and Statistics, University of Nevada, Reno, USA}
+
+\begin{abstract}
+We propose an adaptive multimesh higher-order finite element method ($hp$-FEM) 
+for efficient solution of eigenproblems originated in partial differential 
+equations (PDE). Since one finite element mesh cannot be optimal for several
+eigenfunctions simultaneously, we approximate each eigenfunction on an individual 
+mesh. The meshes are adapted independently of each other so that 
+the overall ratio of approximation error to discrete problem size is minimized.
+To avoid notorious problems associated with repeated eigensolver calls during the 
+mesh adaptation process, we only call the eigensolver once at the beginning, and 
+then employ an iterative method to converge each eigenvector-eigenvalue pair. 
+Automatic $hp$-adaptivity is guided by means of a robust PDE-independent computational 
+error estimator that extracts a low-order part from the higher-order approximation. 
+The method is described, its theoretical analysis provided, and sample 
+applications are presented. Instructions on how to reproduce the results 
+are provided. 
+\end{abstract}
+
+\begin{keyword}
+Partial differential equation \sep Eigenvalue problem \sep Adaptive higher-order finite element
+method \sep Multimesh $hp$-FEM
+%% keywords here, in the form: keyword \sep keyword
+%% MSC codes here, in the form: \MSC code \sep code
+%% or \MSC[2008] code \sep code (2000 is the default)
+\end{keyword}
+
+\end{frontmatter}
+
+%%
+%% Start line numbering here if you want
+%%
+% \linenumbers
+
+%% main text
+\section{Introduction}
+
+\begin{itemize}
+\item Give examples of applications where accurate approximation of  
+      a single eigenfunction is useful.
+\item Mention applications where simultaneous approximation of
+      several eigenfunctions is needed (I know about DFT. Is there something else?). 
+\item Give references to prior work on adaptive algorithms for 
+      PDE eigenproblems, limitations, ... We have to show that we are aware of 
+      latest developments.
+\end{itemize}
+
+
+\section{Motivation}
+
+Let us consider a simple eigenproblem of the form 
+\begin{equation} \label{one}
+-\Delta u = \lambda u
+\end{equation}
+in a square domain $\Omega = (0, \pi)^2$, equipped with zero Dirichlet boundary conditions 
+on the boundary $\partial \Omega$. The eigenvalues $0 < \lambda_1 \le \lambda_2 \le \ldots$ 
+are known exactly, and it is of particular interest that $\lambda_2 = \lambda_3 = 5$ and 
+$\lambda_5 = \lambda_6 = 10$. We discretize (\ref{one}) via the finite element method
+on a equidistant Cartesian mesh consisting of 16 quadratic elements as shown in Fig. \ref{fig:mesh1}.
+
+\begin{figure}[!ht]
+\begin{center}
+\includegraphics[width=0.4\textwidth]{img/mesh_1.png}
+\end{center}
+\vspace{-5mm}
+\caption{Mesh before the first call to the generalized eigensolver.}
+\label{fig:mesh1}
+\end{figure}
+
+Approximate eigenfunctions for $\lambda_2, \lambda_3$ and $\lambda_5, \lambda_6$
+are shown in the first and second row of Fig. \ref{fig:eigen1}, respectively.
+The reader can see that the eigenfunctions exhibit anisotropies that make it 
+impossible for a single finite element mesh to be optimal for all 
+of them simultaneously.
+
+\begin{figure}[!ht]
+\begin{center}
+\includegraphics[width=0.4\textwidth]{img/eigen_1.png}
+\includegraphics[width=0.4\textwidth]{img/eigen_2.png}\\
+\includegraphics[width=0.4\textwidth]{img/eigen_3.png}
+\includegraphics[width=0.4\textwidth]{img/eigen_4.png}\\
+\end{center}
+\vspace{-5mm}
+\caption{Approximate eigenfunctions for $\lambda_2, \lambda_3$ and 
+$\lambda_5, \lambda_6$ after the first call to the generalized eigensolver.}
+\label{fig:eigen1}
+\end{figure}
+
+Let us assume that by means of some mesh adaptation algorithm, the mesh undergoes 
+$p$-refinement of the four interior elements, whose new polynomial degree 
+will be $p = 3$, as shown in Fig. \ref{fig:mesh2}.
+
+\begin{figure}[!ht]
+\begin{center}
+\includegraphics[width=0.4\textwidth]{img/mesh_2.png}
+\end{center}
+\vspace{-5mm}
+\caption{Mesh before the second call to the generalized eigensolver.}
+\label{fig:mesh2}
+\end{figure}
+
+After refining the mesh in this way, the eigensolver is called again. 
+The resulting approximate eigenfunctions for $\lambda_2, \lambda_3$ and $\lambda_5, \lambda_6$
+are shown in the first and second row of Fig. \ref{fig:eigen2}, respectively.
+The reader can see that now we lost track of all four eigenfunctions 
+that we calculated during the first eigensolver call. 
+
+
+
+
+\begin{figure}[!ht]
+\begin{center}
+\includegraphics[width=0.4\textwidth]{img/eigen_5.png}
+\includegraphics[width=0.4\textwidth]{img/eigen_6.png}\\
+\includegraphics[width=0.4\textwidth]{img/eigen_7.png}
+\includegraphics[width=0.4\textwidth]{img/eigen_8.png}\\
+\end{center}
+\vspace{-5mm}
+\caption{Approximate eigenfunctions for $\lambda_2, \lambda_3$ and 
+$\lambda_5, \lambda_6$ after the second call to the generalized eigensolver.}
+\label{fig:eigen2}
+\end{figure}
+
+After a third call to the generalized eigensolver, the order of the 
+eigenfunctions in each pair is switched. Instructions on how to reproduce 
+these results are provided in Section \ref{sec:reproducibility}.
+
+Unfortunately, the current 
+state-of-the-art of generalized eigensolvers does not offer any known
+way to circumvent these problems [REFERENCE]. The only solution known 
+to us is to avoid repeated eigensolver calls. In this paper we describe 
+a method that only calls an eigensolver once, and then employs an iterative 
+algorithm to perform automatic mesh adaptation. We use this method to 
+design an algorithm that approximates efficiently each eigenfunction on 
+an individual mesh. 
+
+Let us begin with describing the adaptive $hp$-FEM algorithm
+that we use for eigenfunctions associated with eigenvalues
+of multiplicity one.
+
+\section{Preliminaries}
+
+Throughout $L^2(\Omega)$
+denotes the usual space of square integrable real valued functions
+equipped with the weighted norm
+\begin{equation}\label{eq:l2}
+\|f\|_{0}\ :=\ \int_\Omega  |f|^2\ .
+\end{equation}
+$H^1(\Omega)$ denotes the usual space of functions in $L^2(\Omega)$
+with square integrable gradient, with  $H^1$-norm denoted $\|f\|_1$.
+
+The variational formulation of problem \eqref{one} is:
+\emph{seek eigenpairs of the form $(\lambda_j,u_j)\in
+\mathbb{R}\times H^1(\Omega)$
+such that}
+\begin{equation}
+\label{eq:var_prob}
+\left.
+\begin{array}{lcl}
+a(u_j,v)&=& \lambda_j\ b(u_j,v)\ ,
+\quad \text{for all } \quad v  \in H^1(\Omega)\\
+ \Vert u_j \Vert_{0} &=& 1
+\end{array}\quad
+\right\}
+\end{equation}
+where
+\begin{equation}\label{eq:a}
+a(u,v):=\int_\Omega \nabla u(x)\cdot \nabla v(x)\ ,
+\end{equation}
+and
+\begin{equation}\label{eq:b}
+b(u,v):=\int_\Omega u(x) v(x)\ .
+\end{equation}
+
+Now, to discretize (\ref{eq:var_prob}), let $\cT_n\ , n =
+1,2,\ldots $ denote a family of 1-irregular meshes on $\Omega$. 
+These meshes may be computed adaptively. 
+With  $H_\tau$ denoting  the diameter of element $\tau$,  
+we define
+$
+H^\mathrm{max}_n:=\max_{\tau\in \mathcal{T}_n}\{H_\tau\}.
+$
+On any mesh $\mathcal{T}_n$ we denote by $V_n \subset H^1(\Omega)$ the finite
+dimensional space of continuous functions.
+
+\textcolor{red}{I have to define better the meshes and the space and add references.}
+
+The discrete version of \eqref{eq:var_prob} is:
+\emph{seek eigenpairs of the form $(\lambda_{j,n},u_{j,n})\in
+\mathbb{R}\times V$
+such that}
+\begin{equation}
+\label{eq:disc_prob}
+\left.
+\begin{array}{lcl}
+a(u_{jn},v_{n})&=& \lambda_{j,n}\ b(u_{j,n},v_{n})\ ,
+\quad \text{for all } \quad v_{n}  \in V\\
+ \Vert u_{j,n} \Vert_{0} &=& 1
+\end{array}\quad
+\right\}
+\end{equation}
+
+\section{Picard's method}
+
+The Picard's method, see Algorithm~\ref{alg:picard}, takes as arguments the matrices $\mathbf{A}$ and $\mathbf{B}$ of \eqref{eq:disc_prob}, an initial guess $\tilde u$ for the eigenfunction and a tolerance $\mathrm{tol}$. The algorithm return an approximated eigenpair $(\lambda_{n},u_{n})$.
+Because we to use this iterative method on a sequence of adaptively refined meshes, we normally set as initial guess
+the projection in the refined mesh of the eigenfunction of interest $u_{j,n-1}$.
+
+\begin{algorithm}[H] \caption{Picard's method} \label{alg:picard} 
+\begin{algorithmic}
+
+\STATE{$(\lambda_{j,n},u_{j,n}):=\mathrm{Picard}
+    (\mathbf{A}, \mathbf{B},\tilde u,\mathrm{tol})$}
+
+\STATE{$\mathbf{u}^1:=\tilde u$}
+\STATE{$\displaystyle\lambda^{1}:=\frac{u_{j,n}^t\mathbf{A}u_{j,n}}{u_{j,n}^t\mathbf{B}u_{j,n}}$}
+\STATE{$m=1$}
+\REPEAT
+
+\STATE{$\mathbf{u}^{m+1}:=\mathbf{A}^{-1}\lambda^m\mathbf{B}\mathbf{u}^{m}$}
+\STATE{$\displaystyle\lambda^{m+1}:=\frac{(\mathbf{u}^{m+1})^t\mathbf{A}\mathbf{u}^{m+1}}{(\mathbf{u}^{m+1})^t\mathbf{B}\mathbf{u}^{m+1}}$}
+\STATE{$m:=m+1$}
+\UNTIL{ Can you fill in the details of the stop criteria?}
+\STATE{$u_{n}:=\mathbf{u}^{m}$}
+\STATE{$\lambda_{n}:=\lambda^m$}
+\end{algorithmic}
+\end{algorithm}
+
+\begin{lemma}\label{lm:picard_b}
+The Picard's method in exact arithmetic conserves the norm of the vectors, i.e. for any $m\ge 1$,
+$$
+(\mathbf{u}^{m})^t\mathbf{B}\mathbf{u}^{m}=(\mathbf{u}^{m-1})^t\mathbf{B}\mathbf{u}^{m-1}\ .
+$$
+\end{lemma}
+
+\begin{proof}
+Using the definition of the discrete problem $\mathbf{A}\mathbf{u}=\lambda \mathbf{B}\mathbf{u}$, we have:
+$$
+(\mathbf{u}^{m+1})^t\mathbf{B}\mathbf{u}^{m+1}=\lambda^m(\mathbf{u}^{m+1})^t\mathbf{B}\mathbf{A}^{-1}\mathbf{B}\mathbf{u}^{m}
+=(\lambda^m)^2\mathbf{A}^{-t}\mathbf{B}^t(\mathbf{u}^{m})t\mathbf{B}\mathbf{A}^{-1}\mathbf{B}\mathbf{u}^{m}
+=(\mathbf{u}^{m})^t\mathbf{B}\mathbf{u}^{m}\ .
+$$
+\end{proof}
+
+From Lemma~\ref{lm:picard_b} it is clear that the Picard's method, in comparison to other iterative methods like the power method and the inverse iteration, doesn't need a normalization step to prevent any underflow or overflow.
+
+The next theorem shows that the Picard's method always converges to the smallest eigenvalue.
+
+\begin{theorem}\label{th:picard_conv}
+The Picard's method in exact arithmetic converges into the eigenspace which is not orthogonal to the initial guess $\mathbf{u}^1$ and whose eigenvalue has minimum module.
+\end{theorem}
+
+\begin{proof}
+Any vector $\mathbf{u}^m$ can be expressed as 
+$$
+\mathbf{u}^m=\sum_{i=1}^N c_i^m \mathbf{u}_i\ ,
+$$
+where $c_i^m$ are real coefficients, $N$ is the size of the matrices $\mathbf{A}$ and $\mathbf{B}$ and the vectors $\mathbf{u}_i\equiv u_{i,n}$ are the eigenvectors of the discrete problem, which form an orthonormal basis.
+With no lost in generality we can assume that $\lambda_1$ is the eigenvalue of minimum module and that $c_1^1$ is different from 0.
+
+In the case that $\lambda_1$ is simple we have from the definition of the problem:
+$$
+\mathbf{u}^{m+1}=\mathbf{A}^{-1}\lambda^m\mathbf{B}\mathbf{u}^{m}
+=\Big(\Pi_{j=1}^m\lambda^{j}\Big)\Big(\mathbf{A}^{-1}\mathbf{B}\Big)^m\mathbf{u}^1
+=\Big(\Pi_{j=1}^m\lambda^{j}\Big)\sum_{i=1}^N c_i^1 (\lambda_i)^{-m}\mathbf{u}_i\ ,
+$$
+where $\lambda_i$ are the eigenvalues corresponding to $\mathbf{u}_i$.
+Then
+$$
+\mathbf{u}^{m+1}=\Big(\Pi_{j=1}^m\lambda^{j}\Big)(\lambda_1)^{-m}\Big( c_1^1 \mathbf{u}_1 +
+\sum_{i=2}^N c_i^1\frac{(\lambda_1)^m}{(\lambda_i)^{m}}\mathbf{u}_i\Big) \ .
+$$
+By simply multiplying both sides by $u_1$, we have
+$$
+c_1^{m+1}=\Big(\Pi_{j=1}^m\lambda^{j}\Big)(\lambda_1)^{-m}c_1^1\ ,
+$$
+and more in general for any $u_i$, $i>1$, we have
+$$
+c_i^{m+1}=\Big(\Pi_{j=1}^m\lambda^{j}\Big)(\lambda_1)^{-m}\frac{(\lambda_1)^m}{(\lambda_i)^{m}}c_i^1\ .
+$$
+So for each $i>1$ we have:
+$$
+\frac{c_1^{m+1}}{c_i^{m+1}}=\frac{(\lambda_i)^m}{(\lambda_1)^{m}}\frac{c_1^1}{c_i^1}\ ,
+$$
+and since $|\lambda_i/\lambda_1|>1$ we have that
+\begin{equation}\label{eq:picard_conv_1}
+\lim_{m\rightarrow \infty}\Big\vert\frac{c_1^{m+1}}{c_i^{m+1}}\Big\vert= \infty\ .
+\end{equation}
+From Lemma~\ref{lm:picard_b} we have that
+$$
+\sum_{i=1}^N (c_i^{m+1})^2 = (\mathbf{u}^{m+1})^t\mathbf{B}\mathbf{u}^{m+1}
+=(\mathbf{u}^1)^t\mathbf{B}\mathbf{u}^1=\sum_{i=1}^N (c_i^1)^2\ ,
+$$
+and so from \eqref{eq:picard_conv_1} we can conclude that $\lim_{m\rightarrow \infty}|c_i^{m+1}|=0$, for all $i>1$, which is equivalent to say that $\lim_{m\rightarrow \infty}\mathbf{u}^{m+1}\in \mathrm{span}\{\mathbf{u}_1\}$.
+
+In the case that $\lambda_1$ has multiplicity $R$ and that $c_r^1$, for some $1\leq r\leq R$, is not zero,
+we similarly have that for all $i>R$:
+$$
+\lim_{m\rightarrow \infty}\Big\vert\frac{c_r^{m+1}}{c_i^{m+1}}\Big\vert= \infty\ ,
+$$
+and so $\lim_{m\rightarrow \infty}|c_i^{m+1}|=0$, which proves that $\lim_{m\rightarrow \infty}\mathbf{u}^{m+1}\in \mathrm{span}\{\mathbf{u}_1,\dots,\mathbf{u}_R\}$.
+
+\end{proof}
+
+Theorem~\ref{th:picard_conv} shows that even if the initial guess $\mathbf{u}^1$ is very close to a certain discrete eigenfunction $u_{i,n}$, for some $i$, the method can always converges to a different eigenfunction or a linear combinations of eigenfunctions with corresponding eigenvalues smaller in module than $\lambda_{i,n}$. In real arithmetic, even if the initial guess $\mathbf{u}^1$ is orthogonal to all eigenfunctions of indexes less than $i$, due to round-off errors, for some $m>1$ the orthogonality could be perturbed and the method can eventually converges anyway to a different eigenfunction or a linear combinations of eigenfunctions with corresponding eigenvalues smaller in module than $\lambda_{i,n}$.
+
+\textcolor{red}{Pavel, can you put here a figure like Figure~\ref{fig:eigen1} where we show that the plain Picard's method converges to the wrong eigenfunction?}
+
+
+\section{Picard's method with orthogonalization}
+
+In order to make the Picard's method suitable to approximate efficiently any discrete eigenpair, and not only the first one, we derived Algorithm~\ref{alg:picard_ortho}, which has an orthogonalization procedure in it.
+
+The Picard's method with orthogonalization takes as arguments the matrices $\mathbf{A}$ and $\mathbf{B}$ of \eqref{eq:disc_prob}, an initial guess $\tilde u$ for the eigenfunction, a tolerance $\mathrm{tol}$and it also takes the $j-1$ eigenfunctions $u_{1,n},\dots,u_{j-1,n}$.
+Then it returns the eigenpair $\lambda_{j,n},u_{j,n}$. 
+
+takes as arguments the projection of the eigenfunction $u_{j,n-1}$ on the refined mesh
+$\tilde u_{j,n-1}$ and it also takes the $j-1$ eigenfunctions $u_{1,n},\dots,u_{j-1,n}$.
+Then it returns the eigenpair $\lambda_{j,n},u_{j,n}$ on the refined mesh.
+
+This method never converges to an eigenfunction of index smaller than $j$ because for any $m\ge 1$, the vector $\mathbf{u}^m$ is orthogonal to all eigenfunctions $u_{1,n},\dots,u_{j-1,n}$, i.e. all coefficients 
+$c_1^m,\dots,c_{j-1}^m$ in the expansion of $\mathbf{u}^m$ are zero, so the eigenvalue smallest in module is $\lambda_j$ and the Picard's method naturally converges to it.
+
+Anyway this is not enough to guarantee to not lose the eigenfunction that we want because if a multiple eigenspace splits differently due to the refinement of the mesh, the eigenfunction of the refined mesh are not similar to the wanted eigenfunction on the coarse mesh.
+
+\textcolor{red}{Pavel, we should try to find such an example.}
+
+\begin{algorithm}[H] \caption{Picard's method with orthogonalization} \label{alg:picard_ortho} 
+\begin{algorithmic}
+
+\STATE{$(\lambda_{j,n},u_{j,n}):=\mathrm{PicardOrtho}
+    (\mathbf{A}, \mathbf{B},\tilde u_{j,n-1},\mathrm{tol},u_{1,n},\dots
+    ,u_{j-1,n})$}
+    
+
+\STATE{$\mathbf{u}^1:=\tilde u_{j,n-1}$}
+\STATE{$\displaystyle\lambda^{1}:=\frac{u_{j,n}^t\mathbf{A}u_{j,n}}{u_{j,n}^t\mathbf{B}u_{j,n}}$}
+\STATE{$m=1$}
+\REPEAT
+
+\STATE{$\mathbf{u}^{m+1}:=\mathbf{A}^{-1}\lambda^m\mathbf{B}\mathbf{u}^{m}$}
+
+
+\FOR{$i = 1$ to $j-1$} 
+\STATE $\mathbf{u}^{m+1}:=\mathbf{u}^{m+1}-(u_{i,n}^t\mathbf{B}\mathbf{u}^{m+1})u_{i,n}$
+\COMMENT{Orthogonalization}
+\ENDFOR
+
+
+\STATE $\displaystyle \mathbf{u}^{m+1}=\frac{\mathbf{u}^{m+1}}{((\mathbf{u}^{m+1})^t\mathbf{B}\mathbf{u}^{m+1})^{1/2}}$
+\COMMENT{Normalize}
+\STATE{$\displaystyle\lambda^{m+1}:=\frac{(\mathbf{u}^{m+1})^t\mathbf{A}\mathbf{u}^{m+1}}{(\mathbf{u}^{m+1})^t\mathbf{B}\mathbf{u}^{m+1}}$}
+\STATE{$m:=m+1$}
+\UNTIL{ Can you fill in the details of the stop criteria?}
+\STATE{$u_{j,n}:=\mathbf{u}^{m}$}
+\STATE{$\lambda_{j,n}:=\lambda^m$}
+\end{algorithmic}
+\end{algorithm}
+
+As can be seen in Algorithm~\ref{alg:picard_ortho}  the orthogonalization is done at each iteration, this is necessary in real arithmetic to guarantees that $\mathbf{u}^m$ is orthogonal to all eigenfunctions $u_{1,n},\dots,u_{j-1,n}$, for all $m$. Otherwise in exact arithmetic it would be enough to orthogonalize $\mathbf{u}^1$. Moreover a normalization step is necessary in all iterations because due to the orthogonalization procedure, this version of the Picard's method does not conserve the norm of the vectors and possible underflows or overflows could happen with no normalization.
+
+\section{Reconstruction technology}
+
+It is well known that the discretization process perturbs the spectrum, in particular the eigenspace $E(\lambda_j)$ of multiple eigenvalue $\lambda_j$ can be split in more than one discrete eigenspace $E(\lambda_{j,n}),E(\lambda_{j+1,n}),\dots,E(\lambda_{j+m,n})$ with correspondent discrete eigenvalues $\lambda_{j,n},\lambda_{j+1,n},\dots,\lambda_{j+m,n}$ forming a small cluster for sufficiently rich finite element space, also under the same assumption we have that
+$$
+\mathrm{dim}\ E(\lambda_j)=\sum_{i=0}^m\mathrm{dim}\ E(\lambda_{j+i,n})\ .
+$$
+
+Different finite element spaces can split the same multiple eigenspace in different ways, this also happens with adaptively refined meshes. It is not rare that the same multiple eigenspace is split differently on the coarse and on the refined meshes. A different split corresponds to different discrete eigenfunctions, then it is not always possible to find for the same eigenvalue on the refined mesh an eigenfunction similar to the one on the coarse mesh.
+
+\textcolor{red}{Pavel, I think we need another figure here. It would be easy to see the phenomenon on unstructured meshes.}
+
+We propose a way to always construct on a refined mesh, an approximation of the same eigenfunction as on the coarse mesh. The idea is based on the fact that for a sufficiently rich finite element space, the space $M_n(\lambda_j)=\mathrm{span}\{E(\lambda_{j,n}),E(\lambda_{j+1,n}),\dots E(\lambda_{j+m,n})\}$ is an approximation of the space $E(\lambda_j)$. Let us denote the space $M_{n,1}(\lambda_j)$ as the subspace of $M_n(\lambda_j)$ of function with unit norm in the $L^2$ norm.
+So for any function $U_{n-1}\in M_{n-1,1}(\lambda_j)$, we propose the function $U_{n}\in M_{n,1}(\lambda_j)$ that minimize the $\|U_{n-1}-U_{n}\|_{0,\Omega}$ as an approximation of $U_{n-1}$ on the refined mesh. For a sufficiently rich finite element space the minimizer is unique. By construction$$
+U_n=\sum_{i=1}^{\mathrm{dim}\ E(\lambda_j)} c_i \ u_{i,n}\ ,
+$$
+where $u_{1,n},u_{2,n},\dots,u_{R,n}$, with $R=\mathrm{dim}\ E(\lambda_j)$, are eigenfunctions of the discrete problem forming  an orthonormal basis for
+$M_{n,1}$ and where the coefficients $c_i$ satisfy 
+$$
+\sum_{i=1}^{\mathrm{dim}\ E(\lambda_j)} c_i^2=1\ .
+$$
+
+Form the definition of problem \eqref{eq:var_prob} we have that the reconstructed eigenvalue is defined as
+$$
+\Lambda_n=\frac{a(U_n,U_n)}{b(U_n,U_n)}\ .
+$$
+
+\section{A priori convergence results}\label{sse:pcf_priori}
+
+In this section  we gather together some a priori estimates for eigenvalue
+problems.  These results are mostly classical so we only give a few
+details for results which are not easily found in the literature. 
+Suitable references are 
+\cite{BaOs:87,BaOs:89,babuska,strang}.
+
+
+
+
+
+
+It follows from the coercivity of the bilinear form $a(\cdot,\cdot)$ that
+all eigenvalues of  \eqref{eq:var_prob} and all $N=\dim V_n$
+eigenvalues of \eqref{eq:disc_prob} are positive.
+We can order
+them as $0 < \lambda_1 \leq \lambda_2 \ldots $ and $0 < \lambda_{1,n}
+\leq \lambda_{2,n} \ldots \leq \lambda_{N,n}$. Moreover, we know (e.g. 
+\cite{BaOs:89}) that  $\lambda_{j,n} \rightarrow \lambda_j$,
+for any
+$j$,  as  $V_n
+\rightarrow H^1(\Omega)$ and (by the minimax principle) 
+that $\lambda_{j,n}$ is monotone
+non-increasing, i.e.
+\begin{equation}\label{eq:minimax_shift}
+\lambda_{j,n} \ \geq\  \lambda_{j,m}\  \geq\   \lambda_j \ , \quad
+\text{for all} \quad j = 1, \ldots , N, \quad \text{and all} \quad
+m \geq n \ .
+\end{equation}
+
+The distance of an approximate eigenfunction from the true eigenspace
+is a crucial quantity in the convergence analysis for
+eigenvalue problems  especially in the case of non-simple
+eigenvalues.
+
+\begin{definition}
+\label{def:dist_l2}
+Given a function $v\in L^2(\Omega)$ and a finite dimensional subspace $\mathcal{P}\subset L^2(\Omega)$, we define:
+$$
+\mathrm{dist}(v,\mathcal{P})_{0,\cB}\ :=\ \min_{ w\in\mathcal{P}}  \|v-w\|_{0} \ .
+$$
+Similarly, given a function $v\in H^1_\pi(\Omega)$ and a finite dimensional subspace $\mathcal{P}\subset H^1_\pi(\Omega)$, we define:
+$$
+\mathrm{dist}(v,\mathcal{P})_{1}\ :=\ \min_{ w\in\mathcal{P}}  \|v-w\|_{1} \ .
+$$
+\end{definition}
+
+Now let $\lambda_j$ be any eigenvalue of 
+\eqref{eq:var_prob},  let $E(\lambda_j)$ denote the (finite
+dimensional) space spanned by  the eigenfunctions of  $\lambda_j$ and set
+$E_1(\lambda_j)=\{u\in E(\lambda_j):
+\|u\|_{0}=1\}$. 
+{Let $T_{\lambda_j}$
+  denote the orthogonal projection of $H^1$ onto $E(\lambda_j)$ with respect
+  to the inner product $a(\cdot, \cdot)$.}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{lemma}\label{lm:inf_l2_h1}
+ Let $(\lambda_{j,n},u_{j,n})$ be an eigenpair of \eqref{eq:disc_prob}. Then
+\begin{equation}\label{eq:inf_l2_h1_1}
+\|u_{j,n}-u_j\|_{0} = \mathrm{dist}(u_{j,n},E_1(\lambda_j))_{0}\ ,
+\end{equation}
+if and only if
+\begin{equation}\label{eq:inf_l2_h1_2}
+\|{u_{j,n}-u_j}\|_{1}=\mathrm{dist}(u_{j,n},E_1(\lambda_j))_{1}\ .
+\end{equation}
+
+\end{lemma}
+
+\begin{proof}
+%\ednote{It is shortened - please read it carefully}
+{Since $E(\lambda_j)$ is
+finite dimensional,   
+the minimizers in \eqref{eq:inf_l2_h1_1} and \eqref{eq:inf_l2_h1_2}
+exist. Moreover 
+\begin{equation}\label{eq:l2_ortho_1}
+0  \ = \ a(T_{\lambda_j} w, (I-T_{\lambda_j}) v) \ =\
+\lambda_j\ b(T_{\lambda_j} w, (I-T_{\lambda_j}) v) \   \quad \text{for all} \quad 
+v,w\in L^2_\cB(\Omega)\cap H_{\pi}^1(\Omega)\ .
+\end{equation}
+Hence for any $v_j \in E(\lambda_j)$ we have the decomposition   
+$$u_{j,n}-v_j\ = \ (I-T_{\lambda_j})u_{j,n}\ +\ T_{\lambda_j} (u_{j,n}-v_j)
+\ = \  (I-T_{\lambda_j})u_{j,n}\ +\ (T_{\lambda_j} u_{j,n}-v_j) \ ,
+$$
+which is orthogonal both with respect to $a(\cdot, \cdot)$
+and $b(\cdot, \cdot)$. Thus 
+\begin{eqnarray*}
+\|u_{j,n}-v_j\|_{0}^2\ & = & \ 
+\|(I-T_{\lambda_j})u_{j,n}\|_{0}^2 +
+\|T_{\lambda_j} u_{j,n}-v_j\|_{0}^2 \ \ ,\\
+\|u_{j,n}-v_j\|_{1}^2\ & = & \ 
+\|(I-T_{\lambda_j})u_{j,n}\|_{1}^2 +
+\|T_{\lambda_j} u_{j,n}-v_j\|_{1}^2 \ .
+\end{eqnarray*}
+Hence $u_j$  satisfies \eqref{eq:inf_l2_h1_2}  if and only if it minimizes 
+$\|T_{\lambda_j}u_{j,n}-v_j\|_{1}^2$.  The latter quantity is
+equal to \\$\lambda_j \|T_{\lambda_j}u_{j,n}-v_j\|_{0}^2$
+and hence $u_j$ satisfies  \eqref{eq:inf_l2_h1_2} if and only
+if it satisfies \eqref{eq:inf_l2_h1_1}.}
+
+\end{proof}
+
+From now on we shall let $C$ denote  a generic constant which 
+may depend
+on the 
+true eigenvalues and vectors of \eqref{eq:var_prob} and other
+constants introduced above, but is always independent of
+$n$. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{theorem}
+\label{th:adj}
+Suppose  $ 1 \leq j\leq \dim V_n$. Let
+$\lambda_j$ be an eigenvalue   of \eqref{eq:var_prob} with
+corresponding eigenspace $E(\lambda_j)$ of any (finite) dimension  and
+let $(\lambda_{j,n},u_{j,n})$ be an  eigenpair  of \eqref{eq:disc_prob}.
+Then, for $H_n^{\max}$ sufficiently small,
+\begin{itemize}
+\item[(i)] 
+\begin{equation}
+\vert \lambda_j - \lambda_{j,n} \vert \ \leq \ (\mathrm{dist}(
+u_{j,n},E_1(\lambda_j))_{1})^2; \quad \text{and} \quad
+\vert \lambda_j - \lambda_{j,n} \vert \ \leq \ C
+(H_n^\mathrm{max})^{2s} ;  \label{eq:supereig}
+\end{equation}
+\item[(ii)] 
+\begin{eqnarray}
+\mathrm{dist}(
+u_{j,n},E_1(\lambda_j))_{0}\ & \leq& \ C (H_n^\mathrm{max})^s
+ \mathrm{dist}(
+u_{j,n},E_1(\lambda_j))_{1} \ ; \label{eq:adj}
+\end{eqnarray}
+\item[(iii)]
+\begin{equation}
+\label{eq:energy} \mathrm{dist}(
+u_{j,n},E_1(\lambda_j))_{1} \ \leq
+C (H_n^\mathrm{max})^s\ . 
+\end{equation}
+\end{itemize}
+
+\end{theorem}
+
+\textcolor{red}{This result is for h-adaptive method, not for hp. I need to update it.}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{theorem}
+\label{th:adj_rec}
+Suppose  $ 1 \leq j\leq \dim V_n$. Let
+$\lambda_j$ be an eigenvalue   of \eqref{eq:var_prob} with
+corresponding eigenspace $E(\lambda_j)$ of any (finite) dimension  and
+let $(\Lambda_n,U_n)$ be a reconstructed eigenpair  of \eqref{eq:disc_prob}.
+Then, for $H_n^{\max}$ sufficiently small,
+\begin{itemize}
+\item[(i)] 
+\begin{equation}
+\vert \lambda_j - \Lambda_n \vert \ \leq \ (\mathrm{dist}(
+U_n,E_1(\lambda_j))_{1})^2; \quad \text{and} \quad
+\vert \lambda_j - \Lambda_n \vert \ \leq \ C
+(H_n^\mathrm{max})^{2s} ;  \label{eq:supereig_rec}
+\end{equation}
+\item[(ii)] 
+\begin{eqnarray}
+\mathrm{dist}(
+U_n,E_1(\lambda_j))_{0}\ & \leq& \ C (H_n^\mathrm{max})^s
+ \mathrm{dist}(
+U_n,E_1(\lambda_j))_{1} \ ; \label{eq:adj_rec}
+\end{eqnarray}
+\item[(iii)]
+\begin{equation}
+\label{eq:energy_rec} \mathrm{dist}(
+U_n,E_1(\lambda_j))_{1} \ \leq
+C (H_n^\mathrm{max})^s\ . 
+\end{equation}
+\end{itemize}
+
+\end{theorem}
+
+
+\section{Adaptive $hp$-FEM for a Single Eigenfunction}
+
+
+
+\section{Computing Reference Solution via Picard's Method}
+
+
+
+\section{Computing Reference Solution via Newton's Method}
+
+
+
+\section{Adaptive Multimesh $hp$-FEM for Simultaneous Approximation of Several Eigenfunctions}
+
+
+\section{Numerical Results}
+
+One of them should be a comparison of the multimesh $hp$-FEM vs. single-mesh 
+$hp$-FEM on some problem with no repeated eigenvalues, both in terms of DOF and 
+CPU time.
+
+\section{Reproducibility of Results} \label{sec:reproducibility}
+
+\section*{Acknowledgment}
+
+The first author was supported by the Subcontract No. 00089911 of Battelle Energy
+Alliance (U.S. Department of Energy intermediary) as well as by the Grant No. 
+IAA100760702 of the Grant Agency of the Academy of Sciences of the Czech Republic.
+
+
+\clearpage
+
+\begin{thebibliography}{[KLR73]}
+
+\bibitem{dubcova1}
+L. Dubcova, P. Solin, G. Hansen, H. Park: Comparison of Multimesh hp-FEM 
+to Interpolation and Projection Methods for Spatial Coupling of Reactor 
+Thermal and Neutron Diffusion Calculations, J. Comput. Phys. 230 (2011) 1182-1197.
+
+\bibitem{giani1}
+S. Giani, I.G. Graham: A convergent adaptive method for elliptic eigenvalue 
+problems. SIAM J. Numer. Anal. 47 (2009), 1067-1091.
+
+\bibitem{solin1} 
+P. Solin, D. Andrs, J. Cerveny, M. Simko: 
+PDE-Independent Adaptive $hp$-FEM Based on Hierarchic Extension of Finite Element Spaces.
+J. Comput. Appl. Math. 233 (2010) 3086-3094.
+
+\bibitem{solin2} 
+P. Solin, J. Cerveny, L. Dubcova, D. Andrs: Monolithic Discretization of Linear 
+Thermoelasticity Problems via Adaptive Multimesh hp-FEM, J. Comput. Appl. Math 
+234 (2010) 2350-2357.
+
+\bibitem{solin3}
+P. Solin, K. Segeth, I. Dolezel: {\em Higher-Order Finite Element Methods},
+Chapman \& Hall / CRC Press, 2003.
+
+\bibitem{BaOs:87}
+I.~Babu\v{s}ka and J.~Osborn.
+\newblock {\em Estimates for the errors in eigenvalue and eigenvector
+  approximation by Galerkin methods, with particular attention to the
+  case of multiple eigenvalues}, 
+\newblock{\em SIAM J. Numer. Anal.}, 24:1249-1276, 1987.
+
+\bibitem{BaOs:89}
+I.~Babu\v{s}ka and J.~Osborn.
+\newblock {\em Finite element-Galerkin approximation of the
+  eigenvalues and eigenvectors of selfadjoint problems}, 
+\newblock{\em Math. Comput.} 186:275-297, 1989.
+ 
+\bibitem{babuska}
+I.~Babu\v{s}ka and J.~Osborn.
+\newblock {\em Eigenvalue Problems}, in Handbook of Numerical
+Analysis Vol II,
+eds P.G. Cairlet and J.L. Lions, North Holland,  641-787, 1991.
+
+\bibitem{strang}
+G.~Strang and G.~J. Fix.
+\newblock {\em An Analysis of the Finite Element Method}.
+\newblock Prentice-Hall, 1973.
+
+\end{thebibliography}
+
+
+
+\end{document}
+
+%%
+%% End of file `elsarticle-template-num.tex'.
