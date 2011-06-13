@@ -143,7 +143,7 @@
 %% \address{\fnref{label3}}
 %% \fntext[label3]{}
 
-\title{Adaptive Multimesh $hp$-FEM for PDE Eigenproblems}
+\title{Adaptive $hp$-FEM for PDE Eigenvalue Problems\\ Based on Picard and Newton Methods}
 
 %% use optional labels to link authors explicitly to addresses:
 \author[label1,label2]{Pavel Solin}
@@ -158,25 +158,30 @@
 %\address{Department of Mathematics and Statistics, University of Nevada, Reno, USA}
 
 \begin{abstract}
-We propose an adaptive multimesh higher-order finite element method ($hp$-FEM) 
-for efficient solution of eigenproblems originated in partial differential 
-equations (PDE). Since one finite element mesh cannot be optimal for several
-eigenfunctions simultaneously, we approximate each eigenfunction on an individual 
-mesh. The meshes are adapted independently of each other so that 
-the overall ratio of approximation error to discrete problem size is minimized.
-To avoid notorious problems associated with repeated eigensolver calls during the 
-mesh adaptation process, we propose two methods where the eigensolver is called once at the beginning, and 
-then an iterative method is employed to converge each eigenvector-eigenvalue pair. \textcolor{red}{Pavel, I changed the previous sentence because one of the method that we are going to describe calls the eigensolver many times and not only on the coarse mesh.}
-Automatic $hp$-adaptivity is guided by means of a robust PDE-independent computational 
-error estimator that extracts a low-order part from the higher-order approximation. 
-The method is described, its theoretical analysis provided, and sample 
-applications are presented. Instructions on how to reproduce the results 
+Many adaptive finite element methods (FEM) for eigenvalue problems call an 
+eigensolver in each step of the adaptive algorithm. This means that 
+each time several eigenvalue-eigenvector pairs must be computed, 
+even if we are only interested in a single one of them. We propose a novel 
+adaptive algorithm that calls the eigensolver only one time at the 
+beginning, and then employs an iterative method to converge to a selected 
+eigenvalue-eigenvector pair. 
+% Since one finite element mesh cannot be optimal for several
+% eigenfunctions simultaneously, we approximate each eigenfunction on an individual 
+% mesh. The meshes are adapted independently of each other so that 
+% the overall ratio of approximation error to discrete problem size is minimized.
+% \textcolor{red}{Pavel, I changed the previous sentence because one of the method 
+% that we are going to describe calls the eigensolver many times and not only on the coarse mesh.}
+In this study, the underlying PDE is discretized by means of a higher-order 
+finite element method ($hp$-FEM), but the algorithm also works for standard 
+low-order FEM and it can be easily modified for finite differences (FDM). 
+The method is described and accompanied with theoretical analysis and 
+numerical examples and comparisons. Instructions on how to reproduce the results 
 are provided. 
 \end{abstract}
 
 \begin{keyword}
 Partial differential equation \sep Eigenvalue problem \sep Adaptive higher-order finite element
-method \sep Multimesh $hp$-FEM
+method \sep $hp$-FEM \sep Reproducible research
 %% keywords here, in the form: keyword \sep keyword
 %% MSC codes here, in the form: \MSC code \sep code
 %% or \MSC[2008] code \sep code (2000 is the default)
@@ -190,19 +195,23 @@ method \sep Multimesh $hp$-FEM
 % \linenumbers
 
 %% main text
+%\section{Introduction}
+
+%\begin{itemize}
+%\item Give examples of applications where accurate approximation of  
+%      a single eigenfunction is useful.
+%\item Mention applications where simultaneous approximation of
+%      several eigenfunctions is needed (I know about DFT. Is there something else?). 
+%      \textcolor{red}{I could suggest Photonic Crystal problems, it is necessary to compute several eigenvalues in order to identify gaps in the spectrum of the problem}
+%\item Give references to prior work on adaptive algorithms for 
+%      PDE eigenproblems, limitations, ... We have to show that we are aware of 
+%      latest developments.
+%\end{itemize}
+
 \section{Introduction}
 
-\begin{itemize}
-\item Give examples of applications where accurate approximation of  
-      a single eigenfunction is useful.
-\item Mention applications where simultaneous approximation of
-      several eigenfunctions is needed (I know about DFT. Is there something else?). 
-      \textcolor{red}{I could suggest Photonic Crystal problems, it is necessary to compute several eigenvalues in order to identify gaps in the spectrum of the problem}
-\item Give references to prior work on adaptive algorithms for 
-      PDE eigenproblems, limitations, ... We have to show that we are aware of 
-      latest developments.
-\end{itemize}
-
+{\red Stefano, could you please write an introduction? The
+conclusion should be that all existing methods call the eigensolver in each adaptivity step.}
 
 \section{Motivation}
 
@@ -333,7 +342,10 @@ b(u,v):=\int_\Omega u(x) v(x)\ .
 \end{equation}
 
 Now, to discretize (\ref{eq:var_prob}), let $\cT_n\ , n =
-1,2,\ldots $ denote a family of 1-irregular meshes on $\Omega$ composed by possible triangular and quadrilateral elements. 
+1,2,\ldots $ denote a family of 1-irregular meshes on $\Omega$ 
+{\red Stefano, is 1-irregular necessary here? We can do arbitrary-level
+hanging nodes in Hermes.}
+composed by possible triangular and quadrilateral elements. 
 These meshes may be computed adaptively. 
 With  $h_{n,\tau}$ we denote  the diameter of element $\tau$,  
 we define
@@ -495,7 +507,10 @@ and so $\lim_{m\rightarrow \infty}|c_i^{m+1}|=0$, which proves that $\lim_{m\rig
 
 Theorem~\ref{th:picard_conv} shows that even if the initial guess $\mathbf{u}^1$ is very close to a certain discrete eigenfunction $u_{i,n}$, for some $i$, the method can always converges to a different eigenfunction or a linear combinations of eigenfunctions with corresponding eigenvalues smaller in module than $\lambda_{i,n}$. In real arithmetic, even if the initial guess $\mathbf{u}^1$ is orthogonal to all eigenfunctions of indexes less than $i$, for some $m>1$ the orthogonality could be perturbed, due to round-off errors, and the method can eventually converges anyway to a different eigenfunction or a linear combinations of eigenfunctions with corresponding eigenvalues smaller in module than $\lambda_{i,n}$.
 
-\textcolor{red}{Pavel, can you put here a figure like Figure~\ref{fig:eigen1} where we show that the plain Picard's method converges to the wrong eigenfunction?}
+\textcolor{red}{Pavel, can you put here a figure like Figure~\ref{fig:eigen1} where we show that the plain Picard's method converges to the wrong eigenfunction?}\\
+\\
+{\red Stefano, I would not mention repeated eigensolver calls at all. This is where we want to differ from 
+existing methods. Is this possible?}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -1199,16 +1214,16 @@ Lemma~\ref{lm:adj}(i).
 
 
 
-\section{Adaptive Multimesh $hp$-FEM for Simultaneous Approximation of Several Eigenfunctions}
-
-
 \section{Numerical Results}
 
-One of them should be a comparison of the multimesh $hp$-FEM vs. single-mesh 
-$hp$-FEM on some problem with no repeated eigenvalues, both in terms of DOF and 
-CPU time.
+{\red We need to say that we are only interested in eigenfunction \#10 (for example)
+and compare the convergence {\em in this eigenfunction only} 
+using the standard approach (repeated calls to an 
+eigensolver that always solves for 10 first eigenfunctions) with our approach.}
 
 \section{Reproducibility of Results} \label{sec:reproducibility}
+
+{\red To be written by Pavel.}
 
 \section*{Acknowledgment}
 
