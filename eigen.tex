@@ -204,7 +204,7 @@ method \sep $hp$-FEM \sep Reproducible research
 %      latest developments.
 %\end{itemize}
 
-\section{Introduction}
+\section{Introduction}\label{sec:intro}
 
 {\red STEFANO, could you please write an introduction that acknowledges 
 previous work on adaptive FEM for eigenproblems? In particular, we should cite people that we 
@@ -213,9 +213,25 @@ call the eigensolver in each adaptivity step.}
 
 \subsection{Outline of the Paper}
 
-{\red To be done by PAVEL at the end.}
+Section \ref{sec:motiv} illustrates difficulties associated with 
+adaptive methods that need to call an eigensolver in each adaptivity 
+step. Section \ref{sec:preli} introduces some notations and 
+preliminaries. Section \ref{sec:picard} presents a simple
+Picard's method and shows that it does not work as expected.
+The problem is fixed in Section \ref{sec:picard++} by adding 
+orthogonalization. Section \ref{sec:newton} presents 
+a Newton's method with orthogonalization. Section \ref{sec:reco}
+discusses a reconstruction technology for spectra perturbed 
+by discretization. This is used to devise an algorithm for 
+computing reference solutions for $hp$-adaptivity in 
+Section \ref{sec:recoref}. A priori convergence results 
+are presented in Section \ref{sec:aprio}. Numerical results 
+are presented in Section \ref{sec:numer}. Reproducibility of 
+results is discussed in Section \ref{sec:reproducibility}.
+Conclusion and outlook are presented in Section \ref{sec:conclusion}.
 
-\section{Motivation}
+
+\section{Motivation}\label{sec:motiv}
 
 We will illustrate a typical outcome of repeated eigensolver calls
 on a simple eigenproblem of the form 
@@ -302,7 +318,7 @@ these results are provided in Section \ref{sec:reproducibility}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Preliminaries}
+\section{Preliminaries}\label{sec:preli}
 
 Throughout, $L^2(\Omega)$
 denotes the usual space of square-integrable real valued functions
@@ -380,7 +396,7 @@ a(u_{jn},v_{n})&=& \lambda_{j,n}\ b(u_{j,n},v_{n}),
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Picard's method}
+\section{Picard's method}\label{sec:picard}
 
 Problem \eqref{eq:disc_prob} can be reformulated in matrix format as:
 \emph{Find eigenpairs of the form $(\lambda,\mathbf{u})\in
@@ -438,12 +454,14 @@ $$
 Using the definition of the discrete problem $\mathbf{A}\mathbf{u}=\lambda \mathbf{B}\mathbf{u}$, we have:
 $$
 (\mathbf{u}^{m+1})^t\mathbf{B}\mathbf{u}^{m+1}=\lambda^m(\mathbf{u}^{m+1})^t\mathbf{B}\mathbf{A}^{-1}\mathbf{B}\mathbf{u}^{m}
+$$
+$$
 =(\lambda^m)^2\mathbf{A}^{-t}\mathbf{B}^t(\mathbf{u}^{m})t\mathbf{B}\mathbf{A}^{-1}\mathbf{B}\mathbf{u}^{m}
 =(\mathbf{u}^{m})^t\mathbf{B}\mathbf{u}^{m}.
 $$
 \end{proof}
 
-From Lemma~\ref{lm:picard_b} it is clear that the Picard's method, in comparison to other iterative methods like the power method and the inverse iteration, doesn't need a normalization step to prevent any underflow or overflow.
+From Lemma~\ref{lm:picard_b} it is clear that the Picard's method, in comparison to other iterative methods like the power method and the inverse iteration, doesn't need a normalization step to prevent an underflow or overflow.
 
 The next theorem shows that the Picard's method always converges to the smallest eigenvalue.
 
@@ -493,7 +511,7 @@ $$
 \sum_{i=1}^N (c_i^{m+1})^2 = (\mathbf{u}^{m+1})^t\mathbf{B}\mathbf{u}^{m+1}
 =(\mathbf{u}^1)^t\mathbf{B}\mathbf{u}^1=\sum_{i=1}^N (c_i^1)^2,
 $$
-and so from \eqref{eq:picard_conv_1} we can conclude that $\lim_{m\rightarrow \infty}|c_i^{m+1}|=0$, for all $i>1$, which is equivalent to say that $\lim_{m\rightarrow \infty}\mathbf{u}^{m+1}\in \mathrm{span}\{\mathbf{u}_1\}$.
+and so from \eqref{eq:picard_conv_1} we can conclude that $\lim_{m\rightarrow \infty}|c_i^{m+1}|=0$, for all $i>1$, which is equivalent to saying that $\lim_{m\rightarrow \infty}\mathbf{u}^{m+1}\in \mathrm{span}\{\mathbf{u}_1\}$.
 
 In the case that $\lambda_1$ has multiplicity $R$ and that $c_r^1$, for some $1\leq r\leq R$, is not zero,
 we similarly have that for all $i>R$:
@@ -504,22 +522,41 @@ and so $\lim_{m\rightarrow \infty}|c_i^{m+1}|=0$, which proves that $\lim_{m\rig
 
 \end{proof}
 
-Theorem~\ref{th:picard_conv} shows that even if the initial guess $\mathbf{u}^1$ is very close to a certain discrete eigenfunction $u_{i,n}$, for some $i$, the method can always converges to a different eigenfunction or a linear combinations of eigenfunctions with corresponding eigenvalues smaller in module than $\lambda_{i,n}$. In real arithmetic, even if the initial guess $\mathbf{u}^1$ is orthogonal to all eigenfunctions of indexes less than $i$, for some $m>1$ the orthogonality could be perturbed, due to round-off errors, and the method can eventually converges anyway to a different eigenfunction or a linear combinations of eigenfunctions with corresponding eigenvalues smaller in module than $\lambda_{i,n}$.
+Theorem~\ref{th:picard_conv} shows that even if the initial guess $\mathbf{u}^1$ is very close to a certain discrete eigenfunction $u_{i,n}$, for some $i$, the method can always converge to a different eigenfunction or a linear combinations of eigenfunctions with corresponding eigenvalues smaller in module than $\lambda_{i,n}$. In real arithmetic, even if the initial guess $\mathbf{u}^1$ is orthogonal to all eigenfunctions of indices less than $i$, for some $m>1$ the orthogonality could be perturbed, due to round-off errors, and the method can eventually converge anyway to a different eigenfunction or to a linear combination of eigenfunctions whose eigenvalue is smaller in module than $\lambda_{i,n}$.
 
-\textcolor{red}{PAVEL, can you put here a figure like Figure~\ref{fig:eigen1} where we show that the plain Picard's method converges to the wrong eigenfunction?}\\
-\\
-{\red STEFANO, I would not mention repeated eigensolver calls at all. This is where we want to differ from 
-existing methods. Is this possible?}
+To illustrate this behavior, we use the mesh shown in Fig. \ref{fig:mesh1}, and use 
+the third eigenfunction corresponding to $\lambda_3 = 5$ (Fig. \ref{fig:picard} left) 
+as a starting guess for the Picard's method on the mesh shown in Fig. \ref{fig:mesh2}.
+However, the Picard's method converges to the first eigenfunction corresponding 
+to $\lambda_1 = 2$ (Fig. \ref{fig:picard} right).
+
+\newpage
+
+\begin{figure}[!ht]
+\begin{center}
+\includegraphics[width=0.4\textwidth]{img/eigen_2.png}\ \ \ 
+\includegraphics[width=0.433\textwidth]{img/eigen-new-1.png}
+\end{center}
+\vspace{-5mm}
+\caption{The Picard's method converges from an initial guess that is very close to 
+         the third eigenfunction (left) that corresponds to $\lambda_3 = 5$ to the 
+         first eigenfunction (right) that corresponds to $\lambda_1 = 2$.}
+\label{fig:picard}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Picard's method with orthogonalization}
+\section{Picard's method with orthogonalization}\label{sec:picard++}
 
 In order to make the Picard's method suitable to approximate efficiently any discrete eigenpair, and not only the first one, we derived Algorithm~\ref{alg:picard_ortho}, which has an orthogonalization procedure in it.
 
-The Picard's method with orthogonalization takes as arguments the matrices $\mathbf{A}$ and $\mathbf{B}$ of \eqref{eq:disc_prob}, an initial guess $\tilde u$ for the eigenfunction, a tolerance $\mathrm{Tol}$and it also takes the $j-1$ eigenfunctions $u_{1,n},\dots,u_{j-1,n}$.
+The Picard's method with orthogonalization takes as arguments the matrices $\mathbf{A}$ and $\mathbf{B}$ of \eqref{eq:disc_prob}, an initial guess $\tilde u$ for the eigenfunction, a tolerance $\mathrm{Tol}$ and it also takes the $j-1$ eigenfunctions $u_{1,n},\dots,u_{j-1,n}$.
 Then it returns the eigenpair $\lambda_{j,n},u_{j,n}$. 
 Then it returns the eigenpair $\lambda_{j,n},u_{j,n}$ on the refined mesh.
+
+{\red STEFANO, do you want to move the following statement after the Algorithm, 
+and formulate it as a Theorem with 
+a simple proof? To me this would look stronger.}
 
 This method never converges to an eigenfunction of index smaller than $j$ because for any $m\ge 1$, the vector $\mathbf{u}^m$ is orthogonal to all eigenfunctions $u_{1,n},\dots,u_{j-1,n}$, i.e. all coefficients 
 $c_1^m,\dots,c_{j-1}^m$ in the expansion of $\mathbf{u}^m$ are zero, so the eigenvalue smallest in module is $\lambda_j$ and the Picard's method naturally converges to it.
@@ -554,17 +591,29 @@ $c_1^m,\dots,c_{j-1}^m$ in the expansion of $\mathbf{u}^m$ are zero, so the eige
 \COMMENT{Normalize}
 \STATE{$\displaystyle\lambda^{m+1}:=\frac{(\mathbf{u}^{m+1})^t\mathbf{A}\mathbf{u}^{m+1}}{(\mathbf{u}^{m+1})^t\mathbf{B}\mathbf{u}^{m+1}}$}
 \STATE{$m:=m+1$}
-\UNTIL{ Can you fill in the details of the stop criteria?}
+\UNTIL{$|\mathbf{A}\mathbf{u}^{m} - \lambda^{m}\mathbf{B}\mathbf{u}^{m}| <$ Tol}
 \STATE{$u_{j,n}:=\mathbf{u}^{m}$}
 \STATE{$\lambda_{j,n}:=\lambda^m$}
 \end{algorithmic}
 \end{algorithm}
 
-As can be seen in Algorithm~\ref{alg:picard_ortho}  the orthogonalization is done at each iteration, this is necessary in real arithmetic to guarantees that $\mathbf{u}^m$ is orthogonal to all eigenfunctions $u_{1,n},\dots,u_{j-1,n}$, for all $m$. Otherwise in exact arithmetic it would be enough to orthogonalize only $\mathbf{u}^1$. Moreover a normalization step is necessary in all iterations because due to the orthogonalization procedure, this version of the Picard's method does not conserve the norm of the vectors and possible underflows or overflows could happen with no normalization.
+As can be seen in Algorithm~\ref{alg:picard_ortho}, the orthogonalization is done in each iteration. 
+This is necessary in real arithmetic to guarantee that $\mathbf{u}^m$ is orthogonal to all 
+eigenfunctions $u_{1,n},\dots,u_{j-1,n}$, for all $m$. Otherwise in exact arithmetic it would 
+be enough to orthogonalize only $\mathbf{u}^1$. Moreover, a normalization step is necessary 
+in all iterations because due to the orthogonalization procedure, this version of the Picard's 
+method does not conserve the norm of the vectors and possible underflows or overflows could 
+happen with no normalization.\\
+
+\noindent
+{\bf Remark}: To make the Picard's method usable in practice, it is 
+recommended to enhance it with Anderson acceleration \cite{anderson}.
+This method combines a number of last iterates in a GMRES-like fashion. 
+The result is equivalent to a Jacobian-free quasi-Newton (Broyden) method.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Newton's method with orthogonalization}
+\section{Newton's method with orthogonalization}\label{sec:newton}
 
 The second iterative method that we are going to propose is based on the Newton's method applied to eigenvalue problems. Denoting by $\tilde x:=(x,\lambda)$, we have that problem \eqref{eq:var_prob} can be rewritten in the form
 $$
@@ -614,7 +663,7 @@ which defines the linear problem of the Newton's method that we are solving.
 \STATE{$\mathbf{u}^{m+1}:=\mathbf{u}^m+h$}
 \STATE{$\lambda^{m+1}:=\lambda^m+\delta$}
 \STATE{$m:=m+1$}
-\UNTIL{ Can you fill in the details of the stop criteria?}
+\UNTIL{$|\mathbf{A}\mathbf{u}^{m} - \lambda^{m}\mathbf{B}\mathbf{u}^{m}| <$ Tol}
 \STATE{$u_{n}:=\mathbf{u}^{m}$}
 \STATE{$\lambda_{n}:=\lambda^m$}
 \end{algorithmic}
@@ -651,15 +700,19 @@ In order to make the method suitable for all eigenpairs, we are going write a ve
 \COMMENT{Normalize}
 \STATE{$\displaystyle\lambda^{m+1}:=\frac{(\mathbf{u}^{m+1})^t\mathbf{A}\mathbf{u}^{m+1}}{(\mathbf{u}^{m+1})^t\mathbf{B}\mathbf{u}^{m+1}}$}
 \STATE{$m:=m+1$}
-\UNTIL{ Can you fill in the details of the stop criteria?}
+\UNTIL{$|\mathbf{A}\mathbf{u}^{m} - \lambda^{m}\mathbf{B}\mathbf{u}^{m}| <$ Tol}
 \STATE{$u_{j,n}:=\mathbf{u}^{m}$}
 \STATE{$\lambda_{j,n}:=\lambda^m$}
 \end{algorithmic}
 \end{algorithm}
 
+{\red STEFANO, it would be nice to have some sort of a Theorem with proof here, to 
+say something formal about the Newton's method with orthogonalization. Otherwise this 
+looks unfinished.}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Reconstruction technology}
+\section{Reconstruction technology}\label{sec:reco}
 
 It is well known that the discretization process perturbs the spectrum, in particular the eigenspace $E(\lambda_j)$ of multiple eigenvalue $\lambda_j$ can be split in more than one discrete eigenspace $E(\lambda_{j,n}),E(\lambda_{j+1,n}),\dots,E(\lambda_{j+m,n})$ with correspondent discrete eigenvalues $\lambda_{j,n},\lambda_{j+1,n},\dots,\lambda_{j+m,n}$ forming a small cluster for sufficiently rich finite element space, also under the same assumption we have that
 $$
@@ -691,7 +744,7 @@ The couple $(\Lambda_n,U_n)$ is not a discrete eigenpair of problem \eqref{eq:va
 \textcolor{red}{PAVEL, the point that $(\Lambda_n,U_n)$ is not a discrete eigenpair is quite important and it is one of the new contribution in this paper, do you think that it has been stressed enough?}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Computing Reference Solution via Reconstruction}
+\section{Computing Reference Solution via Reconstruction}\label{sec:recoref}
 
 In this section we present three algorithms to compute approximations of eigenpairs. Each algorithm is based on a different method to compute the discrete spectrum, but all of them use the reconstruction technology to keep track of the eigenfunction of interest.
 
@@ -829,7 +882,7 @@ Similarly we define the adaptive methods based on the Picard's and Newton's meth
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{A priori convergence results}\label{sse:pcf_priori}
+\section{A priori convergence results}\label{sse:pcf_priori}\label{sec:aprio}
 
 %\textcolor{red}{This section is for smooth problems only, i.e. $u\in H^s(\Omega)$, $s\ge 2$.}
 
@@ -1037,7 +1090,8 @@ we recall a  standard error  estimate for elliptic eigenvalues
 $$ \lambda_{j,n} - \lambda_j \ \leq \  C \sup_{u \in
   E_1(\lambda_j)} \inf_{v_n \in V_n} \Vert u - v_n \Vert_1^2. $$
 Combining this with standard finite element error
-estimates for $hp$-method, see \cite[Theorem~4.72]{schwab} and recalling \eqref{eq:minimax_shift}, we get  
+estimates for $hp$-method, see \cite[Theorem~4.72]{schwab} and 
+recalling \eqref{eq:minimax_shift}, we get  
 \begin{eqnarray}
 \vert \lambda_{j,n} - \lambda_j \vert \  \  
 \ \leq \ C \frac{h_n^{2\min(\mu,p)} }{p_n^{2\mu}} \sup_{u \in
@@ -1213,7 +1267,7 @@ Lemma~\ref{lm:adj}(i).
 
 
 
-\section{Numerical Results}
+\section{Numerical Results} \label{sec:numer}
 
 {\red We need to say that we are only interested in eigenfunction \#10 (for example)
 and compare the convergence {\em in this eigenfunction only} 
@@ -1223,6 +1277,20 @@ eigensolver that always solves for 10 first eigenfunctions) with our approach.}
 \section{Reproducibility of Results} \label{sec:reproducibility}
 
 {\red To be written by PAVEL.}
+
+\section{Conclusion and Outlook}\label{sec:conclusion}
+
+We presented a novel adaptive higher-order finite element method ($hp$-FEM) 
+for PDE eigenproblems. As opposed to conventional methods, it does not need
+to call an eigensolver in each adaptivity step. This eliminates standard 
+problems associated with repeated eigenvalues. The technique also makes it 
+possible to approximate different eigenfunctions on individual meshes. 
+The fact that one mesh cannot be optimal for multiple eigenfunctions at the
+same time was the original motivation for this study. Another motivation is 
+that using the present method, many eigenfunctions can be calculated separately 
+in parallel, without a parallel eigensolver. In our next steps we will continue 
+along this line and adjust the adaptive multimesh $hp$-FEM technique \cite{solin2} 
+to approximate multiple eigenfunctions adaptively on individual meshes.
 
 \section*{Acknowledgment}
 
@@ -1235,8 +1303,12 @@ IAA100760702 of the Grant Agency of the Academy of Sciences of the Czech Republi
 
 \begin{thebibliography}{[KLR73]}
 
+\bibitem{anderson}
+D. G. Anderson. Iterative procedures for nonlinear integral equations. J. Assoc. Comput.
+Machinery, 12:547–560, 1965.
+
 \bibitem{dubcova1}
-L. Dubcova, P. Solin, G. Hansen, H. Park: Comparison of Multimesh hp-FEM 
+L. Dubcova, P. Solin, G. Hansen, H. Park: Comparison of Multimesh $hp$-FEM 
 to Interpolation and Projection Methods for Spatial Coupling of Reactor 
 Thermal and Neutron Diffusion Calculations, J. Comput. Phys. 230 (2011) 1182-1197.
 
@@ -1251,7 +1323,7 @@ J. Comput. Appl. Math. 233 (2010) 3086-3094.
 
 \bibitem{solin2} 
 P. Solin, J. Cerveny, L. Dubcova, D. Andrs: Monolithic Discretization of Linear 
-Thermoelasticity Problems via Adaptive Multimesh hp-FEM, J. Comput. Appl. Math 
+Thermoelasticity Problems via Adaptive Multimesh $hp$-FEM, J. Comput. Appl. Math 
 234 (2010) 2350-2357.
 
 \bibitem{solin3}
