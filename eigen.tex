@@ -220,7 +220,10 @@ preliminaries. Section \ref{sec:picard} presents a simple
 Picard's method and shows that it does not work as expected.
 The problem is fixed in Section \ref{sec:picard++} by adding 
 orthogonalization. Section \ref{sec:newton} presents 
-a Newton's method with orthogonalization. Section \ref{sec:reco}
+a Newton's method with orthogonalization. 
+Section \ref{sec:adapt} presents an outline of the adaptivity algorithm,
+which is needed in the following section.
+Section \ref{sec:reco}
 discusses a reconstruction technology for spectra perturbed 
 by discretization. This is used to devise an algorithm for 
 computing reference solutions for $hp$-adaptivity in 
@@ -396,7 +399,7 @@ a(u_{jn},v_{n})&=& \lambda_{j,n}\ b(u_{j,n},v_{n}),
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Picard's method}\label{sec:picard}
+\section{Picard's Method}\label{sec:picard}
 
 Problem \eqref{eq:disc_prob} can be reformulated in matrix format as:
 \emph{Find eigenpairs of the form $(\lambda,\mathbf{u})\in
@@ -546,7 +549,7 @@ to $\lambda_1 = 2$ (Fig. \ref{fig:picard} right).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Picard's method with orthogonalization}\label{sec:picard++}
+\section{Picard's Method with Orthogonalization}\label{sec:picard++}
 
 In order to make the Picard's method suitable to approximate efficiently any discrete eigenpair, and not only the first one, we derived Algorithm~\ref{alg:picard_ortho}, which has an orthogonalization procedure in it.
 
@@ -613,7 +616,7 @@ The result is equivalent to a Jacobian-free quasi-Newton (Broyden) method.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Newton's method with orthogonalization}\label{sec:newton}
+\section{Newton's Method with Orthogonalization}\label{sec:newton}
 
 The second iterative method that we are going to propose is based on the Newton's method applied to eigenvalue problems. Denoting by $\tilde x:=(x,\lambda)$, we have that problem \eqref{eq:var_prob} can be rewritten in the form
 $$
@@ -712,7 +715,19 @@ looks unfinished.}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Reconstruction technology}\label{sec:reco}
+\section{Adaptivity Algorithm}\label{sec:adapt}
+
+Before we continue, we need to briefly outline the $hp$-adaptive algorithm \cite{solin3}
+that we use in this study. The algorithm uses an idea that is analogous to embedded 
+higher-order ODE methods -- it calculates two approximations with different orders of 
+accuracy and uses their difference as an a-posteriori error estimator.\\
+
+TO BE CONTINUED
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{Reconstruction Technology}\label{sec:reco}
 
 It is well known that the discretization process perturbs the spectrum, in particular the eigenspace $E(\lambda_j)$ of multiple eigenvalue $\lambda_j$ can be split in more than one discrete eigenspace $E(\lambda_{j,n}),E(\lambda_{j+1,n}),\dots,E(\lambda_{j+m,n})$ with correspondent discrete eigenvalues $\lambda_{j,n},\lambda_{j+1,n},\dots,\lambda_{j+m,n}$ forming a small cluster for sufficiently rich finite element space, also under the same assumption we have that
 $$
@@ -882,7 +897,7 @@ Similarly we define the adaptive methods based on the Picard's and Newton's meth
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{A priori convergence results}\label{sse:pcf_priori}\label{sec:aprio}
+\section{A Priori Convergence Results}\label{sse:pcf_priori}\label{sec:aprio}
 
 %\textcolor{red}{This section is for smooth problems only, i.e. $u\in H^s(\Omega)$, $s\ge 2$.}
 
