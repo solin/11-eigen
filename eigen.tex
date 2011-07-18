@@ -24,7 +24,7 @@
 %% $Id: elsarticle-template-num.tex 4 2009-10-24 08:22:58Z rishi $
 %%
 %%
-\documentclass[preprint ,12pt]{elsarticle}
+\documentclass[preprint,12pt]{elsarticle}
 
 %% Use the option review to obtain double line spacing
 %% \documentclass[preprint,review,12pt]{elsarticle}
@@ -85,7 +85,7 @@
 % \biboptions{}
 
 
-\journal{Applied Mathematics and Computation}
+\journal{SINUM}
 
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{lemma}[theorem]{Lemma}
@@ -143,7 +143,9 @@
 %% \address{\fnref{label3}}
 %% \fntext[label3]{}
 
-\title{Adaptive $hp$-FEM for PDE Eigenvalue Problems\\ Based on Picard and Newton Methods}
+%\title{Picard and Newton-Based Adaptive Finite Element Methods for Eigenvalue Problems}
+\title{Adaptive $hp$-FEM for Eigenvalue Problems\\ Free of Repeated 
+       Eigensolver Calls}
 
 %% use optional labels to link authors explicitly to addresses:
 \author[label1,label2]{Pavel Solin}
@@ -158,25 +160,19 @@
 %\address{Department of Mathematics and Statistics, University of Nevada, Reno, USA}
 
 \begin{abstract}
-Many adaptive finite element methods (FEM) for eigenvalue problems call an 
-eigensolver in each step of the adaptive algorithm. This means that 
-each time several eigenvalue-eigenvector pairs must be computed, 
-even if we are only interested in a single one of them. We propose a novel 
-adaptive algorithm that calls the eigensolver only one time at the 
-beginning, and then employs an iterative method to converge to a selected 
-eigenvalue-eigenvector pair. 
-% Since one finite element mesh cannot be optimal for several
-% eigenfunctions simultaneously, we approximate each eigenfunction on an individual 
-% mesh. The meshes are adapted independently of each other so that 
-% the overall ratio of approximation error to discrete problem size is minimized.
-% \textcolor{red}{Pavel, I changed the previous sentence because one of the method 
-% that we are going to describe calls the eigensolver many times and not only on the coarse mesh.}
-In this study, the underlying PDE is discretized by means of a higher-order 
-finite element method ($hp$-FEM), but the algorithm also works for standard 
-low-order FEM and it can be easily modified for finite differences (FDM). 
-The method is described and accompanied with theoretical analysis and 
-numerical examples and comparisons. Instructions on how to reproduce the results 
-are provided. 
+
+Conventional adaptive finite element methods (FEM) for eigenvalue problems call 
+an eigensolver in each adaptivity step. This is not optimal in all situations, 
+for example if one is only interested in resolving accurately one specific 
+vibration mode. We propose a novel adaptive algorithm that only calls the 
+eigensolver once at the beginning of the computation, and then employs an 
+iterative method to converge to any selected eigenvalue-eigenvector pair. 
+Picard and Newton variants of such an iterative method are presented. The 
+underlying partial differential equation (PDE) is discretized with higher-order 
+finite elements ($hp$-FEM) but the algorithm also works for standard 
+low-order FEM. The method is described and accompanied with theoretical 
+analysis and numerical examples and comparisons. Instructions on how to 
+reproduce the results are provided. 
 \end{abstract}
 
 \begin{keyword}
@@ -210,123 +206,123 @@ method \sep $hp$-FEM \sep Reproducible research
 
 \section{Introduction}
 
-{\red Stefano, could you please write an introduction? The
-conclusion should be that all existing methods call the eigensolver in each adaptivity step.}
+{\red STEFANO, could you please write an introduction that acknowledges 
+previous work on adaptive FEM for eigenproblems? In particular, we should cite people that we 
+suggest as referees. The conclusion should be that it is customary to  
+call the eigensolver in each adaptivity step.}
+
+\subsection{Outline of the Paper}
+
+{\red To be done by PAVEL at the end.}
 
 \section{Motivation}
 
-Let us consider a simple eigenproblem of the form 
+We will illustrate a typical outcome of repeated eigensolver calls
+on a simple eigenproblem of the form 
 \begin{equation} \label{one}
--\Delta u = \lambda u
+-\Delta u = \lambda u, \ \ \ u = 0 \ \mbox{on} \ \partial \Omega
 \end{equation}
-in a square domain $\Omega = (0, \pi)^2$, equipped with zero Dirichlet boundary conditions 
-on the boundary $\partial \Omega$. The eigenvalues $0 < \lambda_1 \le \lambda_2 \le \ldots$ 
-are known exactly, and it is of particular interest that $\lambda_2 = \lambda_3 = 5$ and 
-$\lambda_5 = \lambda_6 = 10$. We discretize (\ref{one}) via the finite element method
-on a equidistant Cartesian mesh consisting of 16 quadratic elements as shown in Fig. \ref{fig:mesh1}.
+that is solved in a square domain $\Omega = (0, \pi)^2$.
+In this case the eigenvalues $0 < \lambda_1 \le \lambda_2 \le \ldots$ 
+are known exactly, and it is of particular interest that $\lambda_2 = \lambda_3 = 5$ 
+and $\lambda_5 = \lambda_6 = 10$ are repeated. 
+
+Equation (\ref{one}) is discretized via the finite element method
+on a $4\times 4$ mesh consisting of quadratic elements shown in Fig. \ref{fig:mesh1}.\\
 
 \begin{figure}[!ht]
 \begin{center}
-\includegraphics[width=0.4\textwidth]{img/mesh_1.png}
+\includegraphics[width=0.36\textwidth]{img/mesh_1.png}
 \end{center}
 \vspace{-5mm}
-\caption{Mesh before the first call to the generalized eigensolver.}
+\caption{Initial mesh for automatic adaptivity.}
 \label{fig:mesh1}
 \end{figure}
 
+Here, the numbers inside of finite elements mean their polynomial degrees.
 Approximate eigenfunctions for $\lambda_2, \lambda_3$ and $\lambda_5, \lambda_6$
 are shown in the first and second row of Fig. \ref{fig:eigen1}, respectively.
-The reader can see that the eigenfunctions exhibit anisotropies that make it 
-impossible for a single finite element mesh to be optimal for all 
-of them simultaneously.
+%The reader can see that the eigenfunctions exhibit anisotropies that make it 
+%impossible for a single finite element mesh to be optimal for all 
+%of them simultaneously.
+
+\clearpage
 
 \begin{figure}[!ht]
 \begin{center}
-\includegraphics[width=0.4\textwidth]{img/eigen_1.png}
-\includegraphics[width=0.4\textwidth]{img/eigen_2.png}\\
-\includegraphics[width=0.4\textwidth]{img/eigen_3.png}
+\includegraphics[width=0.4\textwidth]{img/eigen_1.png}\ \ \ 
+\includegraphics[width=0.4\textwidth]{img/eigen_2.png}\\[4mm]
+\includegraphics[width=0.4\textwidth]{img/eigen_3.png}\ \ \ 
 \includegraphics[width=0.4\textwidth]{img/eigen_4.png}\\
 \end{center}
 \vspace{-5mm}
 \caption{Approximate eigenfunctions for $\lambda_2, \lambda_3$ and 
-$\lambda_5, \lambda_6$ after the first call to the generalized eigensolver.}
+$\lambda_5, \lambda_6$ on initial mesh.}
 \label{fig:eigen1}
 \end{figure}
 
-Let us assume that by means of some mesh adaptation algorithm, the mesh undergoes 
-$p$-refinement of the four interior elements, whose new polynomial degree 
-will be $p = 3$, as shown in Fig. \ref{fig:mesh2}.
+Assume that based on some a-posteriori error estimate, the mesh undergoes 
+$p$-refinement of the four interior elements, as shown in Fig. \ref{fig:mesh2}.
 
 \begin{figure}[!ht]
 \begin{center}
-\includegraphics[width=0.4\textwidth]{img/mesh_2.png}
+\includegraphics[width=0.36\textwidth]{img/mesh_2.png}
 \end{center}
 \vspace{-5mm}
-\caption{Mesh before the second call to the generalized eigensolver.}
+\caption{Mesh after the first adaptivity step.}
 \label{fig:mesh2}
 \end{figure}
 
-After refining the mesh in this way, the eigensolver is called again. 
+After refining the mesh, the eigensolver is called again. 
 The resulting approximate eigenfunctions for $\lambda_2, \lambda_3$ and $\lambda_5, \lambda_6$
 are shown in the first and second row of Fig. \ref{fig:eigen2}, respectively.
-The reader can see that now we lost track of all four eigenfunctions 
-that we calculated during the first eigensolver call. 
 
-
-
-
+\clearpage
 \begin{figure}[!ht]
 \begin{center}
-\includegraphics[width=0.4\textwidth]{img/eigen_5.png}
-\includegraphics[width=0.4\textwidth]{img/eigen_6.png}\\
-\includegraphics[width=0.4\textwidth]{img/eigen_7.png}
+\includegraphics[width=0.4\textwidth]{img/eigen_5.png}\ \ \ 
+\includegraphics[width=0.4\textwidth]{img/eigen_6.png}\\[4mm]
+\includegraphics[width=0.4\textwidth]{img/eigen_7.png}\ \ \ 
 \includegraphics[width=0.4\textwidth]{img/eigen_8.png}\\
 \end{center}
 \vspace{-5mm}
 \caption{Approximate eigenfunctions for $\lambda_2, \lambda_3$ and 
-$\lambda_5, \lambda_6$ after the second call to the generalized eigensolver.}
+$\lambda_5, \lambda_6$ after the first adaptivity step.}
 \label{fig:eigen2}
 \end{figure}
 
-After a third call to the generalized eigensolver, the order of the 
-eigenfunctions in each pair is switched. Instructions on how to reproduce 
+The reader can observe that the approximations changed dramatically after the 
+mesh was refined. This is known behavior that is due to the multiplicity of the 
+corresponding eigenvalues. To our best knowledge, contemporary generalized 
+eigensolvers do not offer any way to avoid this problem. 
+{\red STEFANO, we have to be a bit careful here. Are there any works dealing 
+with repeated eigenvalues? If so, we have to cite them here.}
+Instructions on how to reproduce 
 these results are provided in Section \ref{sec:reproducibility}.
-
-Unfortunately, the current 
-state-of-the-art of generalized eigensolvers does not offer any known
-way to circumvent these problems [REFERENCE]. The only solution known 
-to us is to avoid repeated eigensolver calls. In this paper we describe 
-a method that only calls an eigensolver once, and then employs an iterative 
-algorithm to perform automatic mesh adaptation. We use this method to 
-design an algorithm that approximates efficiently each eigenfunction on 
-an individual mesh. \textcolor{red}{The reconstruction technology can be used to solve this problem also when an eigensolver is called repeated times. We need to decide how to present this point.}
-
-Let us begin with describing the adaptive $hp$-FEM algorithm
-that we use for eigenfunctions associated with eigenvalues
-of multiplicity one.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Preliminaries}
 
-Throughout $L^2(\Omega)$
-denotes the usual space of square integrable real valued functions
+Throughout, $L^2(\Omega)$
+denotes the usual space of square-integrable real valued functions
 equipped with the standard norm
 \begin{equation}\label{eq:l2}
-\|f\|_{0}\ :=\ \int_\Omega  |f|^2\ .
+\|f\|_{0}\ := \ \left(\int_\Omega  |f|^2\right)^{\frac{1}{2}} .
 \end{equation}
-$H^1(\Omega)$ denotes the usual space of functions in $L^2(\Omega)$
-with square integrable gradient, with  $H^1$-norm denoted $\|f\|_1$.
+The symbol $H^1(\Omega)$ denotes the usual space of functions in $L^2(\Omega)$
+with square-integrable weak first partial derivatives. The $H^1$-norm is 
+denoted by $\|f\|_1$.
 
 The variational formulation of problem \eqref{one} is:
-\emph{seek eigenpairs of the form $(\lambda_j,u_j)\in
+\emph{Find eigenpairs of the form $(\lambda_j,u_j)\in
 \mathbb{R}\times H^1_0(\Omega)$
 such that}
 \begin{equation}
 \label{eq:var_prob}
 \left.
 \begin{array}{lcl}
-a(u_j,v)&=& \lambda_j\ b(u_j,v)\ ,
+a(u_j,v)&=& \lambda_j\ b(u_j,v),
 \quad \text{for all } \quad v  \in H^1_0(\Omega)\\
  \Vert u_j \Vert_{0} &=& 1
 \end{array}\quad
@@ -334,20 +330,20 @@ a(u_j,v)&=& \lambda_j\ b(u_j,v)\ ,
 \end{equation}
 where
 \begin{equation}\label{eq:a}
-a(u,v):=\int_\Omega \nabla u(x)\cdot \nabla v(x)\ ,
+a(u,v):=\int_\Omega \nabla u(x)\cdot \nabla v(x),
 \end{equation}
 and
 \begin{equation}\label{eq:b}
-b(u,v):=\int_\Omega u(x) v(x)\ .
+b(u,v):=\int_\Omega u(x) v(x).
 \end{equation}
 
-Now, to discretize (\ref{eq:var_prob}), let $\cT_n\ , n =
-1,2,\ldots $ denote a family of 1-irregular meshes on $\Omega$ 
-{\red Stefano, is 1-irregular necessary here? We can do arbitrary-level
-hanging nodes in Hermes.}
-composed by possible triangular and quadrilateral elements. 
-These meshes may be computed adaptively. 
-With  $h_{n,\tau}$ we denote  the diameter of element $\tau$,  
+Now, to discretize (\ref{eq:var_prob}), let $\cT_n, n =
+1,2,\ldots $ denote a family of meshes on $\Omega$.
+The meshes can be irregular with multiple levels of hanging nodes, 
+and they can combine possibly curvilinear triangular and quadrilateral 
+elements. These meshes may be obtained using automatic adaptivity. 
+
+By $h_{n,\tau}$ we denote the diameter of element $\tau$,  
 we define
 $
 h_n:=\max_{\tau\in \mathcal{T}_n}\{h_{n,\tau}\}.
@@ -358,21 +354,24 @@ $
 p_n:=\min_{\tau\in \mathcal{T}_n}\{p_{n,\tau}\}.
 $
 On any mesh $\mathcal{T}_n$ we denote by $V_n \subset H^1_0(\Omega)$ the finite
-dimensional space of continuous functions $v$ such that on any element $\tau$ we have that 
-$v|_\tau\in \mathcal{P}_{p_{n,\tau}}(K)$, where either $\mathcal{P}_{p_{n,\tau}}(K)$ is the space of polynomials of total degree at most $p_{n,\tau}$ if $\tau$ is a triangular element or $\mathcal{P}_{p_{n,\tau}}(K)$ is the space of polynomials of degree at most $p_{n,\tau}$ in each variable if $\tau$ is a quadrilateral element.
+dimensional space of continuous functions $v$ such that on any element $\tau$ we 
+have that $v|_\tau\in \mathcal{P}_{p_{n,\tau}}(K)$. Here either $\mathcal{P}_{p_{n,\tau}}(K)$ 
+is the space of polynomials of total degree at most $p_{n,\tau}$ if $\tau$ is a triangular 
+element, or $\mathcal{P}_{p_{n,\tau}}(K)$ is the space of polynomials of degree at most 
+$p_{n,\tau}$ in each variable if $\tau$ is a quadrilateral element.
 
 
 %\textcolor{red}{I have to define better the meshes and the space and add references.}
 
-The discrete version of \eqref{eq:var_prob} is:
-\emph{seek eigenpairs of the form $(\lambda_{j,n},u_{j,n})\in
+The discrete version of \eqref{eq:var_prob} reads:
+\emph{Find eigenpairs of the form $(\lambda_{j,n},u_{j,n})\in
 \mathbb{R}\times V_n$
 such that}
 \begin{equation}
 \label{eq:disc_prob}
 \left.
 \begin{array}{lcl}
-a(u_{jn},v_{n})&=& \lambda_{j,n}\ b(u_{j,n},v_{n})\ ,
+a(u_{jn},v_{n})&=& \lambda_{j,n}\ b(u_{j,n},v_{n}),
 \quad \text{for all } \quad v_{n}  \in V_n\\
  \Vert u_{j,n} \Vert_{0} &=& 1
 \end{array}\quad
@@ -384,14 +383,14 @@ a(u_{jn},v_{n})&=& \lambda_{j,n}\ b(u_{j,n},v_{n})\ ,
 \section{Picard's method}
 
 Problem \eqref{eq:disc_prob} can be reformulated in matrix format as:
-\emph{seek eigenpairs of the form $(\lambda,\mathbf{u})\in
+\emph{Find eigenpairs of the form $(\lambda,\mathbf{u})\in
 \mathbb{R}\times \mathbb{R}^N$, where $N$ is the dimension of $V_n$,
 such that}
 \begin{equation}
 \label{eq:disc_prob_mat}
 \left.
 \begin{array}{lcl}
-\mathbf{A} \mathbf{u}&=& \lambda\mathbf{B}\mathbf{u}\ ,
+\mathbf{A} \mathbf{u}&=& \lambda\mathbf{B}\mathbf{u},
 \\
 \mathbf{u}^t\mathbf{B} \mathbf{u} &=& 1
 \end{array}\quad
@@ -399,11 +398,11 @@ such that}
 \end{equation}
 where the entries of the matrices $\mathbf{A}$ and $\mathbf{B}$ are 
 $$
-\mathbf{A}_{k,p}:=a(\phi_k,\phi_p)\ ,\quad\mathbf{B}_{k,p}:=b(\phi_k,\phi_p)\ .
+\mathbf{A}_{k,p}:=a(\phi_k,\phi_p),\quad\mathbf{B}_{k,p}:=b(\phi_k,\phi_p).
 $$
 
 
-The Picard's method, see Algorithm~\ref{alg:picard}, takes as arguments the matrices $\mathbf{A}$ and $\mathbf{B}$, an initial guess $\tilde u$ for the eigenfunction and a tolerance $\mathrm{Tol}$. The algorithm returns an approximated eigenpair $(\lambda_{n},u_{n})$.
+The Picard's method presented in Algorithm~\ref{alg:picard} takes as arguments the matrices $\mathbf{A}$ and $\mathbf{B}$, an initial guess $\tilde u$ for the eigenfunction and a tolerance $\mathrm{Tol}$. The algorithm returns an approximated eigenpair $(\lambda_{n},u_{n})$.
 Because we use this iterative method on a sequence of adaptively refined meshes, we normally set as initial guess
 the projection in the refined mesh of the eigenfunction of interest $u_{j,n-1}$.
 
@@ -421,7 +420,7 @@ the projection in the refined mesh of the eigenfunction of interest $u_{j,n-1}$.
 \STATE{$\mathbf{u}^{m+1}:=\mathbf{A}^{-1}\lambda^m\mathbf{B}\mathbf{u}^{m}$}
 \STATE{$\displaystyle\lambda^{m+1}:=\frac{(\mathbf{u}^{m+1})^t\mathbf{A}\mathbf{u}^{m+1}}{(\mathbf{u}^{m+1})^t\mathbf{B}\mathbf{u}^{m+1}}$}
 \STATE{$m:=m+1$}
-\UNTIL{ Can you fill in the details of the stop criteria?}
+\UNTIL{$|\mathbf{A}\mathbf{u}^{m} - \lambda^{m}\mathbf{B}\mathbf{u}^{m}| <$ Tol}
 \STATE{$u_{n}:=\mathbf{u}^{m}$}
 \STATE{$\lambda_{n}:=\lambda^m$}
 \end{algorithmic}
@@ -431,7 +430,7 @@ the projection in the refined mesh of the eigenfunction of interest $u_{j,n-1}$.
 \begin{lemma}\label{lm:picard_b}
 The Picard's method in exact arithmetic conserves the norm of the vectors, i.e. for any $m\ge 1$,
 $$
-(\mathbf{u}^{m})^t\mathbf{B}\mathbf{u}^{m}=(\mathbf{u}^{m-1})^t\mathbf{B}\mathbf{u}^{m-1}\ .
+(\mathbf{u}^{m})^t\mathbf{B}\mathbf{u}^{m}=(\mathbf{u}^{m-1})^t\mathbf{B}\mathbf{u}^{m-1}.
 $$
 \end{lemma}
 
@@ -440,7 +439,7 @@ Using the definition of the discrete problem $\mathbf{A}\mathbf{u}=\lambda \math
 $$
 (\mathbf{u}^{m+1})^t\mathbf{B}\mathbf{u}^{m+1}=\lambda^m(\mathbf{u}^{m+1})^t\mathbf{B}\mathbf{A}^{-1}\mathbf{B}\mathbf{u}^{m}
 =(\lambda^m)^2\mathbf{A}^{-t}\mathbf{B}^t(\mathbf{u}^{m})t\mathbf{B}\mathbf{A}^{-1}\mathbf{B}\mathbf{u}^{m}
-=(\mathbf{u}^{m})^t\mathbf{B}\mathbf{u}^{m}\ .
+=(\mathbf{u}^{m})^t\mathbf{B}\mathbf{u}^{m}.
 $$
 \end{proof}
 
@@ -456,7 +455,7 @@ The Picard's method in exact arithmetic converges into the eigenspace which is n
 \begin{proof}
 Any vector $\mathbf{u}^m$ can be expressed as 
 $$
-\mathbf{u}^m=\sum_{i=1}^N c_i^m \mathbf{u}_i\ ,
+\mathbf{u}^m=\sum_{i=1}^N c_i^m \mathbf{u}_i,
 $$
 where $c_i^m$ are real coefficients, $N$ is the size of the matrices $\mathbf{A}$ and $\mathbf{B}$ and the vectors $\mathbf{u}_i\equiv u_{i,n}$ are the eigenvectors of the discrete problem, which form an orthonormal basis.
 With no lost in generality we can assume that $\lambda_1$ is the eigenvalue of minimum module and that $c_1^1$ is different from 0.
@@ -465,41 +464,41 @@ In the case that $\lambda_1$ is simple we have from the definition of the proble
 $$
 \mathbf{u}^{m+1}=\mathbf{A}^{-1}\lambda^m\mathbf{B}\mathbf{u}^{m}
 =\Big(\Pi_{j=1}^m\lambda^{j}\Big)\Big(\mathbf{A}^{-1}\mathbf{B}\Big)^m\mathbf{u}^1
-=\Big(\Pi_{j=1}^m\lambda^{j}\Big)\sum_{i=1}^N c_i^1 (\lambda_i)^{-m}\mathbf{u}_i\ ,
+=\Big(\Pi_{j=1}^m\lambda^{j}\Big)\sum_{i=1}^N c_i^1 (\lambda_i)^{-m}\mathbf{u}_i,
 $$
 where $\lambda_i$ are the eigenvalues corresponding to $\mathbf{u}_i$.
 Then
 $$
 \mathbf{u}^{m+1}=\Big(\Pi_{j=1}^m\lambda^{j}\Big)(\lambda_1)^{-m}\Big( c_1^1 \mathbf{u}_1 +
-\sum_{i=2}^N c_i^1\frac{(\lambda_1)^m}{(\lambda_i)^{m}}\mathbf{u}_i\Big) \ .
+\sum_{i=2}^N c_i^1\frac{(\lambda_1)^m}{(\lambda_i)^{m}}\mathbf{u}_i\Big) .
 $$
 By simply multiplying both sides by $u_1$, we have
 $$
-c_1^{m+1}=\Big(\Pi_{j=1}^m\lambda^{j}\Big)(\lambda_1)^{-m}c_1^1\ ,
+c_1^{m+1}=\Big(\Pi_{j=1}^m\lambda^{j}\Big)(\lambda_1)^{-m}c_1^1,
 $$
 and more in general for any $u_i$, $i>1$, we have
 $$
-c_i^{m+1}=\Big(\Pi_{j=1}^m\lambda^{j}\Big)(\lambda_1)^{-m}\frac{(\lambda_1)^m}{(\lambda_i)^{m}}c_i^1\ .
+c_i^{m+1}=\Big(\Pi_{j=1}^m\lambda^{j}\Big)(\lambda_1)^{-m}\frac{(\lambda_1)^m}{(\lambda_i)^{m}}c_i^1.
 $$
 So for each $i>1$ we have:
 $$
-\frac{c_1^{m+1}}{c_i^{m+1}}=\frac{(\lambda_i)^m}{(\lambda_1)^{m}}\frac{c_1^1}{c_i^1}\ ,
+\frac{c_1^{m+1}}{c_i^{m+1}}=\frac{(\lambda_i)^m}{(\lambda_1)^{m}}\frac{c_1^1}{c_i^1},
 $$
 and since $|\lambda_i/\lambda_1|>1$ we have that
 \begin{equation}\label{eq:picard_conv_1}
-\lim_{m\rightarrow \infty}\Big\vert\frac{c_1^{m+1}}{c_i^{m+1}}\Big\vert= \infty\ .
+\lim_{m\rightarrow \infty}\Big\vert\frac{c_1^{m+1}}{c_i^{m+1}}\Big\vert= \infty.
 \end{equation}
 From Lemma~\ref{lm:picard_b} we have that
 $$
 \sum_{i=1}^N (c_i^{m+1})^2 = (\mathbf{u}^{m+1})^t\mathbf{B}\mathbf{u}^{m+1}
-=(\mathbf{u}^1)^t\mathbf{B}\mathbf{u}^1=\sum_{i=1}^N (c_i^1)^2\ ,
+=(\mathbf{u}^1)^t\mathbf{B}\mathbf{u}^1=\sum_{i=1}^N (c_i^1)^2,
 $$
 and so from \eqref{eq:picard_conv_1} we can conclude that $\lim_{m\rightarrow \infty}|c_i^{m+1}|=0$, for all $i>1$, which is equivalent to say that $\lim_{m\rightarrow \infty}\mathbf{u}^{m+1}\in \mathrm{span}\{\mathbf{u}_1\}$.
 
 In the case that $\lambda_1$ has multiplicity $R$ and that $c_r^1$, for some $1\leq r\leq R$, is not zero,
 we similarly have that for all $i>R$:
 $$
-\lim_{m\rightarrow \infty}\Big\vert\frac{c_r^{m+1}}{c_i^{m+1}}\Big\vert= \infty\ ,
+\lim_{m\rightarrow \infty}\Big\vert\frac{c_r^{m+1}}{c_i^{m+1}}\Big\vert= \infty,
 $$
 and so $\lim_{m\rightarrow \infty}|c_i^{m+1}|=0$, which proves that $\lim_{m\rightarrow \infty}\mathbf{u}^{m+1}\in \mathrm{span}\{\mathbf{u}_1,\dots,\mathbf{u}_R\}$.
 
@@ -507,9 +506,9 @@ and so $\lim_{m\rightarrow \infty}|c_i^{m+1}|=0$, which proves that $\lim_{m\rig
 
 Theorem~\ref{th:picard_conv} shows that even if the initial guess $\mathbf{u}^1$ is very close to a certain discrete eigenfunction $u_{i,n}$, for some $i$, the method can always converges to a different eigenfunction or a linear combinations of eigenfunctions with corresponding eigenvalues smaller in module than $\lambda_{i,n}$. In real arithmetic, even if the initial guess $\mathbf{u}^1$ is orthogonal to all eigenfunctions of indexes less than $i$, for some $m>1$ the orthogonality could be perturbed, due to round-off errors, and the method can eventually converges anyway to a different eigenfunction or a linear combinations of eigenfunctions with corresponding eigenvalues smaller in module than $\lambda_{i,n}$.
 
-\textcolor{red}{Pavel, can you put here a figure like Figure~\ref{fig:eigen1} where we show that the plain Picard's method converges to the wrong eigenfunction?}\\
+\textcolor{red}{PAVEL, can you put here a figure like Figure~\ref{fig:eigen1} where we show that the plain Picard's method converges to the wrong eigenfunction?}\\
 \\
-{\red Stefano, I would not mention repeated eigensolver calls at all. This is where we want to differ from 
+{\red STEFANO, I would not mention repeated eigensolver calls at all. This is where we want to differ from 
 existing methods. Is this possible?}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -580,7 +579,7 @@ A x&-& \lambda_j\ Bx
 $$
 then denoting by $\tilde h:=(h, \delta)$ the increment, we have that the truncated Taylor series of the problem is
 \begin{equation}\label{eq:newton}
-f(\tilde x + \tilde h)\approx f(\tilde x) + J_f(\tilde x)\cdot \tilde h\ , 
+f(\tilde x + \tilde h)\approx f(\tilde x) + J_f(\tilde x)\cdot \tilde h, 
 \end{equation}
 where the Jacobian matrix is defined as
 $$
@@ -597,7 +596,7 @@ $$
 Then when $\tilde x + \tilde h$ is a solution of \eqref{eq:var_prob}, we have from \eqref{eq:newton}
 that 
 $$
-J_f(\tilde x)\cdot \tilde h = - f(\tilde x)\ ,
+J_f(\tilde x)\cdot \tilde h = - f(\tilde x),
 $$
 which defines the linear problem of the Newton's method that we are solving.
 \begin{algorithm}[H] \caption{Newton's method} \label{alg:newton} 
@@ -664,32 +663,32 @@ In order to make the method suitable for all eigenpairs, we are going write a ve
 
 It is well known that the discretization process perturbs the spectrum, in particular the eigenspace $E(\lambda_j)$ of multiple eigenvalue $\lambda_j$ can be split in more than one discrete eigenspace $E(\lambda_{j,n}),E(\lambda_{j+1,n}),\dots,E(\lambda_{j+m,n})$ with correspondent discrete eigenvalues $\lambda_{j,n},\lambda_{j+1,n},\dots,\lambda_{j+m,n}$ forming a small cluster for sufficiently rich finite element space, also under the same assumption we have that
 $$
-\mathrm{dim}\ E(\lambda_j)=\sum_{i=0}^m\mathrm{dim}\ E(\lambda_{j+i,n})\ .
+\mathrm{dim}\ E(\lambda_j)=\sum_{i=0}^m\mathrm{dim}\ E(\lambda_{j+i,n}).
 $$
 This phenomenon is already well documented in literature,  see \cite{strang, babuska, hackbusch}.
 
 Different finite element spaces can split the same multiple eigenspace in different ways, this also happens with adaptively refined meshes. It is not rare that the same multiple eigenspace is split differently on the coarse and on the refined meshes. A different split corresponds to different discrete eigenfunctions, then it is not always possible to find for the same eigenvalue on the refined mesh an eigenfunction similar to the one on the coarse mesh.
 
-\textcolor{red}{Pavel, I think we need another figure here. It would be easy to see the phenomenon on unstructured meshes.}
+\textcolor{red}{PAVEL, I think we need another figure here. It would be easy to see the phenomenon on unstructured meshes.}
 
 We propose a way to always construct on a refined mesh, an approximation of the same eigenfunction as on the coarse mesh. The idea is based on the fact that for a sufficiently rich finite element space, the space $M_n(\lambda_j)=\mathrm{span}\{E(\lambda_{j,n}),E(\lambda_{j+1,n}),\dots E(\lambda_{j+m,n})\}$ is an approximation of the space $E(\lambda_j)$, see \cite{strang}. Let us denote the space $M_{n,1}(\lambda_j)$ as the subspace of $M_n(\lambda_j)$ of functions with unit norm in the $L^2$.
 So for any function $U_{n-1}\in M_{n-1,1}(\lambda_j)$, we propose the function $U_{n}\in M_{n,1}(\lambda_j)$ that minimize the $\|U_{n-1}-U_{n}\|_{0,\Omega}$ as an approximation of $U_{n-1}$ on the refined mesh. For a sufficiently rich finite element space the minimizer is unique. By construction
 \begin{equation}\label{eq:const}
-U_n=\sum_{i=1}^{R} c_i \ u_{i,n}\ ,
+U_n=\sum_{i=1}^{R} c_i \ u_{i,n},
 \end{equation}
 where $u_{1,n},u_{2,n},\dots,u_{R,n}$, with $R=\mathrm{dim}\ E(\lambda_j)$, are eigenfunctions of the discrete problem forming  an orthonormal basis for
 $M_{n,1}$ and where the coefficients $c_i$ satisfy 
 \begin{equation}\label{eq:cond_on_corf}
-\sum_{i=1}^{R} c_i^2=1\ .
+\sum_{i=1}^{R} c_i^2=1.
 \end{equation}
 
-Form the definition of problem \eqref{eq:var_prob} we have that the reconstructed eigenvalue is defined as
+From the definition of problem \eqref{eq:var_prob} we have that the reconstructed eigenvalue is defined as
 $$
-\Lambda_n=\frac{a(U_n,U_n)}{b(U_n,U_n)}\ .
+\Lambda_n=\frac{a(U_n,U_n)}{b(U_n,U_n)}.
 $$
 
 The couple $(\Lambda_n,U_n)$ is not a discrete eigenpair of problem \eqref{eq:var_prob} in general, in section~\ref{sse:pcf_priori} we prove that $(\Lambda_n,U_n)$ converges a priori at the same rate as any other discrete eigenpair of \eqref{eq:var_prob} to a continuous eigenpair.
-\textcolor{red}{Pavel, the point that $(\Lambda_n,U_n)$ is not a discrete eigenpair is quite important and it is one of the new contribution in this paper, do you think that it has been stressed enough?}
+\textcolor{red}{PAVEL, the point that $(\Lambda_n,U_n)$ is not a discrete eigenpair is quite important and it is one of the new contribution in this paper, do you think that it has been stressed enough?}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Computing Reference Solution via Reconstruction}
@@ -856,9 +855,9 @@ $j$,  as  $V_n
 that $\lambda_{j,n}$ is monotone
 non-increasing, i.e.
 \begin{equation}\label{eq:minimax_shift}
-\lambda_{j,n} \ \geq\  \lambda_{j,m}\  \geq\   \lambda_j \ , \quad
+\lambda_{j,n} \ \geq\  \lambda_{j,m}\  \geq\   \lambda_j , \quad
 \text{for all} \quad j = 1, \ldots , N, \quad \text{and all} \quad
-m \geq n \ .
+m \geq n .
 \end{equation}
 
 The distance of an approximate eigenfunction from the true eigenspace
@@ -870,11 +869,11 @@ eigenvalues.
 \label{def:dist_l2}
 Given a function $v\in L^2(\Omega)$ and a finite dimensional subspace $\mathcal{P}\subset L^2(\Omega)$, we define:
 $$
-\mathrm{dist}(v,\mathcal{P})_{0,\cB}\ :=\ \min_{ w\in\mathcal{P}}  \|v-w\|_{0} \ .
+\mathrm{dist}(v,\mathcal{P})_{0,\cB}\ :=\ \min_{ w\in\mathcal{P}}  \|v-w\|_{0} .
 $$
 Similarly, given a function $v\in H^1_\pi(\Omega)$ and a finite dimensional subspace $\mathcal{P}\subset H^1_\pi(\Omega)$, we define:
 $$
-\mathrm{dist}(v,\mathcal{P})_{1}\ :=\ \min_{ w\in\mathcal{P}}  \|v-w\|_{1} \ .
+\mathrm{dist}(v,\mathcal{P})_{1}\ :=\ \min_{ w\in\mathcal{P}}  \|v-w\|_{1} .
 $$
 \end{definition}
 
@@ -891,11 +890,11 @@ $E_1(\lambda_j)=\{u\in E(\lambda_j):
 \begin{lemma}\label{lm:inf_l2_h1}
  Let $(\lambda_{j,n},u_{j,n})$ be an eigenpair of \eqref{eq:disc_prob}. Then
 \begin{equation}\label{eq:inf_l2_h1_1}
-\|u_{j,n}-u_j\|_{0} = \mathrm{dist}(u_{j,n},E_1(\lambda_j))_{0}\ ,
+\|u_{j,n}-u_j\|_{0} = \mathrm{dist}(u_{j,n},E_1(\lambda_j))_{0},
 \end{equation}
 if and only if
 \begin{equation}\label{eq:inf_l2_h1_2}
-\|{u_{j,n}-u_j}\|_{1}=\mathrm{dist}(u_{j,n},E_1(\lambda_j))_{1}\ .
+\|{u_{j,n}-u_j}\|_{1}=\mathrm{dist}(u_{j,n},E_1(\lambda_j))_{1}.
 \end{equation}
 
 \end{lemma}
@@ -909,21 +908,21 @@ exist. Moreover
 \begin{equation}\label{eq:l2_ortho_1}
 0  \ = \ a(T_{\lambda_j} w, (I-T_{\lambda_j}) v) \ =\
 \lambda_j\ b(T_{\lambda_j} w, (I-T_{\lambda_j}) v) \   \quad \text{for all} \quad 
-v,w\in L^2_\cB(\Omega)\cap H_{\pi}^1(\Omega)\ .
+v,w\in L^2_\cB(\Omega)\cap H_{\pi}^1(\Omega).
 \end{equation}
 Hence for any $v_j \in E(\lambda_j)$ we have the decomposition   
 $$u_{j,n}-v_j\ = \ (I-T_{\lambda_j})u_{j,n}\ +\ T_{\lambda_j} (u_{j,n}-v_j)
-\ = \  (I-T_{\lambda_j})u_{j,n}\ +\ (T_{\lambda_j} u_{j,n}-v_j) \ ,
+\ = \  (I-T_{\lambda_j})u_{j,n}\ +\ (T_{\lambda_j} u_{j,n}-v_j) ,
 $$
 which is orthogonal both with respect to $a(\cdot, \cdot)$
 and $b(\cdot, \cdot)$. Thus 
 \begin{eqnarray*}
 \|u_{j,n}-v_j\|_{0}^2\ & = & \ 
 \|(I-T_{\lambda_j})u_{j,n}\|_{0}^2 +
-\|T_{\lambda_j} u_{j,n}-v_j\|_{0}^2 \ \ ,\\
+\|T_{\lambda_j} u_{j,n}-v_j\|_{0}^2,\\
 \|u_{j,n}-v_j\|_{1}^2\ & = & \ 
 \|(I-T_{\lambda_j})u_{j,n}\|_{1}^2 +
-\|T_{\lambda_j} u_{j,n}-v_j\|_{1}^2 \ .
+\|T_{\lambda_j} u_{j,n}-v_j\|_{1}^2 .
 \end{eqnarray*}
 Hence $u_j$  satisfies \eqref{eq:inf_l2_h1_2}  if and only if it minimizes 
 $\|T_{\lambda_j}u_{j,n}-v_j\|_{1}^2$.  The latter quantity is
@@ -946,12 +945,12 @@ a(u_{j,n},u_{j,n})
 &=&      (\lambda_{j,n} - \lambda_j)  +2  \lambda_j\ (1-b(u_{j},u_{j,n}))\nonumber\\
 &=&
 (\lambda_{j,n} - \lambda_j)  +\lambda_j\
-b(u_{j}-u_{j,n},u_{j}-u_{j,n} ) \ .
+b(u_{j}-u_{j,n},u_{j}-u_{j,n} ) .
 \end{eqnarray}
 Combining this with \eqref{eq:minimax_shift}, we obtain
 \begin{equation}
 a(u_j-u_{j,n},u_j-u_{j,n}) \ =\ |a(u_j-u_{j,n},u_j-u_{j,n})|\ =\  |\lambda_j-\lambda_{j,n}| \ + \
-\lambda_j \ \Vert u_{j}-u_{j,n}\Vert_{0,\cB}^2\ .
+\lambda_j \ \Vert u_{j}-u_{j,n}\Vert_{0,\cB}^2.
 \label{eq:basic2}
 \end{equation}
 
@@ -967,12 +966,12 @@ problem {$a(v,w) = b(f,w) $} for all $w \in
 H^1_0(\Omega)$, then 
 \begin{equation}\label{eq:ass_reg_pcf}
 \Vert \cS f \Vert_{{2}} \leq
-C_\mathrm{ell}\Vert f \Vert_0\ ,
+C_\mathrm{ell}\Vert f \Vert_0,
 \end{equation}
 where  $\Vert \cdot \Vert_{2}$ is the norm in   the Sobolev space $H^{2}(\Omega)$.
 %\begin{equation}\label{eq:ass_reg_pcf}
 %\Vert \mathcal{S} f \Vert_{{1+s}} \leq
-%C_\mathrm{ell}\Vert f \Vert_0\ ,
+%C_\mathrm{ell}\Vert f \Vert_0,
 %\end{equation}
 %where  $\Vert \cdot \Vert_{{1+s}}$ is the norm in   the Sobolev space $H^{1+s}(\Omega)$.
 \end{assumption}
@@ -1022,7 +1021,7 @@ u_{j,n},E_1(\lambda_j))_{1} \ ; \label{eq:adj}
 \begin{equation}
 \label{eq:energy} \mathrm{dist}(
 u_{j,n},E_1(\lambda_j))_{1} \ \leq
-C \frac{h_n^{\mu}}{p_n^{\mu}}\ , 
+C \frac{h_n^{\mu}}{p_n^{\mu}}, 
 \end{equation}
 \end{itemize}
 with $1\leq \mu\leq p_n$
@@ -1036,7 +1035,7 @@ Since $\lambda_j \geq  0$, the first estimate in
 we recall a  standard error  estimate for elliptic eigenvalues   
 (see e.g.  \cite[(1.1)]{BaOs:89}) which gives  
 $$ \lambda_{j,n} - \lambda_j \ \leq \  C \sup_{u \in
-  E_1(\lambda_j)} \inf_{v_n \in V_n} \Vert u - v_n \Vert_1^2\ . $$
+  E_1(\lambda_j)} \inf_{v_n \in V_n} \Vert u - v_n \Vert_1^2. $$
 Combining this with standard finite element error
 estimates for $hp$-method, see \cite[Theorem~4.72]{schwab} and recalling \eqref{eq:minimax_shift}, we get  
 \begin{eqnarray}
@@ -1055,10 +1054,10 @@ To obtain  (ii),  we use the following estimate
 \cite[(3.31a)]{BaOs:89}:
 \begin{equation}\label{eq:BaOs}\frac{\Vert T_{\lambda_j}u_{j, n} - u_{j, n}
   \Vert_{0}}{\Vert T_{\lambda_j}u_{j, n} - u_{j, n}
-  \Vert_{1}} \ \leq \ C \eta_n\ , \quad 
+  \Vert_{1}} \ \leq \ C \eta_n, \quad 
 \text{where} \quad \eta_n \ = \ \sup_{\stackrel{g \in L^2(\Omega)}{\Vert
     g\Vert_{0} = 1 }} \inf_{\chi \in V_n} \Vert \cS g - \chi
-\Vert_{1} \ , \end{equation} and $\cS $ is the solution
+\Vert_{1}, \end{equation} and $\cS $ is the solution
 operator defined in
 Assumption \ref{ass:ell}. Analogously to \eqref{eq:second_est} and with the further restriction that $\cS g\in H^2(\Omega)$ only, we have
 $\eta_n \leq C h_n p_n^{-1}$ and hence \eqref{eq:BaOs} implies
@@ -1069,7 +1068,7 @@ $\eta_n \leq C h_n p_n^{-1}$ and hence \eqref{eq:BaOs} implies
 & =  & \ C \frac{h_n}{p_n} \mathrm{dist} (u_{j,n}
 ,E(\lambda_j))_1  \nonumber  \\ 
 & \leq & \  C   \frac{h_n}{p_n} \mathrm{dist} (u_{j,n}
-,E_1(\lambda_j))_1 \ ,  \label{eq:new2}
+,E_1(\lambda_j))_1,  \label{eq:new2}
  \end{eqnarray} 
 %  \begin{eqnarray}
 %\Vert T_{\lambda_j}u_{j, n} - u_{j, n}
@@ -1078,7 +1077,7 @@ $\eta_n \leq C h_n p_n^{-1}$ and hence \eqref{eq:BaOs} implies
 %& =  & \ C \frac{h_n^s}{p_n^{s-1}} \mathrm{dist} (u_{j,n}
 %,E(\lambda_j))_1  \nonumber  \\ 
 %& \leq & \  C   \frac{h_n^s}{p_n^{s-1}} \mathrm{dist} (u_{j,n}
-%,E_1(\lambda_j))_1 \ ,  \label{eq:new2}
+%,E_1(\lambda_j))_1 ,  \label{eq:new2}
 % \end{eqnarray} 
 where we used the inclusion $E_1(\lambda_j) \subset E(\lambda_j)$. 
 Since $\Vert u_{j,n}\Vert_0 = 1$,  \eqref{eq:new2} also implies
@@ -1088,14 +1087,14 @@ that
 & \leq  & \  \Vert T_{\lambda_j}u_{j, n} - u_{j, n}
   \Vert_0  \nonumber  \\
 & \leq & \  C   \frac{h_n}{p_n} \mathrm{dist} (u_{j,n}
-,E_1(\lambda_j))_1 \ . \label{eq:new4}
+,E_1(\lambda_j))_1 . \label{eq:new4}
  \end{eqnarray} 
 %  \begin{eqnarray}
 %\bigg\vert \Vert T_{\lambda_j}u_{j, n} \Vert_0  -1 \bigg\vert \
 %& \leq  & \  \Vert T_{\lambda_j}u_{j, n} - u_{j, n}
 %  \Vert_0  \nonumber  \\
 %& \leq & \  C   \frac{h_n^s}{p_n^{s-1}} \mathrm{dist} (u_{j,n}
-%,E_1(\lambda_j))_1 \ . \label{eq:new4}
+%,E_1(\lambda_j))_1 . \label{eq:new4}
 % \end{eqnarray} 
 Combining \eqref{eq:new2} and  \eqref{eq:new4},  we obtain
 \begin{eqnarray*} 
@@ -1109,9 +1108,9 @@ Combining \eqref{eq:new2} and  \eqref{eq:new4},  we obtain
 \bigg\Vert {T_{\lambda_j}u_{j, n}} - u_{j, n}
   \bigg\Vert_0 + \bigg\vert  \Vert T_{\lambda_j}u_{j,n}\Vert_0 - 1 \bigg\vert 
 \\
-& \leq & \ C \frac{h_n}{p_n} \mathrm{dist} (u_{j,n} \ ,
-%& \leq & \ C \frac{h_n^s}{p_n^{s-1}} \mathrm{dist} (u_{j,n} \ ,
-E_1(\lambda_j))_1 \ .
+& \leq & \ C \frac{h_n}{p_n} \mathrm{dist} (u_{j,n} ,
+%& \leq & \ C \frac{h_n^s}{p_n^{s-1}} \mathrm{dist} (u_{j,n} ,
+E_1(\lambda_j))_1 .
 \end{eqnarray*}
 which is \eqref{eq:adj}. 
 
@@ -1156,7 +1155,7 @@ U_n,E_1(\lambda_j))_{0}\ & \leq& \ C \frac{h_n^{\mu+1} }{p_n^{\mu+1}} \ ; \label
 \begin{equation}
 \label{eq:energy_rec} \mathrm{dist}(
 U_n,E_1(\lambda_j))_{1} \ \leq
-C \frac{h_n^{\mu}}{p_n^{\mu}}\ ,
+C \frac{h_n^{\mu}}{p_n^{\mu}},
 \end{equation}
 \end{itemize}
 with $1\leq \mu\leq p_n$
@@ -1167,19 +1166,19 @@ Recalling \eqref{eq:const}, let us denote for each $i$ by $u_i\in E(\lambda_j)$ 
 u_{i,n},E_1(\lambda_j))_{0}$ and $\mathrm{dist}(
 u_{i,n},E_1(\lambda_j))_{1}$. Then denoting by 
 $$
-U=\sum_{i=1}^{R} c_i \ u_{i}\ ,
+U=\sum_{i=1}^{R} c_i \ u_{i},
 $$
 we have that
 $$
 \mathrm{dist}(
 U_n,E_1(\lambda_j))_{0}\leq \|U-U_n\|_{0}\leq \sum_{i=1}^{R} \mathrm{dist}(
-u_{i,n},E_1(\lambda_j))_{0}\ ,
+u_{i,n},E_1(\lambda_j))_{0},
 $$
 and similarly we have
 $$
 \mathrm{dist}(
 U_n,E_1(\lambda_j))_{0}\leq \|U-U_n\|_{1}\leq \sum_{i=1}^{R} \mathrm{dist}(
-u_{i,n},E_1(\lambda_j))_{1}\ .
+u_{i,n},E_1(\lambda_j))_{1}.
 $$
 Then results (ii) and (iii) comes straightforwardly form Lemma~\ref{lm:adj}(ii-iii).
 
@@ -1190,7 +1189,7 @@ So from
 $$
 \sum_{i=1}^{R} c_i^2 \ \vert \lambda_j - \lambda_{i,n} \vert=
  \sum_{i=1}^{R} c_i^2 \ (\lambda_{i,n} - \lambda_j )=  \Lambda_n - \lambda_j
- = \vert \lambda_j - \Lambda_n \vert\ ,
+ = \vert \lambda_j - \Lambda_n \vert,
 $$
 since it is also clear that $\Lambda_n\ge \lambda_j$. Then \eqref{eq:supereig_rec} come directly from 
 Lemma~\ref{lm:adj}(i).
@@ -1223,7 +1222,7 @@ eigensolver that always solves for 10 first eigenfunctions) with our approach.}
 
 \section{Reproducibility of Results} \label{sec:reproducibility}
 
-{\red To be written by Pavel.}
+{\red To be written by PAVEL.}
 
 \section*{Acknowledgment}
 
