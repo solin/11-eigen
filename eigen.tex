@@ -715,14 +715,59 @@ looks unfinished.}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Adaptivity Algorithm}\label{sec:adapt}
+\section{Automatic $hp$-Adaptivity}\label{sec:adapt}
 
-Before we continue, we need to briefly outline the $hp$-adaptive algorithm \cite{solin3}
-that we use in this study. The algorithm uses an idea that is analogous to embedded 
-higher-order ODE methods -- it calculates two approximations with different orders of 
-accuracy and uses their difference as an a-posteriori error estimator.\\
+With the Picard's and Newton's methods in hand, we can now proceed to automatic $hp$-adaptivity. 
+We use an algorithm from \cite{solin3} that is an analogy to embedded higher-order ODE methods: 
+In each adaptivity step it 
+constructs an approximation pair with different orders of accuracy and uses their difference 
+as an a-posteriori error estimator. 
 
-TO BE CONTINUED
+Let $\cT^c_{0}$ be an initial coarse mesh. We construct an initial fine mesh $\cT^f_{0}$
+by refining all elements in space and moreover increasing their polynomial degrees by one.
+A generalized eigensolver is called one time only, 
+to obtain a solution pair $(\lambda^c_{0}, u^c_{0})$
+on the initial coarse mesh $\cT^c_{0}$. 
+
+\begin{algorithm}[H] \caption{Automatic $hp$-Adaptivity} \label{alg:hp} 
+\begin{algorithmic}
+\STATE{Set $k := 0$}
+\REPEAT
+\STATE{Project the approximation $u^c_{k}$ to the mesh $\cT^f_{k}$. The projection 
+       is denoted by $P^f_k u^c_{k}$. Since the finite element spaces on meshes 
+       $\cT^c_{k}$ and $\cT^f_{k}$ are embedded, there is no projection error. }
+\STATE{Calculate an initial guess $\tilde \lambda^f_{k}$ for the eigenvalue on the mesh $\cT^f_{k}$
+       using the relation 
+$$
+  \tilde \lambda^f_{k} = \frac{(P^f_k u^c_{k})^T \mathbf{A}^f_{k} P^f_k u^c_{k}}{(P^f_k u^c_{k})^T 
+  \mathbf{B}^f_{k} P^f_k u^c_{k}},
+$$
+where $\mathbf{A}^f_{k}$ and $\mathbf{B}^f_{k}$ are the stiffness and mass matrices on the 
+mesh $\cT^f_{k}$, respectively.} 
+
+The pair $(\tilde \lambda^f_{k}, P^f_k u^c_{k})$ is {\bf not a solution} to the generalized eigenproblem 
+on the mesh $\cT^f_{k}$, but it is a good initial guess. 
+\STATE{
+Apply the Picard's or Newton's method as described in Sections \ref{sec:picard++} and \ref{sec:newton},
+to obtain a solution pair $(\lambda^f_{k}, u^f_{k})$ on the mesh $\cT^f_{k}$.}
+\STATE{
+Project the approximation $u^f_{k}$ back to the coarse mesh 
+$\cT^c_{k}$ to obtain $P^c_k u^f_{k}$. }
+\STATE{
+Calculate an a-posteriori error estimate $e^c_{k}$,
+$$
+  e^c_{k} = u^f_{k} - P^c_k u^f_{k}.
+$$
+Note: $e^c_{k}$ is a function, not a number.}
+\STATE{
+ Use $e^c_{k}$ to guide one step of automatic $hp$-adaptivity \cite{solin3} that 
+ yields a new coarse mesh $\cT^f_{k+1}$.}
+\STATE{Update $k := k+1$}
+\UNTIL{The $H^1$-norm of $e^c_{k-1}$ is sufficiently small.}
+\end{algorithmic}
+\end{algorithm}
+
+ 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -756,7 +801,6 @@ $$
 $$
 
 The couple $(\Lambda_n,U_n)$ is not a discrete eigenpair of problem \eqref{eq:var_prob} in general, in section~\ref{sse:pcf_priori} we prove that $(\Lambda_n,U_n)$ converges a priori at the same rate as any other discrete eigenpair of \eqref{eq:var_prob} to a continuous eigenpair.
-\textcolor{red}{PAVEL, the point that $(\Lambda_n,U_n)$ is not a discrete eigenpair is quite important and it is one of the new contribution in this paper, do you think that it has been stressed enough?}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Computing Reference Solution via Reconstruction}\label{sec:recoref}
