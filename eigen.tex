@@ -890,7 +890,7 @@ In order to make the method suitable for all eigenpairs, we are going write a ve
 \REPEAT
 
 %\STATE{$\mathbf{u}^{m+1}:=\mathbf{A}^{-1}\lambda^m\mathbf{B}\mathbf{u}^{m}$}
-\STATE{Solve $J_f(\mathbf{u}^m,\lambda^m)\cdot \tilde h = - f(\mathbf{u}^m,\lambda^m)$}
+\STATE{Solve $J_f(\mathbf{u}^m,\lambda^m)\cdot h = - f(\mathbf{u}^m,\lambda^m)$}
 \STATE{$\mathbf{u}^{m+1}:=\mathbf{u}^m+h$}
 \STATE{$\lambda^{m+1}:=\lambda^m+\delta$}
 \STATE{$m:=m+1$}
@@ -902,7 +902,7 @@ In order to make the method suitable for all eigenpairs, we are going write a ve
 \ENDFOR
 
 
-\STATE $\displaystyle \mathbf{u}^{m+1}=\frac{\mathbf{u}^{m+1}}{((\mathbf{u}^{m+1})^t\mathbf{B}\mathbf{u}^{m+1})^{1/2}}$
+\STATE $\displaystyle \mathbf{u}^{m+1}:=\frac{\mathbf{u}^{m+1}}{((\mathbf{u}^{m+1})^t\mathbf{B}\mathbf{u}^{m+1})^{1/2}}$
 \COMMENT{Normalize}
 \STATE{$\displaystyle\lambda^{m+1}:=\frac{(\mathbf{u}^{m+1})^t\mathbf{A}\mathbf{u}^{m+1}}{(\mathbf{u}^{m+1})^t\mathbf{B}\mathbf{u}^{m+1}}$}
 \STATE{$m:=m+1$}
@@ -913,11 +913,33 @@ $|\lambda^{m+1}-\lambda^m|>\mathrm{AbsTol}$}
 \end{algorithmic}
 \end{algorithm}
 
-{\red STEFANO, it would be nice to have some sort of a Theorem with proof here, to 
-say something formal about the Newton's method with orthogonalization. Otherwise this 
-looks unfinished.}
+\begin{theorem}
+Algorithm~\ref{alg:newton_ortho} converges always to an eigenvalue greater or equal to $\lambda_j$.
+\end{theorem}
 
-{\red Pavel, I'm working on it.}
+\begin{proof}
+This result is a direct consequence of the orthogonalization step in Algorithm~\ref{alg:newton_ortho}.
+We are using again the fact that any vector $\mathbf{u}^{m+1}$ can be expressed as 
+$$
+\mathbf{u}^{m+1}=\sum_{i=1}^N c_i^{m+1} \mathbf{u}_i,
+$$
+where $c_i^{m+1}$ are real coefficients, $N$ is the size of the matrices $\mathbf{A}$ and $\mathbf{B}$ and the vectors $\mathbf{u}_i\equiv u_{i,n}$ are the eigenvectors of the discrete problem, which are sorted accordingly the magnitude of the corresponding eigenvalues $\lambda_i$.
+In particular, when $\mathbf{u}^{m+1}:=\mathbf{u}^m+h$, where $h$ is the solution of 
+$J_f(\mathbf{u}^m,\lambda^m)\cdot h = - f(\mathbf{u}^m,\lambda^m)$, we have that, after the application of the orthogonalization step, the resulting vector is
+$$
+\mathbf{\hat u}^{m+1}=\sum_{i=j}^N c_i^{m+1} \mathbf{u}_i.
+$$
+Then, it is straightforward to see that the Rayleigh quotient
+$$
+\displaystyle\lambda^{m+1}:=\frac{(\mathbf{\hat u}^{m+1})^t\mathbf{A}\mathbf{\hat u}^{m+1}}{(\mathbf{\hat u}^{m+1})^t\mathbf{B}\mathbf{\hat u}^{m+1}} \ge \lambda_j.
+$$
+\end{proof}
+
+%{\red STEFANO, it would be nice to have some sort of a Theorem with proof here, to 
+%say something formal about the Newton's method with orthogonalization. Otherwise this 
+%looks unfinished.}
+
+%{\red Pavel, I'm working on it.}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
