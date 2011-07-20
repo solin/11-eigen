@@ -211,8 +211,12 @@ method \sep $hp$-FEM \sep Reproducible research
 
 The eigenvalue problem are of considerable theoretical interest and wide-ranging applications.
 They arise naturally in many physical processes 
-and they have a lot of applications in physics and engineering. Example of applications 
-are in structural engineering, weather forecasting and in quantum physics. {\red Pavel, I'm still looking for references} The most common approach to solve an eigenproblem in practice is use an eigensolver, and for problem large enough an iterative one, like ARPACK \cite{arpack}, is used.
+and they have a lot of applications in physics and engineering. For example, a lot of problems in acoustics can be expressed as an eigenvalue problem or eigenvalue problems are solved inside many methods like in automated multilevel substructuring for noise prediction \cite{lalor_prediction_2007}.
+Nano-optics is another field where eigenvalue problems can be found very often, the analysis of photonic crystals \cite{pcf_apost,JoMeWi:95} and plasmonic guides \cite{berini_plasmon-polariton_2000} are based on them. 
+Another example where eigenvalue problems are used is the study of stability of fluid dynamics systems \cite{cliffe_adaptive_2010}
+%Example of applications 
+%are in structural engineering, weather forecasting and in quantum physics. {\red Pavel, I'm still looking for references} 
+The most common approach to solve an eigenproblem in practice is use an eigensolver, and for problem large enough an iterative one, like ARPACK \cite{arpack}, is used.
 A characteristic common to all eigensolver is that, even if the user is interested in one particular eigenpair, a bunch of unwanted eigenvalue and possibly eigenvectors is computed in order for the eigensolver to work. These unwanted eigenpair are the byproduct of techniques such as deflation or 
 orthogonalization used to filter out unwanted solutions.
 Also the great majority of eigensolvers are not specifically designed to work with adaptive finite elements or finite differences methods. Therefore we propose a different approach based on simple and widely used iterative methods for non-linear problems. We are going to adapt the Picard's and the Newton's method to solve eigenvalue problems and we minimize the number of computed unwanted eigenpair exploiting the orthogonality between eigenvectors. Also, a method to compute the approximation of the same eigenpair on a sequence of adapted meshes is presented. This method is particularly useful with multiple eigenvalues when only a particular eigenfunction in the eigenspace is wanted. 
@@ -222,10 +226,10 @@ Also the great majority of eigensolvers are not specifically designed to work wi
 %Finally, in Section~\ref{sec:num} numerical results are discussed and in Section~\ref{sec:reproducibility} the settings of the numerical experiments are described.
 
 
-{\red STEFANO, could you please write an introduction that acknowledges 
-previous work on adaptive FEM for eigenproblems? In particular, we should cite people that we 
-suggest as referees. The conclusion should be that it is customary to  
-call the eigensolver in each adaptivity step.}
+%{\red STEFANO, could you please write an introduction that acknowledges 
+%previous work on adaptive FEM for eigenproblems? In particular, we should cite people that we 
+%suggest as referees. The conclusion should be that it is customary to  
+%call the eigensolver in each adaptivity step.}
 
 \subsection{Outline of the Paper}
 
@@ -332,7 +336,10 @@ mesh was refined. This is known behavior that is due to the multiplicity of the
 corresponding eigenvalues. To our best knowledge, contemporary generalized 
 eigensolvers do not offer any way to avoid this problem. 
 {\red STEFANO, we have to be a bit careful here. Are there any works dealing 
-with repeated eigenvalues? If so, we have to cite them here.} {\red Pavel, I'm checking.}
+with repeated eigenvalues? If so, we have to cite them here.} {\red Pavel, there are many works where eigenvalues are considered, sometimes also repeated eigenvalues are considered. I have a couple of papers containing numerics for repeated eigenvalues. 
+But I wasn't able to find anything specific on multiple eigenvalues. 
+Normally you just apply to repeated eigenvalues the same method that you use for simple ones.
+Have you found anything?}
 Instructions on how to reproduce 
 these results are provided in Section \ref{sec:reproducibility}.
 
@@ -716,9 +723,10 @@ Theorem~\ref{th:picard_conv} shows that even if the initial guess $\mathbf{u}^1$
 
 %Theorem~\ref{th:picard_conv} shows that even if the initial guess $\mathbf{u}^1$ is very close to a certain discrete eigenfunction $u_{i,n}$, for some $i$, the method can always converge to a different eigenfunction or a linear combinations of eigenfunctions with corresponding eigenvalues smaller in module than $\lambda_{i,n}$. In real arithmetic, even if the initial guess $\mathbf{u}^1$ is orthogonal to all eigenfunctions of indices less than $i$, for some $m>1$ the orthogonality could be perturbed, due to round-off errors, and the method can eventually converge anyway to a different eigenfunction or to a linear combination of eigenfunctions whose eigenvalue is smaller in module than $\lambda_{i,n}$.
 
-To illustrate this behavior, we use the mesh shown in Fig. \ref{fig:mesh1}, and use 
-the third eigenfunction corresponding to $\lambda_3 = 5$ (Fig. \ref{fig:picard} left) 
-as a starting guess for the Picard's method on the mesh shown in Fig. \ref{fig:mesh2}.
+To illustrate this behavior, we refer to the numerical simulations in Section~\ref{ssec:ortho}, where we use the fifth eigenfunction corresponding to $\lambda_5 = 10$ (Fig. \ref{fig:picard} left) as a starting guess for the Picard's method
+%use the mesh shown in Fig. \ref{fig:mesh1}, and use 
+%the third eigenfunction corresponding to $\lambda_3 = 5$ (Fig. \ref{fig:picard} left) 
+%as a starting guess for the Picard's method on the mesh shown in Fig. \ref{fig:mesh2}.
 However, the Picard's method converges to the first eigenfunction corresponding 
 to $\lambda_1 = 2$ (Fig. \ref{fig:picard} right).
 
@@ -726,12 +734,12 @@ to $\lambda_1 = 2$ (Fig. \ref{fig:picard} right).
 
 \begin{figure}[!ht]
 \begin{center}
-\includegraphics[width=0.4\textwidth]{img/eigen_2.png}\ \ \ 
+\includegraphics[width=0.4\textwidth]{img/eigen_5_ex.png}\ \ \ 
 \includegraphics[width=0.433\textwidth]{img/eigen-new-1.png}
 \end{center}
 \vspace{-5mm}
 \caption{The Picard's method converges from an initial guess that is very close to 
-         the third eigenfunction (left) that corresponds to $\lambda_3 = 5$ to the 
+         the fifth eigenfunction (left) that corresponds to $\lambda_5 = 10$ to the 
          first eigenfunction (right) that corresponds to $\lambda_1 = 2$.}
 \label{fig:picard}
 \end{figure}
@@ -1670,7 +1678,7 @@ eigensolver that always solves for 10 first eigenfunctions) with our approach.}
 \subsection{Orthogonality technologies}\label{ssec:ortho}
 
 In this first set of examples, we would like to show the advantages of the orthogonality technologies presented in Sections~\ref{sec:picard++},~\ref{sec:newton} and \ref{sec:imp_ortho}.
-We want to approximate the fifth eigenvalue, and the corresponding eigenfunction, on the square domain $[0,\pi]^2$ just calling the Picard's method as in Algorithm~\ref{alg:picard} with no orthogonalization.
+We want to approximate the fifth eigenvalue, and the corresponding eigenfunction, on the square domain $[0,\pi]^2$ just calling the Picard's method as in Algorithm~\ref{alg:picard} with no orthogonalization and starting with four quadratic elements forming the initial structured mesh.
 So as always we compute the approximation of the first fifth eigenpair on the coarse mesh with an eigensolver, then we adapt the mesh for the fifth eigenpair and from that point on we use the Picard's method.
 As can be seen from the piece of output below, already on the first adapted mesh the Picard's method goes away from the correct value 10 for the eigenvalue and converges to the first eigenvalue: 
 
@@ -1705,7 +1713,7 @@ Initial guess for eigenvalue on reference mesh: 14.049870798404
 \end{verbatim}
 This is a clear example of what was predicted in Theorem~\ref{th:picard_conv}.
 
-On the other hand, using the standard orthogonality, see Section~\ref{sec:picard++}, we cure this problem and the method converges to the correct eigenpair. In Figures~\ref{fig:conv_eig5} and \ref{fig:sol_eig5} we show the convergence rate for  the fifth eigenvalue and the corresponding eigenfunction. As can be seen, the convergence curve is almost a straight line which suggest an exponential convergence rate.
+On the other hand, using the standard orthogonality, see Section~\ref{sec:picard++}, we cure this problem and the method converges to the correct eigenpair. In Figures~\ref{fig:conv_eig5} we show the convergence rate for  the fifth eigenvalue. As can be seen, the convergence curve is almost a straight line which suggest an exponential convergence rate.
 
 \begin{figure}[!ht]
 \begin{center}
@@ -1716,14 +1724,14 @@ On the other hand, using the standard orthogonality, see Section~\ref{sec:picard
 \label{fig:conv_eig5}
 \end{figure}
 
-\begin{figure}[!ht]
-\begin{center}
-\includegraphics[width=0.8\textwidth]{img/ex_2_paper.png}
-\end{center}
-\vspace{-5mm}
-\caption{Eigenfunction of the fifth eigenvalue.}
-\label{fig:sol_eig5}
-\end{figure}
+%\begin{figure}[!ht]
+%\begin{center}
+%\includegraphics[width=0.8\textwidth]{img/ex_2_paper.png}
+%\end{center}
+%\vspace{-5mm}
+%\caption{Eigenfunction of the fifth eigenvalue.}
+%\label{fig:sol_eig5}
+%\end{figure}
 
 However, when the standard orthogonality is used, five eigenpairs are computed on each adapted mesh, this means that overall 20 eigenpairs are computed. This is quite expensive, but the cost can be reduced using the improved orthogonality, see Section~\ref{sec:imp_ortho}. The convergence rate is exactly the same as in Figure~\ref{fig:conv_eig5}, but the number of computed eigenpairs is dramatically smaller. In Table~\ref{tab:imp_orhto} we reported the number of computed eigenpairs on each adapted mesh using either the standard or the improved orthogonality.
 It is worth to say that if we had used the eigensolver on the meshes, we would have computed five eigenpairs for each mesh, as the standard orthogonality.
@@ -1829,7 +1837,7 @@ I.~Babu\v{s}ka and J.~Osborn.
 
 \bibitem{BaOs:89}
 I.~Babu\v{s}ka and J.~Osborn.
-\newblock {\em Finite element-Galerkin approximation of the
+\newblock {Finite element-Galerkin approximation of the
   eigenvalues and eigenvectors of selfadjoint problems}, 
 \newblock{\em Math. Comput.} 186:275-297, 1989.
  
@@ -1873,6 +1881,28 @@ S.~Giani and I.~G.~Graham,
 \newblock {Adaptive finite element methods for computing band
 gaps in photonic crystals},
 \newblock{\em Numerische Mathematik}, submitted.
+
+
+\bibitem{lalor_prediction_2007}
+N.~Lalor and H-H.~Priebsch
+	\newblock {The prediction of low- and mid-frequency internal road vehicle noise: a literature survey},
+	\newblock{\em Proceedings of the Institution of Mechanical Engineers, Part D: Journal of Automobile Engineering} 221(3):245--269, 2007.
+
+\bibitem{berini_plasmon-polariton_2000}
+P.~ Berini
+	\newblock{Plasmon-polariton waves guided by thin lossy metal films of finite width: Bound modes of symmetric structures},
+	\newblock{\em Physical Review B} 61(15):10484+, 2000.
+
+\bibitem{JoMeWi:95} 
+J. D. Joannopoulos, R. D. Meade, and J. N. Winn, 
+\newblock{Photonic Crystals. Molding the Flow of Light} 
+\newblock{Princeton
+Univ. Press, Princeton, NJ}, 1995.
+
+\bibitem{cliffe_adaptive_2010}
+A.~Cliffe, E.~Hall and P.~Houston
+	\newblock{Adaptive Discontinuous Galerkin Methods for Eigenvalue Problems Arising in Incompressible Fluid Flows},
+	\newblock{\em {SIAM} Journal on Scientific Computing} 31(6):4607--4632, 2010.
 
 \end{thebibliography}
 
