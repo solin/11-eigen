@@ -334,12 +334,12 @@ $\lambda_5, \lambda_6$ after the first adaptivity step.}
 The reader can observe that the approximations changed dramatically after the 
 mesh was refined. This is known behavior that is due to the multiplicity of the 
 corresponding eigenvalues. To our best knowledge, contemporary generalized 
-eigensolvers do not offer any way to avoid this problem. 
+eigensolvers do not offer any way to avoid this problem. As far as we know, the only way to deal specifically with repeated eigenvalues in the literature, is to adapt the mesh considering an entire basis of the eigenspace of the repeated eigenvalue. So, for example, this means that for a double eigenvalue, like $\lambda_2$, $\lambda_3$, the mesh would be refined using both the eigenfunctions $u_2$ and $u_3$, even if we are just interested in the eigenpair $(\lambda_3, u_3)$. A very clear drawback of this approach is that part of the degrees of freedom introduced by the adaptive procedure are not going to improve the accuracy of the eigenpair $(\lambda_3, u_3)$, because they are targeting the eigenpair $(\lambda_32 u_2)$. This way to proceed is used in \cite{thesis, grubii_estimators_2008}.
 {\red STEFANO, we have to be a bit careful here. Are there any works dealing 
 with repeated eigenvalues? If so, we have to cite them here.} {\red Pavel, there are many works where eigenvalues are considered, sometimes also repeated eigenvalues are considered. I have a couple of papers containing numerics for repeated eigenvalues. 
 But I wasn't able to find anything specific on multiple eigenvalues. 
 Normally you just apply to repeated eigenvalues the same method that you use for simple ones.
-Have you found anything?}
+Have you found anything? The only things slightly related in my opinion are \cite{thesis, grubii_estimators_2008}.}
 Instructions on how to reproduce 
 these results are provided in Section \ref{sec:reproducibility}.
 
@@ -1760,6 +1760,59 @@ $n$ &  Standard &Improved\\
 \caption{Number of computed eigenpairs for different orthogonality technologies.}\label{tab:imp_orhto}
 \end{table}
 
+\subsection{Reconstruction technologies}\label{ssec:n_rec}
+
+In the next example we present the benefits of using the reconstruction technology, introduced in Section~\ref{sec:reco}, which makes possible to follow the approximation of the same continuous eigenfunction on a series of adaptively refined meshes, even if the corresponding eigenvalue has multiplicity greater than 1. The fact that, via the reconstruction, there are no changes in the approximations, should lead to a decrease in the computational cost, because changes in the approximations, like the one presented in Figures~\ref{fig:eigen1},~\ref{fig:eigen2}, could mislead the adaptive procedure to introduce more degrees of freedom in regions that are not going to be useful to reduce the error once the approximation is changed.
+
+In Table~\ref{tab:rec} we compare the results between Algorithm~\ref{alg:newton_impadapt} and using an eigensolver without the reconstruction technology on each refined mesh, both with $hp-$adaptivity. In particular in Table~\ref{tab:rec} we compare for each adaptively refined mesh of index $n$ the DOFs and the error in percentage for the 8th eigenpair (which belongs to a double eigenvalue) of problem \eqref{one}, starting with a mesh of 64 square elements and starting with order of polynomials 1. We also set the target tolerance for the error to 0.3.
+As can be seen the Newton method takes only 12 refinement of the mesh to reach the target tollerance, compared to 15 for using the eigensolver. Also, between the 3rd and the 4th refined meshes, the error actually increase  using the eigensolver, this is due to the fact that the approximation is changed dramatically between those two meshes and so the 4th mesh, which was refined using the information from the approximation on the 3rd mesh, is not very good to describe the approximation on the computed in the 4th mesh. Since the approximated continuous eigenfunction never changes using the reconstruction, there is no sign of any oscillation in the error for the Newton method.
+
+\begin{table}[h]
+\begin{center}
+
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+&\multicolumn{2}{|c|}{Eigensolver}&\multicolumn{2}{|c|}{Newton}\\
+\hline
+$n$ &  Dofs & Error \% &Dofs & Error \%\\
+\hline
+1 & 961 & 38.8308 & 961 & 31.0305 \\
+\hline
+2 & 1233 & 21.5207 & 1201 & 21.8555\\
+\hline
+3 & 1461 & 16.5425 & 1501 & 16.0894\\
+\hline
+4 & 1693 & 20.9316 & 1777 & 10.9197\\
+\hline
+5 & 1813 & 13.9295 & 2081 & 6.55891\\
+\hline
+6 & 2033 & 7.59609 & 2361 &4.28255\\
+\hline
+7 &2305 & 3.99428 & 2717 & 3.01209\\
+\hline
+8 & 2661 & 3.16526 &3149 & 2.0103\\
+\hline
+9 & 3037 & 2.76441 & 3421 & 1.32503\\
+\hline
+10 & 3257 & 1.87542 &3721 &0.782314\\
+\hline
+11 & 3541 &1.4761 & 4161 & 0.401284\\
+\hline
+12 & 3721 & 0.7925 & 4565 & 0.293117\\
+\hline
+13 & 4033 & 0.4206 & - & - \\
+\hline
+14 & 4569 & 0.3087 & - & - \\
+\hline
+15 & 4925 & 0.2673 & - & -\\
+\hline
+\end{tabular}
+\end{center}
+
+\caption{Comparison between the Newton method and an eigensolver. }\label{tab:rec}
+\end{table}
+
+
 
 \section{Reproducibility of Results} \label{sec:reproducibility}
 
@@ -1903,6 +1956,18 @@ Univ. Press, Princeton, NJ}, 1995.
 A.~Cliffe, E.~Hall and P.~Houston
 	\newblock{Adaptive Discontinuous Galerkin Methods for Eigenvalue Problems Arising in Incompressible Fluid Flows},
 	\newblock{\em {SIAM} Journal on Scientific Computing} 31(6):4607--4632, 2010.
+
+\bibitem{thesis}
+S. Giani.
+\newblock{\em Convergence of Adaptive Finite Element Methods for Elliptic
+Eigenvalue Problems with Application to
+Photonic Crystals},
+\newblock{PhD Thesis, University of Bath, 2008}.
+
+\bibitem{grubii_estimators_2008}
+L.~Grubi\v{s}i\'c and J.~S.~Ovall
+\newblock{On estimators for eigenvalue/eigenvector approximations},
+\newblock{\em Mathematics of Computation}78 (266):739--770, 2008.
 
 \end{thebibliography}
 
