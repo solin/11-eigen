@@ -1,97 +1,77 @@
 %%
-%% Copyright 2007, 2008, 2009 Elsevier Ltd
+%% This is file `lexample.tex', 
+%% Sample file for siam macros for use with LaTeX 2e
+%% 
+%% October 1, 1995
 %%
-%% This file is part of the 'Elsarticle Bundle'.
-%% ---------------------------------------------
+%% Version 1.0
+%% 
+%% You are not allowed to change this file. 
+%% 
+%% You are allowed to distribute this file under the condition that 
+%% it is distributed together with all of the files in the siam macro 
+%% distribution. These are:
 %%
-%% It may be distributed under the conditions of the LaTeX Project Public
-%% License, either version 1.2 of this license or (at your option) any
-%% later version.  The latest version of this license is in
-%%    http://www.latex-project.org/lppl.txt
-%% and version 1.2 or later is part of all distributions of LaTeX
-%% version 1999/12/01 or later.
+%%  siamltex.cls (main LaTeX macro file for SIAM)
+%%  siamltex.sty (includes siamltex.cls for compatibility mode)
+%%  siam10.clo   (size option for 10pt papers)
+%%  subeqn.clo   (allows equation numbners with lettered subelements)
+%%  siam.bst     (bibliographic style file for BibTeX)
+%%  docultex.tex (documentation file)
+%%  lexample.tex (this file)
 %%
-%% The list of all files belonging to the 'Elsarticle Bundle' is
-%% given in the file `manifest.txt'.
-%%
+%% If you receive only some of these files from someone, complain! 
+%% 
+%% You are NOT ALLOWED to distribute this file alone. You are NOT 
+%% ALLOWED to take money for the distribution or use of either this 
+%% file or a changed version, except for a nominal charge for copying 
+%% etc. 
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
 
-%% Template article for Elsevier's document class `elsarticle'
-%% with numbered style bibliographic references
-%% SP 2008/03/01
-%%
-%%
-%%
-%% $Id: elsarticle-template-num.tex 4 2009-10-24 08:22:58Z rishi $
-%%
-%%
-\documentclass[preprint,12pt]{elsarticle}
 
-%% Use the option review to obtain double line spacing
-%% \documentclass[preprint,review,12pt]{elsarticle}
+\documentclass[final]{siamltex}
 
-%% Use the options 1p,twocolumn; 3p; 3p,twocolumn; 5p; or 5p,twocolumn
-%% for a journal layout:
-%% \documentclass[final,1p,times]{elsarticle}
-%% \documentclass[final,1p,times,twocolumn]{elsarticle}
-%% \documentclass[final,3p,times]{elsarticle}
-%% \documentclass[final,3p,times,twocolumn]{elsarticle}
-%% \documentclass[final,5p,times]{elsarticle}
-%% \documentclass[final,5p,times,twocolumn]{elsarticle}
-
-%% if you use PostScript figures in your article
-%% use the graphics package for simple commands
-%% \usepackage{graphics}
-%% or use the graphicx package for more complicated commands
-\usepackage{amsmath,amssymb,amsfonts,stmaryrd,amsthm}
-\usepackage{algorithm}
-\usepackage{algorithmic}
+\usepackage{amsmath,amssymb}%,amsfonts,stmaryrd,amsthm}
 \usepackage{graphicx}
 \usepackage{pstricks}
-\usepackage{eepic}
-\usepackage{float}
+\usepackage{algorithm}
+\usepackage{algorithmic}
 
-%% or use the epsfig package if you prefer to use the old commands
-%% \usepackage{epsfig}
+% definitions used by included articles, reproduced here for 
+% educational benefit, and to minimize alterations needed to be made
+% in developing this sample file.
 
-%% The amssymb package provides various useful mathematical symbols
-%\usepackage{amssymb}
-%% The amsthm package provides extended theorem environments
-%% \usepackage{amsthm}
-
-%% The lineno packages adds line numbers. Start line numbering with
-%% \begin{linenumbers}, end it with \end{linenumbers}. Or switch it on
-%% for the whole article with \linenumbers after \end{frontmatter}.
-%% \usepackage{lineno}
-
-%% natbib.sty is loaded by default. However, natbib options can be
-%% provided with \biboptions{...} command. Following options are
-%% valid:
-
-%%   round  -  round parentheses are used (default)
-%%   square -  square brackets are used   [option]
-%%   curly  -  curly braces are used      {option}
-%%   angle  -  angle brackets are used    <option>
-%%   semicolon  -  multiple citations separated by semi-colon
-%%   colon  - same as semicolon, an earlier confusion
-%%   comma  -  separated by comma
-%%   numbers-  selects numerical citations
-%%   super  -  numerical citations as superscripts
-%%   sort   -  sorts multiple citations according to order in ref. list
-%%   sort&compress   -  like sort, but also compresses numerical citations
-%%   compress - compresses without sorting
-%%
-%% \biboptions{comma,round}
-
-% \biboptions{}
-
-
-\journal{SINUM}
-
-\newtheorem{theorem}{Theorem}[section]
-\newtheorem{lemma}[theorem]{Lemma}
-\newtheorem{corollary}[theorem]{Corollary}
-\newtheorem{definition}[theorem]{Definition}
 \newtheorem{assumption}[theorem]{Assumption}
+
+\newcommand{\pe}{\psi}
+\def\d{\delta} 
+\def\ds{\displaystyle} 
+\def\e{{\epsilon}} 
+\def\eb{\bar{\eta}}  
+\def\enorm#1{\|#1\|_2} 
+\def\Fp{F^\prime}  
+\def\fishpack{{FISHPACK}} 
+\def\fortran{{FORTRAN}} 
+\def\gmres{{GMRES}} 
+\def\gmresm{{\rm GMRES($m$)}} 
+\def\Kc{{\cal K}} 
+\def\norm#1{\|#1\|} 
+\def\wb{{\bar w}} 
+\def\zb{{\bar z}} 
 
 \newcommand{\cS}{\mathcal{S}}
 \newcommand{\tU}{\tilde{U}}
@@ -117,50 +97,30 @@
 \newcommand{\br}{\mathbf{r}}
 \newcommand{\tcb}{\textcolor{blue}}
 
+% some definitions of bold math italics to make typing easier.
+% They are used in the corollary.
 
-\begin{document}
+\def\bfE{\mbox{\boldmath$E$}}
+\def\bfG{\mbox{\boldmath$G$}}
 
-\begin{frontmatter}
-
-%% Title, authors and addresses
-
-%% use the tnoteref command within \title for footnotes;
-%% use the tnotetext command for the associated footnote;
-%% use the fnref command within \author or \address for footnotes;
-%% use the fntext command for the associated footnote;
-%% use the corref command within \author for corresponding author footnotes;
-%% use the cortext command for the associated footnote;
-%% use the ead command for the email address,
-%% and the form \ead[url] for the home page:
-%%
-%% \title{Title\tnoteref{label1}}
-%% \tnotetext[label1]{}
-%% \author{Pavel Solin\corref{cor1}\fnref{label2}}
-%% \ead{solin@unr.edu}
-%% \ead[url]{http://hpfem.org/\tilde pavel}
-%%\fntext[label2]{}
-%% \cortext[cor1]{}
-%% \address{\fnref{label3}}
-%% \fntext[label3]{}
-
-%\title{Picard and Newton-Based Adaptive Finite Element Methods for Eigenvalue Problems}
 \title{Adaptive $hp$-FEM for Eigenvalue Problems\\ Free of Repeated 
        Eigensolver Calls}
 
-%% use optional labels to link authors explicitly to addresses:
-\author[label1,label2]{Pavel Solin}
-\ead{solin@unr.edu}
-\author[label3]{Stefano Giani}
-\ead{stefano.giani@nottingham.ac.uk}
-\address[label1]{Department of Mathematics and Statistics, University of Nevada, Reno, USA}
-\address[label2]{Institute of Thermomechanics, Academy of Sciences of the Czech Republic, Prague}
-\address[label3]{School of Mathematical Sciences, University of Nottingham, United Kingdom}
+% The thanks line in the title should be filled in if there is
+% any support acknowledgement for the overall work to be included
+% This \thanks is also used for the received by date info, but
+% authors are not expected to provide this.
 
+\author{P.~Solin\thanks{Department of Mathematics and Statistics, University of Nevada, Reno, USA
+({\tt solin@unr.edu}).}
+%\thanks{Institute of Thermomechanics, Academy of Sciences of the Czech Republic, Prague.}
+        \and S.~Giani\thanks{School of Mathematical Sciences, University of Nottingham, United Kingdom ({\tt stefano.giani@nottingham.ac.uk}).}}
 
-%\address{Department of Mathematics and Statistics, University of Nevada, Reno, USA}
+\begin{document}
+
+\maketitle
 
 \begin{abstract}
-
 Conventional adaptive finite element methods (FEM) for eigenvalue problems call 
 an eigensolver in each adaptivity step. This is not optimal in all situations, 
 for example if one is only interested in resolving accurately one specific 
@@ -178,34 +138,20 @@ analysis and numerical examples and comparisons. Instructions on how to
 reproduce the results are provided. 
 \end{abstract}
 
-\begin{keyword}
-Partial differential equation \sep Eigenvalue problem \sep Adaptive higher-order finite element
-method \sep $hp$-FEM \sep Reproducible research
-%% keywords here, in the form: keyword \sep keyword
-%% MSC codes here, in the form: \MSC code \sep code
-%% or \MSC[2008] code \sep code (2000 is the default)
-\end{keyword}
+\begin{keywords} 
+Partial differential equation, Eigenvalue problem, Adaptive higher-order finite element
+method, $hp$-FEM, Reproducible research
+\end{keywords}
 
-\end{frontmatter}
+\begin{AMS}
+%15A15, 15A09, 15A23
+65N25, 65N30, 65N50, 35B45
+\end{AMS}
 
-%%
-%% Start line numbering here if you want
-%%
-% \linenumbers
+\pagestyle{myheadings}
+\thispagestyle{plain}
+\markboth{S.~GIANI AND P.~SOLIN}{Adaptive $hp$-FEM for Eigenvalue Problems}
 
-%% main text
-%\section{Introduction}
-
-%\begin{itemize}
-%\item Give examples of applications where accurate approximation of  
-%      a single eigenfunction is useful.
-%\item Mention applications where simultaneous approximation of
-%      several eigenfunctions is needed (I know about DFT. Is there something else?). 
-%      \textcolor{red}{I could suggest Photonic Crystal problems, it is necessary to compute several eigenvalues in order to identify gaps in the spectrum of the problem}
-%\item Give references to prior work on adaptive algorithms for 
-%      PDE eigenproblems, limitations, ... We have to show that we are aware of 
-%      latest developments.
-%\end{itemize}
 
 \section{Introduction}\label{sec:intro}
 
@@ -214,22 +160,10 @@ They arise naturally in many physical processes
 and they have a lot of applications in physics and engineering. For example, a lot of problems in acoustics can be expressed as an eigenvalue problem or eigenvalue problems are solved inside many methods like in automated multilevel substructuring for noise prediction \cite{lalor_prediction_2007}.
 Nano-optics is another field where eigenvalue problems can be found very often, the analysis of photonic crystals \cite{pcf_apost,JoMeWi:95} and plasmonic guides \cite{berini_plasmon-polariton_2000} are based on them. 
 Another example where eigenvalue problems are used is the study of stability of fluid dynamics systems \cite{cliffe_adaptive_2010}
-%Example of applications 
-%are in structural engineering, weather forecasting and in quantum physics. {\red Pavel, I'm still looking for references} 
 The most common approach to solve an eigenproblem in practice is use an eigensolver, and for problem large enough an iterative one, like ARPACK \cite{arpack}, is used.
 A characteristic common to all eigensolver is that, even if the user is interested in one particular eigenpair, a bunch of unwanted eigenvalue and possibly eigenvectors is computed in order for the eigensolver to work. These unwanted eigenpair are the byproduct of techniques such as deflation or 
 orthogonalization used to filter out unwanted solutions.
 Also the great majority of eigensolvers are not specifically designed to work with adaptive finite elements or finite differences methods. Therefore we propose a different approach based on simple and widely used iterative methods for non-linear problems. We are going to adapt the Picard's and the Newton's method to solve eigenvalue problems and we minimize the number of computed unwanted eigenpair exploiting the orthogonality between eigenvectors. Also, a method to compute the approximation of the same eigenpair on a sequence of adapted meshes is presented. This method is particularly useful with multiple eigenvalues when only a particular eigenfunction in the eigenspace is wanted. 
-
-%The outline of the paper is as follows. In Section~\ref{sec:motiv} we describe the motivation for this paper and in Section~\ref{sec:pre} we introduce the model problem considered in this work. Then in Sections~\ref{sec:motiv} and \ref{sec:motiv} we introduce our first iterative method base on the Picard's method.
-%Similarly, in Section~\ref{sec:newton} we introduce our first iterative method base on the Newton's method. Then in Sections~\ref{sec:rec} and \ref{sec:rec2} we describe a method to follow the target eigenpair on a sequence of adaptively refined meshes. Moreover, in Section~\ref{sec:imp_ortho} we present improved versions of our iterative methods. We conclude the theoretical part of the paper with Section~\ref{sse:pcf_priori}, where the a priori convergence results for the methods are presented.
-%Finally, in Section~\ref{sec:num} numerical results are discussed and in Section~\ref{sec:reproducibility} the settings of the numerical experiments are described.
-
-
-%{\red STEFANO, could you please write an introduction that acknowledges 
-%previous work on adaptive FEM for eigenproblems? In particular, we should cite people that we 
-%suggest as referees. The conclusion should be that it is customary to  
-%call the eigensolver in each adaptivity step.}
 
 \subsection{Outline of the Paper}
 
@@ -248,12 +182,11 @@ discusses a reconstruction technology for spectra perturbed
 by discretization. This is used to devise an algorithm for 
 computing reference solutions for $hp$-adaptivity in 
 Section \ref{sec:recoref}. 
-Moreover, in Section~\ref{sec:imp_ortho} we present improved versions of our iterative methods.A priori convergence results 
+Moreover, in Section~\ref{sec:imp_ortho} we present improved versions of our iterative methods. A priori convergence results 
 are presented in Section \ref{sec:aprio}. Numerical results 
 are presented in Section \ref{sec:numer}. Reproducibility of 
 results is discussed in Section \ref{sec:reproducibility}.
 Conclusion and outlook are presented in Section \ref{sec:conclusion}.
-
 
 \section{Motivation}\label{sec:motiv}
 
@@ -282,9 +215,6 @@ on a $4\times 4$ mesh consisting of quadratic elements shown in Fig. \ref{fig:me
 Here, the numbers inside of finite elements mean their polynomial degrees.
 Approximate eigenfunctions for $\lambda_2, \lambda_3$ and $\lambda_5, \lambda_6$
 are shown in the first and second row of Fig. \ref{fig:eigen1}, respectively.
-%The reader can see that the eigenfunctions exhibit anisotropies that make it 
-%impossible for a single finite element mesh to be optimal for all 
-%of them simultaneously.
 
 \clearpage
 
@@ -404,7 +334,6 @@ element, or $\mathcal{P}_{p_{n,\tau}}(K)$ is the space of polynomials of degree 
 $p_{n,\tau}$ in each variable if $\tau$ is a quadrilateral element.
 
 
-%\textcolor{red}{I have to define better the meshes and the space and add references.}
 
 The discrete version of \eqref{eq:var_prob} reads:
 \emph{Find eigenpairs of the form $(\lambda_{j,n},u_{j,n})\in
@@ -470,24 +399,7 @@ $|\lambda^{m+1}-\lambda^m|>\mathrm{AbsTol}$}
 \end{algorithmic}
 \end{algorithm}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\begin{lemma}\label{lm:picard_b}
-%The Picard's method in exact arithmetic conserves the norm of the vectors, i.e. for any $m\ge 1$,
-%$$
-%(\mathbf{u}^{m+1})^t\mathbf{B}\mathbf{u}^{m+1}=(\mathbf{u}^{m})^t\mathbf{B}\mathbf{u}^{m}\ .
-%$$
-%\end{lemma}
 
-%\begin{proof}
-%Using the definition of the discrete problem $\mathbf{A}\mathbf{u}=\lambda \mathbf{B}\mathbf{u}$, we have:
-%$$
-%(\mathbf{u}^{m+1})^t\mathbf{B}\mathbf{u}^{m+1}=\lambda^m(\mathbf{u}^{m+1})^t\mathbf{B}\mathbf{A}^{-1}\mathbf{B}\mathbf{u}^{m}
-%=(\lambda^m)^2\mathbf{A}^{-t}\mathbf{B}^t(\mathbf{u}^{m})t\mathbf{B}\mathbf{A}^{-1}\mathbf{B}\mathbf{u}^{m}
-%=(\mathbf{u}^{m})^t\mathbf{B}\mathbf{u}^{m}\ .
-%$$
-%\end{proof}
-
-%From Lemma~\ref{lm:picard_b} it is clear that the Picard's method, in comparison to other iterative methods like the power and the inverse iteration method, doesn't need a normalization step to prevent any underflow or overflow.
 
 The next theorem shows that the Picard's method always converges to the smallest eigenvalue.
 
@@ -526,29 +438,6 @@ $$
 $$
 converges to $\lambda_1$.
 
-%By simply multiplying both sides by $u_1$, we have
-%$$
-%c_1^{m+1}=\Big(\Pi_{j=1}^m\lambda^{j}\Big)(\lambda_1)^{-m}c_1^1\ ,
-%$$
-%and more in general for any $u_i$, $i>1$, we have
-%$$
-%c_i^{m+1}=\Big(\Pi_{j=1}^m\lambda^{j}\Big)(\lambda_1)^{-m}\frac{(\lambda_1)^m}{(\lambda_i)^{m}}c_i^1\ .
-%$$
-%So for each $i>1$ we have:
-%$$
-%\frac{c_1^{m+1}}{c_i^{m+1}}=\frac{(\lambda_i)^m}{(\lambda_1)^{m}}\frac{c_1^1}{c_i^1}\ ,
-%$$
-%and since $|\lambda_i/\lambda_1|>1$ we have that
-%\begin{equation}\label{eq:picard_conv_1}
-%\lim_{m\rightarrow \infty}\Big\vert\frac{c_1^{m+1}}{c_i^{m+1}}\Big\vert= \infty\ .
-%\end{equation}
-%From Lemma~\ref{lm:picard_b} we have that
-%$$
-%\sum_{i=1}^N (c_i^{m+1})^2 = (\mathbf{u}^{m+1})^t\mathbf{B}\mathbf{u}^{m+1}
-%=(\mathbf{u}^1)^t\mathbf{B}\mathbf{u}^1=\sum_{i=1}^N (c_i^1)^2\ ,
-%$$
-%and so from \eqref{eq:picard_conv_1} we can conclude that $\lim_{m\rightarrow \infty}|c_i^{m+1}|=0$, for all $i>1$, which is equivalent to say that $\lim_{m\rightarrow \infty}\mathbf{u}^{m+1}\in \mathrm{span}\{\mathbf{u}_1\}$.
-
 In the case that $\lambda_1$ has multiplicity $R$ and that $c_r^1$, for some $1\leq r\leq R$, is not zero,
 we similarly have that for all $i>R$:
 $$
@@ -565,168 +454,13 @@ $$
 $$
 which converges again to $\lambda_1$.
 
-%$$
-%\lim_{m\rightarrow \infty}\Big\vert\frac{c_r^{m+1}}{c_i^{m+1}}\Big\vert= \infty\ ,
-%$$
-%and so $\lim_{m\rightarrow \infty}|c_i^{m+1}|=0$, which proves that $\lim_{m\rightarrow \infty}\mathbf{u}^{m+1}\in \mathrm{span}\{\mathbf{u}_1,\dots,\mathbf{u}_R\}$.
 
 \end{proof}
 
 Theorem~\ref{th:picard_conv} shows that even if the initial guess $\mathbf{u}^1$ is very close to a certain discrete eigenfunction $u_{i,n}$, for some $i$, the method can always converges to a different eigenfunction or a linear combinations of eigenfunctions with corresponding eigenvalues smaller in module than $\lambda_{i,n}$. In real arithmetic, even if the initial guess $\mathbf{u}^1$ is orthogonal to all eigenfunctions of indexes less than $i$, for some $m>1$ the orthogonality could be perturbed, due to round-off errors, and the method can eventually converges anyway to a different eigenfunction or a linear combinations of eigenfunctions with corresponding eigenvalues smaller in module than $\lambda_{i,n}$.
-%
 
-%Problem \eqref{eq:disc_prob} can be reformulated in matrix format as:
-%\emph{Find eigenpairs of the form $(\lambda,\mathbf{u})\in
-%\mathbb{R}\times \mathbb{R}^N$, where $N$ is the dimension of $V_n$,
-%such that}
-%\begin{equation}
-%\label{eq:disc_prob_mat}
-%\left.
-%\begin{array}{lcl}
-%\mathbf{A} \mathbf{u}&=& \lambda\mathbf{B}\mathbf{u},
-%\\
-%\mathbf{u}^t\mathbf{B} \mathbf{u} &=& 1
-%\end{array}\quad
-%\right\}
-%\end{equation}
-%where the entries of the matrices $\mathbf{A}$ and $\mathbf{B}$ are 
-%$$
-%\mathbf{A}_{k,p}:=a(\phi_k,\phi_p),\quad\mathbf{B}_{k,p}:=b(\phi_k,\phi_p).
-%$$
 
-%
-%The Picard's method presented in Algorithm~\ref{alg:picard} takes as arguments the matrices $\mathbf{A}$ and $\mathbf{B}$, an initial guess $\tilde u$ for the eigenfunction and a tolerance $\mathrm{Tol}$. The algorithm returns an approximated eigenpair $(\lambda_{n},u_{n})$.
-%Because we use this iterative method on a sequence of adaptively refined meshes, we normally set as initial guess
-%the projection in the refined mesh of the eigenfunction of interest $u_{j,n-1}$.
-
-%\begin{algorithm}[H] \caption{Picard's method} \label{alg:picard} 
-%\begin{algorithmic}
-
-%\STATE{$(\lambda_{j,n},u_{j,n}):=\mathrm{Picard}
-%    (\mathbf{A}, \mathbf{B},\tilde u,\mathrm{Tol})$}
-
-%\STATE{$\mathbf{u}^1:=\tilde u$}
-%\STATE{$\displaystyle\lambda^{1}:=\frac{u_{j,n}^t\mathbf{A}u_{j,n}}{u_{j,n}^t\mathbf{B}u_{j,n}}$}
-%\STATE{$m=1$}
-%\REPEAT
-
-%\STATE{$\mathbf{u}^{m+1}:=\mathbf{A}^{-1}\lambda^m\mathbf{B}\mathbf{u}^{m}$}
-%\STATE{$\displaystyle\lambda^{m+1}:=\frac{(\mathbf{u}^{m+1})^t\mathbf{A}\mathbf{u}^{m+1}}{(\mathbf{u}^{m+1})^t\mathbf{B}\mathbf{u}^{m+1}}$}
-%\STATE{$m:=m+1$}
-%\UNTIL{$|\mathbf{A}\mathbf{u}^{m} - \lambda^{m}\mathbf{B}\mathbf{u}^{m}| <$ Tol}
-%\STATE{$u_{n}:=\mathbf{u}^{m}$}
-%\STATE{$\lambda_{n}:=\lambda^m$}
-%\end{algorithmic}
-%\end{algorithm}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%\begin{lemma}\label{lm:picard_b}
-%%The Picard's method in exact arithmetic conserves the norm of the vectors, i.e. for any $m\ge 1$,
-%%$$
-%%(\mathbf{u}^{m+1})^t\mathbf{B}\mathbf{u}^{m+1}=(\mathbf{u}^{m})^t\mathbf{B}\mathbf{u}^{m}\ .
-%%$$
-%%\end{lemma}
-
-%%\begin{proof}
-%%Using the definition of the discrete problem $\mathbf{A}\mathbf{u}=\lambda \mathbf{B}\mathbf{u}$, we have:
-%%$$
-%%(\mathbf{u}^{m+1})^t\mathbf{B}\mathbf{u}^{m+1}=\lambda^m(\mathbf{u}^{m+1})^t\mathbf{B}\mathbf{A}^{-1}\mathbf{B}\mathbf{u}^{m}
-%%=(\lambda^m)^2\mathbf{A}^{-t}\mathbf{B}^t(\mathbf{u}^{m})t\mathbf{B}\mathbf{A}^{-1}\mathbf{B}\mathbf{u}^{m}
-%%=(\mathbf{u}^{m})^t\mathbf{B}\mathbf{u}^{m}\ .
-%%$$
-%%\end{proof}
-
-%%From Lemma~\ref{lm:picard_b} it is clear that the Picard's method, in comparison to other iterative methods like the power and the inverse iteration method, doesn't need a normalization step to prevent any underflow or overflow.
-
-%The next theorem shows that the Picard's method always converges to the smallest eigenvalue.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\begin{theorem}\label{th:picard_conv}
-%The Picard's method in exact arithmetic converges into the eigenspace which is not orthogonal to the initial guess $\mathbf{u}^1$ and whose eigenvalue has minimum module.
-%\end{theorem}
-
-%\begin{proof}
-%Any vector $\mathbf{u}^m$ can be expressed as 
-%$$
-%\mathbf{u}^m=\sum_{i=1}^N c_i^m \mathbf{u}_i,
-%$$
-%where $c_i^m$ are real coefficients, $N$ is the size of the matrices $\mathbf{A}$ and $\mathbf{B}$ and the vectors $\mathbf{u}_i\equiv u_{i,n}$ are the eigenvectors of the discrete problem, which form an orthonormal basis.
-%With no lost in generality we can assume that $\lambda_1$ is the eigenvalue of minimum module and that $c_1^1$ is different from 0.
-
-%In the case that $\lambda_1$ is simple we have from the definition of the problem:
-%$$
-%\mathbf{u}^{m+1}=\mathbf{A}^{-1}\lambda^m\mathbf{B}\mathbf{u}^{m}
-%=\Big(\Pi_{j=1}^m\lambda^{j}\Big)\Big(\mathbf{A}^{-1}\mathbf{B}\Big)^m\mathbf{u}^1
-%=\Big(\Pi_{j=1}^m\lambda^{j}\Big)\sum_{i=1}^N c_i^1 (\lambda_i)^{-m}\mathbf{u}_i,
-%$$
-%where $\lambda_i$ are the eigenvalues corresponding to $\mathbf{u}_i$.
-%Then
-%$$
-%\mathbf{u}^{m+1}=\Big(\Pi_{j=1}^m\lambda^{j}\Big)(\lambda_1)^{-m}\Big( c_1^1 \mathbf{u}_1 +
-%\sum_{i=2}^N c_i^1\frac{(\lambda_1)^m}{(\lambda_i)^{m}}\mathbf{u}_i\Big) .
-%$$
-%where it is clear that, since $\lambda_1/\lambda_i<1$, for $i\ge 2$, the direction of $\mathbf{u}^{m+1}$ tends toward the direction of $\mathbf{u}_1$. Furthermore, the Rayleigh quotient of $\mathbf{u}^{m+1}$
-%$$
-%\lambda^{m+1}:=\frac{(\mathbf{u}^{m+1})^t\mathbf{A}\mathbf{u}^{m+1}}{(\mathbf{u}^{m+1})^t\mathbf{B}\mathbf{u}^{m+1}}
-%=\lambda_1 \frac{\displaystyle(c_1^1)^2 +
-%\sum_{i=2}^N (c_i^1)^2\Bigg(\frac{\lambda_1}{\lambda_i}\Bigg)^{m-1}}
-%{\displaystyle(c_1^1)^2 +
-%\sum_{i=2}^N (c_i^1)^2\Bigg(\frac{\lambda_1}{\lambda_i}\Bigg)^{m}}\ ,
-%$$
-%converges to $\lambda_1$.
-
-%%By simply multiplying both sides by $u_1$, we have
-%%$$
-%%c_1^{m+1}=\Big(\Pi_{j=1}^m\lambda^{j}\Big)(\lambda_1)^{-m}c_1^1\ ,
-%%$$
-%%and more in general for any $u_i$, $i>1$, we have
-%%$$
-%%c_i^{m+1}=\Big(\Pi_{j=1}^m\lambda^{j}\Big)(\lambda_1)^{-m}\frac{(\lambda_1)^m}{(\lambda_i)^{m}}c_i^1\ .
-%%$$
-%%So for each $i>1$ we have:
-%%$$
-%%\frac{c_1^{m+1}}{c_i^{m+1}}=\frac{(\lambda_i)^m}{(\lambda_1)^{m}}\frac{c_1^1}{c_i^1}\ ,
-%%$$
-%%and since $|\lambda_i/\lambda_1|>1$ we have that
-%%\begin{equation}\label{eq:picard_conv_1}
-%%\lim_{m\rightarrow \infty}\Big\vert\frac{c_1^{m+1}}{c_i^{m+1}}\Big\vert= \infty\ .
-%%\end{equation}
-%%From Lemma~\ref{lm:picard_b} we have that
-%%$$
-%%\sum_{i=1}^N (c_i^{m+1})^2 = (\mathbf{u}^{m+1})^t\mathbf{B}\mathbf{u}^{m+1}
-%%=(\mathbf{u}^1)^t\mathbf{B}\mathbf{u}^1=\sum_{i=1}^N (c_i^1)^2\ ,
-%%$$
-%%and so from \eqref{eq:picard_conv_1} we can conclude that $\lim_{m\rightarrow \infty}|c_i^{m+1}|=0$, for all $i>1$, which is equivalent to say that $\lim_{m\rightarrow \infty}\mathbf{u}^{m+1}\in \mathrm{span}\{\mathbf{u}_1\}$.
-
-%In the case that $\lambda_1$ has multiplicity $R$ and that $c_r^1$, for some $1\leq r\leq R$, is not zero,
-%we similarly have that for all $i>R$:
-%$$
-%\mathbf{u}^{m+1}=\Big(\Pi_{j=1}^m\lambda^{j}\Big)(\lambda_1)^{-m}\Big( \sum_{r=1}^Rc_r^1 \mathbf{u}_r+
-%\sum_{i=R+1}^N c_i^1\frac{(\lambda_1)^m}{(\lambda_i)^{m}}\mathbf{u}_i\Big) \ ,
-%$$
-%and then
-%$$
-%\lambda^{m+1}:=\frac{(\mathbf{u}^{m+1})^t\mathbf{A}\mathbf{u}^{m+1}}{(\mathbf{u}^{m+1})^t\mathbf{B}\mathbf{u}^{m+1}}
-%=\lambda_1 \frac{\displaystyle \sum_{r=1}^R(c_r^1)^2 +
-%\sum_{i=2}^N (c_i^1)^2\Bigg(\frac{\lambda_1}{\lambda_i}\Bigg)^{m-1}}
-%{\displaystyle \sum_{r=1}^R(c_r^1)^2 +
-%\sum_{i=2}^N (c_i^1)^2\Bigg(\frac{\lambda_1}{\lambda_i}\Bigg)^{m}}\ ,
-%$$
-%which converges again to $\lambda_1$.
-
-%%$$
-%%\lim_{m\rightarrow \infty}\Big\vert\frac{c_r^{m+1}}{c_i^{m+1}}\Big\vert= \infty\ ,
-%%$$
-%%and so $\lim_{m\rightarrow \infty}|c_i^{m+1}|=0$, which proves that $\lim_{m\rightarrow \infty}\mathbf{u}^{m+1}\in \mathrm{span}\{\mathbf{u}_1,\dots,\mathbf{u}_R\}$.
-
-%\end{proof}
-
-%Theorem~\ref{th:picard_conv} shows that even if the initial guess $\mathbf{u}^1$ is very close to a certain discrete eigenfunction $u_{i,n}$, for some $i$, the method can always converge to a different eigenfunction or a linear combinations of eigenfunctions with corresponding eigenvalues smaller in module than $\lambda_{i,n}$. In real arithmetic, even if the initial guess $\mathbf{u}^1$ is orthogonal to all eigenfunctions of indices less than $i$, for some $m>1$ the orthogonality could be perturbed, due to round-off errors, and the method can eventually converge anyway to a different eigenfunction or to a linear combination of eigenfunctions whose eigenvalue is smaller in module than $\lambda_{i,n}$.
-
-To illustrate this behavior, we refer to the numerical simulations in Section~\ref{ssec:ortho}, where we use the fifth eigenfunction corresponding to $\lambda_5 = 10$ (Fig. \ref{fig:picard} left) as a starting guess for the Picard's method
-%use the mesh shown in Fig. \ref{fig:mesh1}, and use 
-%the third eigenfunction corresponding to $\lambda_3 = 5$ (Fig. \ref{fig:picard} left) 
-%as a starting guess for the Picard's method on the mesh shown in Fig. \ref{fig:mesh2}.
+To illustrate this behavior, we refer to the numerical simulations in Section~\ref{ssec:ortho}, where we use the fifth eigenfunction corresponding to $\lambda_5 = 10$ (Fig. \ref{fig:picard} left) as a starting guess for the Picard's method.
 However, the Picard's method converges to the first eigenfunction corresponding 
 to $\lambda_1 = 2$ (Fig. \ref{fig:picard} right).
 
@@ -1092,7 +826,8 @@ The first method is based on the Picard's method. The only three parameters not 
 \STATE{$j=1$}
 \FOR{$j = 2$ to $\mathrm{DTE}+\mathrm{FIE}$}
 
-\STATE{$(\lambda_{j,m},u_{j,m}):=\mathrm{PicardOrtho}
+\STATE{$(\lambda_{j,m},u_{j,m}):=$}
+\STATE{$\quad \quad\mathrm{PicardOrtho}
     (\mathbf{A}_m, \mathbf{B}_m,u_{j,m-1},\mathrm{Tol},\mathrm{AbsTol},u_{j,m-1},\dots
     ,u_{j-1,m-1})$}
 
@@ -1132,7 +867,8 @@ Similarly we define the adaptive method based on the Newton's method.
 \STATE{$j=1$}
 \FOR{$j = 2$ to $\mathrm{DTE}+\mathrm{FIE}$}
 
-\STATE{$(\lambda_{j,m},u_{j,m}):=\mathrm{NewtonOrtho}
+\STATE{$(\lambda_{j,m},u_{j,m}):=$}
+\STATE{$\quad \quad \mathrm{NewtonOrtho}
     (\mathbf{A}_m, \mathbf{B}_m,u_{j,m-1},\mathrm{Tol},\mathrm{AbsTol},u_{1,m-1},\dots
     ,u_{j-1,m-1})$}
 
@@ -1230,7 +966,8 @@ We conclude this section stating the adaptive algorithms with improved orthogona
 \REPEAT
 \STATE{Construct $\mathbf{A}_m$ and $\mathbf{B}_m$}
 \STATE{Construct the mesh $\mathcal{T}_m$ and the finite element space $V_m$ adapting $\mathcal{T}_{m-1}$ and $V_{m-1}$}
-\STATE{$\{(\lambda_{j,m},u_{j,m})\}_{j=\mathrm{FIE}}^{\mathrm{DTE}+\mathrm{FIE}}:=\mathrm{PicardImpOrtho}
+\STATE{$\{(\lambda_{j,m},u_{j,m})\}_{j=\mathrm{FIE}}^{\mathrm{DTE}+\mathrm{FIE}}:=$}
+\STATE{$\quad \quad \mathrm{PicardImpOrtho}
     (\mathbf{A}_m, \mathbf{B}_m,\{(\lambda_{j,m-1}, u_{j,m-1})\}_{j=\mathrm{FIE}}^{\mathrm{DTE}+\mathrm{FIE}},\mathrm{ThO})$}
 
 \STATE{$(\Lambda_m,U_m):=\mathrm{Reconstruction}
@@ -1262,7 +999,8 @@ Similarly we define the adaptive method based on the Newton's method.
 \REPEAT
 \STATE{Construct $\mathbf{A}_m$ and $\mathbf{B}_m$}
 \STATE{Construct the mesh $\mathcal{T}_m$ and the finite element space $V_m$ adapting $\mathcal{T}_{m-1}$ and $V_{m-1}$}
-\STATE{$\{(\lambda_{j,m},u_{j,m})\}_{j=\mathrm{FIE}}^{\mathrm{DTE}+\mathrm{FIE}}:=\mathrm{NewtonImpOrtho}
+\STATE{$\{(\lambda_{j,m},u_{j,m})\}_{j=\mathrm{FIE}}^{\mathrm{DTE}+\mathrm{FIE}}:=$}
+\STATE{$\quad \quad \mathrm{NewtonImpOrtho}
     (\mathbf{A}_m, \mathbf{B}_m,\{(\lambda_{j,m-1}, u_{j,m-1})\}_{j=\mathrm{FIE}}^{\mathrm{DTE}+\mathrm{FIE}},\mathrm{ThO})$}
 
 \STATE{$(\Lambda_m,U_m):=\mathrm{Reconstruction}
@@ -1282,7 +1020,7 @@ Similarly we define the adaptive method based on the Newton's method.
 
 In this section  we gather together some a priori estimates for eigenvalue
 problems.  The framework used in this section is an extension to the $hp-$case of the a priori results in 
-\cite{giani1,pcf_apost}. Lemma~\ref{lm:adj} contains the a priori convergence results for eigenvalues and eigenfunctions in the $hp$ context. Moreover, in Theorem~\ref{th:adj_rec} we proved convergence a priori results for the reconstructed eigenpair $(\Lambda_n,U_n)$.
+\cite{conv_sinum,pcf_apost}. Lemma~\ref{lm:adj} contains the a priori convergence results for eigenvalues and eigenfunctions in the $hp$ context. Moreover, in Theorem~\ref{th:adj_rec} we proved convergence a priori results for the reconstructed eigenpair $(\Lambda_n,U_n)$.
 
 
 
@@ -1842,138 +1580,138 @@ that using the present method, many eigenfunctions can be calculated separately
 in parallel, without a parallel eigensolver. In our next steps we will continue 
 along this line and adjust the adaptive multimesh $hp$-FEM technique \cite{solin2} 
 to approximate multiple eigenfunctions adaptively on individual meshes.
+ 
 
-\section*{Acknowledgment}
-
+\section*{Acknowledgments}
 The first author was supported by the Subcontract No. 00089911 of Battelle Energy
 Alliance (U.S. Department of Energy intermediary) as well as by the Grant No. 
 IAA100760702 of the Grant Agency of the Academy of Sciences of the Czech Republic.
 
-
-\clearpage
-
-\begin{thebibliography}{[KLR73]}
-
+ 
+ 
+\begin{thebibliography}{10} 
 \bibitem{anderson}
-D. G. Anderson. Iterative procedures for nonlinear integral equations. J. Assoc. Comput.
-Machinery, 12:547–560, 1965.
-
-\bibitem{dubcova1}
-L. Dubcova, P. Solin, G. Hansen, H. Park: Comparison of Multimesh $hp$-FEM 
-to Interpolation and Projection Methods for Spatial Coupling of Reactor 
-Thermal and Neutron Diffusion Calculations, J. Comput. Phys. 230 (2011) 1182-1197.
-
-\bibitem{giani1}
-S. Giani, I.G. Graham: A convergent adaptive method for elliptic eigenvalue 
-problems. SIAM J. Numer. Anal. 47 (2009), 1067-1091.
-
-\bibitem{solin1} 
-P. Solin, D. Andrs, J. Cerveny, M. Simko: 
-PDE-Independent Adaptive $hp$-FEM Based on Hierarchic Extension of Finite Element Spaces.
-J. Comput. Appl. Math. 233 (2010) 3086-3094.
-
-\bibitem{solin2} 
-P. Solin, J. Cerveny, L. Dubcova, D. Andrs: Monolithic Discretization of Linear 
-Thermoelasticity Problems via Adaptive Multimesh $hp$-FEM, J. Comput. Appl. Math 
-234 (2010) 2350-2357.
-
-\bibitem{solin3}
-P. Solin, K. Segeth, I. Dolezel: {\em Higher-Order Finite Element Methods},
-Chapman \& Hall / CRC Press, 2003.
+{\sc D. G. Anderson,} 
+ {\em Iterative procedures for nonlinear integral equations,} 
+{J. Assoc. Comput.
+Machinery,} 12 (1965), pp. 547--560.
 
 \bibitem{BaOs:87}
-I.~Babu\v{s}ka and J.~Osborn.
-\newblock {\em Estimates for the errors in eigenvalue and eigenvector
+{\sc I.~Babu\v{s}ka And J.~Osborn,} 
+ {\em Estimates for the errors in eigenvalue and eigenvector
   approximation by Galerkin methods, with particular attention to the
   case of multiple eigenvalues}, 
-\newblock{\em SIAM J. Numer. Anal.}, 24:1249-1276, 1987.
-
-\bibitem{BaOs:89}
-I.~Babu\v{s}ka and J.~Osborn.
-\newblock {Finite element-Galerkin approximation of the
-  eigenvalues and eigenvectors of selfadjoint problems}, 
-\newblock{\em Math. Comput.} 186:275-297, 1989.
- 
-\bibitem{strang}
-G.~Strang and G.~J. Fix.
-\newblock {\em An Analysis of the Finite Element Method}.
-\newblock Prentice-Hall, 1973.
+{ SIAM J. Numer. Anal.}, 24 (1987), pp. 1249--1276.
 
 \bibitem{babuska}
-I.~Babu\v{s}ka and J.~Osborn.
-\newblock {\em Eigenvalue Problems}.
-\newblock in Handbook of Numerical Analysis Vol II, eds P.G. Cairlet and J.L. Lions, North Holland, 1991.
+{\sc I.~Babu\v{s}ka And J.~Osborn,} 
+ {\em Eigenvalue problems},
+ in Handbook of Numerical Analysis Vol II, eds P.G. Cairlet and J.L. Lions, North Holland, 1991.
 
-\bibitem{hackbusch}
-W.~Hackbusch.
-\newblock {\em Elliptic Differential Equations}.
-\newblock Springer, 1992.
-
-\bibitem{conv_sinum}
-S. Giani and Ivan G. Graham,
-\newblock {A Convergent Adaptive Method for Elliptic Eigenvalue Problems},
-\newblock{\em SIAM J. Numer. Anal.} 47(2):1067-1091, 2009.
-
-\bibitem{schwab}
-C. Schwab,
-\newblock {$p$- and $hp$- finite element methods},
-\newblock{\em Oxford University Press}, 1998.
-
-\bibitem{arpack}
-R. B. Lehoucq, D. C. Sorensen, and C. Yang, \newblock{ARPACK
-Users' Guide: Solution of Large-Scale Eigenvalue Problems with
-Implicitly Restarted Arnoldi Methods}, \newblock {(SIAM, 1998)}.
-
-\bibitem{newton}
-H.~R\"{o}ck,
-\newblock{Finfding an eigenvector and eigenvalue, with Newtons method for solving systems of nonlinear equations},
-\newblock{\em  Report CMDIE WS2002/03}
-
-\bibitem{pcf_apost}
-S.~Giani and I.~G.~Graham,
-\newblock {Adaptive finite element methods for computing band
-gaps in photonic crystals},
-\newblock{\em Numerische Mathematik}, submitted.
-
-
-\bibitem{lalor_prediction_2007}
-N.~Lalor and H-H.~Priebsch
-	\newblock {The prediction of low- and mid-frequency internal road vehicle noise: a literature survey},
-	\newblock{\em Proceedings of the Institution of Mechanical Engineers, Part D: Journal of Automobile Engineering} 221(3):245--269, 2007.
+\bibitem{BaOs:89}
+{\sc I.~Babu\v{s}ka And J.~Osborn,} 
+ {\em Finite element-Galerkin approximation of the
+  eigenvalues and eigenvectors of selfadjoint problems}, 
+{ Math. Comput.} 186 (1989), pp. 275--297.
 
 \bibitem{berini_plasmon-polariton_2000}
-P.~ Berini
-	\newblock{Plasmon-polariton waves guided by thin lossy metal films of finite width: Bound modes of symmetric structures},
-	\newblock{\em Physical Review B} 61(15):10484+, 2000.
-
-\bibitem{JoMeWi:95} 
-J. D. Joannopoulos, R. D. Meade, and J. N. Winn, 
-\newblock{Photonic Crystals. Molding the Flow of Light} 
-\newblock{Princeton
-Univ. Press, Princeton, NJ}, 1995.
+{\sc P.~ Berini,}
+	{\em Plasmon-polariton waves guided by thin lossy metal films of finite width: 
+	Bound modes of symmetric structures},
+	{ Physical Review B} 61:15 (2000), pp.10484+.
 
 \bibitem{cliffe_adaptive_2010}
-A.~Cliffe, E.~Hall and P.~Houston
-	\newblock{Adaptive Discontinuous Galerkin Methods for Eigenvalue Problems Arising in Incompressible Fluid Flows},
-	\newblock{\em {SIAM} Journal on Scientific Computing} 31(6):4607--4632, 2010.
+{\sc A.~Cliffe, E.~Hall And P.~Houston,}
+	{\em Adaptive discontinuous Galerkin methods for eigenvalue problems arising in 
+	incompressible fluid flows},
+	{ {SIAM} Journal on Scientific Computing}, 31:6 (2010), pp. 4607--4632.
+
+\bibitem{dubcova1}
+{\sc L. Dubcova, P. Solin, G. Hansen And H. Park,}
+{\em Comparison of multimesh $hp$-fem 
+to interpolation and projection methods for spatial coupling of reactor 
+thermal and neutron diffusion calculations}, 
+{J. Comput. Phys.} 230 (2011), pp. 1182--1197.
 
 \bibitem{thesis}
-S. Giani.
-\newblock{\em Convergence of Adaptive Finite Element Methods for Elliptic
+{\sc S. Giani,}
+{\em Convergence of Adaptive Finite Element Methods for Elliptic
 Eigenvalue Problems with Application to
 Photonic Crystals},
-\newblock{PhD Thesis, University of Bath, 2008}.
+{Ph.D. thesis, Department of Mathematical Sciences, University of Bath, 2008}.
+
+\bibitem{conv_sinum}
+{\sc S. Giani And I. G. Graham,}
+ {\em A convergent adaptive method for elliptic eigenvalue problems},
+{ SIAM J. Numer. Anal.} 47:2 (2009), pp. 1067--1091.
+
+\bibitem{pcf_apost}
+{\sc S. Giani And I. G. Graham,}
+{\em Adaptive finite element methods for computing band
+gaps in photonic crystals},
+{Numerische Mathematik}, submitted.
 
 \bibitem{grubii_estimators_2008}
-L.~Grubi\v{s}i\'c and J.~S.~Ovall
-\newblock{On estimators for eigenvalue/eigenvector approximations},
-\newblock{\em Mathematics of Computation}78 (266):739--770, 2008.
+{\sc L.~Grubi\v{s}i\'c And J.~S.~Ovall},
+{\em On estimators for eigenvalue/eigenvector approximations},
+{ Mathematics of Computation}, 78:266 (2008), pp. 739--770.
 
-\end{thebibliography}
+\bibitem{hackbusch}
+{\sc W.~Hackbusch,}
+ {\em Elliptic Differential Equations},
+ Springer, Berlin, 1992.
 
+\bibitem{JoMeWi:95} 
+{\sc J. D. Joannopoulos, R. D. Meade, And J. N. Winn, }
+{\em Photonic crystals. Molding the flow of light} 
+{Princeton
+Univ. Press, Princeton, NJ}, 1995.
 
+\bibitem{lalor_prediction_2007}
+{\sc N.~Lalor and H-H.~Priebsch,}
+	 {\em The prediction of low- and mid-frequency internal road vehicle noise: a literature survey},
+	{in Proceedings of the Institution of Mechanical Engineers, Part D: Journal of Automobile Engineering} 
+	221:3 (2007), pp. 245--269.
 
-\end{document}
+\bibitem{arpack}
+{\sc R. B. Lehoucq, D. C. Sorensen, and C. Yang, }
+{\em ARPACK
+users' guide: solution of large-scale eigenvalue problems with
+implicitly restarted arnoldi methods},  {SIAM, 1998}.
 
-%%
-%% End of file `elsarticle-template-num.tex'.
+\bibitem{newton}
+{\sc H.~R\"{o}ck,}
+{\em Finfding an eigenvector and eigenvalue, with Newtons method for solving systems of nonlinear equations},
+{Report CMDIE WS2002/03}
+
+\bibitem{schwab}
+{\sc C. Schwab,}
+ {\em $p$- and $hp$- finite element methods},
+{ Oxford University Press}, Oxford, 1998.
+
+\bibitem{solin1} 
+{\sc P. Solin, D. Andrs, J. Cerveny And M. Simko,}
+{\em PDE-independent adaptive $hp$-fem based on hierarchic extension of finite element spaces},
+{J. Comput. Appl. Math.}, 233 (2010), pp. 3086--3094.
+
+\bibitem{solin2} 
+{\sc P. Solin, J. Cerveny, L. Dubcova And D. Andrs,}
+{\em Monolithic discretization of linear 
+thermoelasticity problems via adaptive multimesh $hp$-FEM}, 
+{J. Comput. Appl. Math},
+234 (2010), pp. 2350--2357.
+
+\bibitem{solin3}
+{\sc P. Solin, K. Segeth and I. Dolezel,}
+{\em Higher-order finite element methods},
+Chapman \& Hall, CRC Press, London, 2003.
+
+\bibitem{strang}
+{\sc G.~Strang and G.~J. Fix},
+ {\em An analysis of the finite element method},
+ Prentice-Hall, 1973.
+
+\end{thebibliography} 
+
+\end{document} 
+
