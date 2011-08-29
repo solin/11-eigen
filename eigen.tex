@@ -123,19 +123,17 @@ Prague, Czech Republic
 
 \begin{abstract}
 Conventional adaptive finite element methods (FEM) for eigenvalue problems call 
-an eigensolver in each adaptivity step. This is not optimal in all situations, 
-for example if one is only interested in resolving accurately one specific 
-vibration mode. We propose a novel adaptive algorithm that only calls the 
-eigensolver once at the beginning of the computation, and then employs an 
-iterative method to converge to any selected eigenvalue-eigenvector pair. 
-Picard and Newton variants of such an iterative method are presented. 
-In the case that the eigenvalue-eigenvector pair of interest is part of a multiple eigenvalue,
-we propose a method to track the same eigenpair on all the successive adapted meshes.
-The 
-underlying partial differential equation (PDE) is discretized with higher-order 
-finite elements ($hp$-FEM) but the algorithm also works for standard 
-low-order FEM. The method is described and accompanied with theoretical 
-analysis and numerical examples and comparisons. Instructions on how to 
+an eigensolver in each adaptivity step. This is not practical if one is only interested 
+in resolving accurately one eigenpair, such as one specific vibration mode. 
+We propose a novel adaptive algorithm 
+that only calls the eigensolver once at the beginning of the computation, and then employs 
+an iterative method to pursue a selected eigenvalue-eigenvector pair on a sequence 
+of locally refined meshes. The Picard's and Newton's variants of the iterative 
+method are presented. The method works reliably even if the eigenvalue-eigenvector pair 
+of interest is part of a multiple eigenvalue. The underlying partial differential 
+equation (PDE) is discretized with higher-order finite elements ($hp$-FEM) but 
+the algorithm also works for standard low-order FEM. The method is described and 
+accompanied with theoretical analysis and numerical examples. Instructions on how to 
 reproduce the results are provided. 
 \end{abstract}
 
@@ -156,15 +154,30 @@ method, $hp$-FEM, Reproducible research
 
 \section{Introduction}\label{sec:intro}
 
-The eigenvalue problem are of considerable theoretical interest and wide-ranging applications.
-They arise naturally in many physical processes 
-and they have a lot of applications in physics and engineering. For example, a lot of problems in acoustics can be expressed as an eigenvalue problem or eigenvalue problems are solved inside many methods like in automated multilevel substructuring for noise prediction \cite{lalor_prediction_2007}.
-Nano-optics is another field where eigenvalue problems can be found very often, the analysis of photonic crystals \cite{pcf_apost,JoMeWi:95} and plasmonic guides \cite{berini_plasmon-polariton_2000} are based on them. 
-Another example where eigenvalue problems are used is the study of stability of fluid dynamics systems \cite{cliffe_adaptive_2010}
-The most common approach to solve an eigenproblem in practice is use an eigensolver, and for problem large enough an iterative one, like ARPACK \cite{arpack}, is used.
-A characteristic common to all eigensolver is that, even if the user is interested in one particular eigenpair, a bunch of unwanted eigenvalue and possibly eigenvectors is computed in order for the eigensolver to work. These unwanted eigenpair are the byproduct of techniques such as deflation or 
-orthogonalization used to filter out unwanted solutions.
-Also the great majority of eigensolvers are not specifically designed to work with adaptive finite elements or finite differences methods. Therefore we propose a different approach based on simple and widely used iterative methods for non-linear problems. We are going to adapt the Picard's and the Newton's method to solve eigenvalue problems and we minimize the number of computed unwanted eigenpair exploiting the orthogonality between eigenvectors. Also, a method to compute the approximation of the same eigenpair on a sequence of adapted meshes is presented. This method is particularly useful with multiple eigenvalues when only a particular eigenfunction in the eigenspace is wanted. 
+Eigenvalue problems for partial differential equations (PDE) are of considerable theoretical 
+and practical interest in engineering and sciences.  
+To name a few applications, let us mention automated multilevel substructuring 
+methods for noise prediction in acoustics \cite{lalor_prediction_2007},
+analysis of photonic crystals \cite{pcf_apost,JoMeWi:95} and 
+plasmonic guides \cite{berini_plasmon-polariton_2000}, and 
+stability analysis of fluid systems \cite{cliffe_adaptive_2010}
+
+The most common approach to solving eigenproblems is using eigensolvers. For larger problems it is 
+practical to employ iterative eigensolvers such as ARPACK \cite{arpack}. A characteristic common to 
+all eigensolvers is that even if the user is interested in one particular eigenpair only, several 
+additional eigenvalues and possibly eigenvectors need to be computed. These unwanted eigenpairs are 
+the byproduct of techniques such as deflation or orthogonalization that are used to filter out 
+unwanted solutions.
+
+The majority of eigensolvers are not specifically designed to work with adaptive finite element methods 
+(FEM), and their application on sequences of locally refined meshes leads to specific problems. 
+In this paper we illustrate some of these problems and propose a novel iterative method that alleviates 
+them. We are going to adapt the Picard's and the Newton's method to solve eigenvalue problems
+in order to minimize the number of unwanted eigenpair exploiting the orthogonality between eigenvectors. 
+In contrast to conventional adaptive methods that call an eigensolver after each mesh refinement,
+the present method is capable of following reliably a selected eigenpair on a sequence of adapted 
+meshes. This is particularly useful with multiple eigenvalues when only a particular eigenfunction 
+in the eigenspace is wanted. 
 
 \subsection{Outline of the Paper}
 
