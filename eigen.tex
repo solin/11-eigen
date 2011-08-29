@@ -1550,7 +1550,33 @@ $n$ &  Dofs & Error \% &Dofs & Error \%\\
 \caption{Comparison between the Newton method and an eigensolver. }\label{tab:rec}
 \end{table}
 
+\subsection{Case for adaptivity}\label{ssec:n_adapt}
 
+Now, we would like to illustrate that in general each eigenfunction should be approximated separately, because the adaptation of the mesh could vary considerably. This is because the adaptive procedure is able to capture the specific features of the eigenfunction and then adapt the mesh accordingly.
+
+\begin{figure}[!ht]
+\begin{center}
+\includegraphics[width=0.45\textwidth]{img/l-shape_eig1.png}\ \ \ 
+\includegraphics[width=0.433\textwidth]{img/l-shape_eig1_mesh.png}
+\end{center}
+\vspace{-5mm}
+\caption{First eigenfunction for the L-shaped domain and corresponding adapted mesh.}
+\label{fig:l_sh_eig1}
+\end{figure}
+
+\begin{figure}[!ht]
+\begin{center}
+\includegraphics[width=0.45\textwidth]{img/l-shape_eig2.png}\ \ \ 
+\includegraphics[width=0.433\textwidth]{img/l-shape_eig2_mesh.png}
+\end{center}
+\vspace{-5mm}
+\caption{Second eigenfunction for the L-shaped domain and corresponding adapted mesh.}
+\label{fig:l_sh_eig2}
+\end{figure}
+
+As can be seen in Figures~\ref{fig:l_sh_eig1} and \ref{fig:l_sh_eig2} we presented the first two eigenfunctions of the L-shaped domain with their corresponding adapted meshes.
+We choose this example because it is a classical one, in the sense that it well known that for this problem the regularity of the eigenfunction could vary. Here we have the first eigenfunctions that exhibits  
+a singularity in the gradient at the reentering corner. On the other hand, on the same domain with a reentering corner, the second eigenfunction is completely smooth. The differences in the regularity are reflected in the adapted meshes: for the first eigenfunction a great amount of $h$-refinement at the reentering corner, which is the correct way to tackle this kind of singularities, instead, for the second eigenfunction we have an adapted mesh mostly characterized by $p$-refinement, which is suitable for smooth functions.
 
 \section{Reproducibility of Results} \label{sec:reproducibility}
 
