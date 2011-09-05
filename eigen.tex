@@ -103,8 +103,7 @@
 \def\bfE{\mbox{\boldmath$E$}}
 \def\bfG{\mbox{\boldmath$G$}}
 
-\title{Adaptive FEM for Eigenvalue Problems\\ that Avoids Repeated 
-       Eigensolver Calls}
+\title{On Adaptive FEM for Elliptic Eigenvalue Problems}
 
 % The thanks line in the title should be filled in if there is
 % any support acknowledgement for the overall work to be included
@@ -123,7 +122,7 @@ Prague, Czech Republic
 
 \begin{abstract}
 We consider the task of resolving accurately the $n$th eigenpair of a generalized
-eigenproblem rooted in some partial differential equation (PDE) using the finite 
+eigenproblem rooted in some elliptic partial differential equation (PDE) using the finite 
 element method (FEM). Conventional adaptive FEM calls a generalized eigensolver after each mesh refinement step. This is not 
 practical in our situation since the generalized eigensolver needs to calculate $n$ 
 eigenpairs after each mesh refinement step, it can switch the order of eigenpairs,
