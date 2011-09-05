@@ -103,7 +103,7 @@
 \def\bfE{\mbox{\boldmath$E$}}
 \def\bfG{\mbox{\boldmath$G$}}
 
-\title{Adaptive $hp$-FEM for Eigenvalue Problems\\ that Avoids Repeated 
+\title{Adaptive FEM for Eigenvalue Problems\\ that Avoids Repeated 
        Eigensolver Calls}
 
 % The thanks line in the title should be filled in if there is
@@ -122,23 +122,25 @@ Prague, Czech Republic
 \maketitle
 
 \begin{abstract}
-Conventional adaptive finite element methods (FEM) for eigenvalue problems call 
-an eigensolver in each adaptivity step. This is not practical if one is only interested 
-in resolving accurately one eigenpair, such as one specific vibration mode. 
-We propose a novel adaptive algorithm 
+We consider the task of resolving accurately the $n$th eigenpair of a generalized
+eigenproblem rooted in some partial differential equation (PDE) using the finite 
+element method (FEM). Conventional adaptive FEM calls a generalized eigensolver after each mesh refinement step. This is not 
+practical in our situation since the generalized eigensolver needs to calculate $n$ 
+eigenpairs after each mesh refinement step, it can switch the order of eigenpairs,
+and for repeated eigenvalues it can return an arbitrary linear combination of eigenfunctions 
+from the corresponding eigenspace. In order to circumvent these problems, we propose a novel adaptive algorithm 
 that only calls the eigensolver once at the beginning of the computation, and then employs 
-an iterative method to pursue a selected eigenvalue-eigenvector pair on a sequence 
-of locally refined meshes. The Picard's and Newton's variants of the iterative 
-method are presented. The method works reliably even if the eigenvalue-eigenvector pair 
-of interest is part of a multiple eigenvalue. The underlying partial differential 
-equation (PDE) is discretized with higher-order finite elements ($hp$-FEM) but 
-the algorithm also works for standard low-order FEM. The method is described and 
+an iterative method to pursue a selected eigenvalue-eigenfunction pair on a sequence 
+of locally refined meshes. Both Picard's and Newton's variants of the iterative 
+method are presented. The underlying partial differential equation (PDE) is discretized 
+with higher-order finite elements ($hp$-FEM) but the algorithm also works for standard 
+low-order FEM. The method is described and 
 accompanied with theoretical analysis and numerical examples. Instructions on how to 
 reproduce the results are provided. 
 \end{abstract}
 
 \begin{keywords} 
-Partial differential equation, Eigenvalue problem, Adaptive higher-order finite element
+Partial differential equation, Eigenvalue problem, Iterative method, Adaptive higher-order finite element
 method, $hp$-FEM, Reproducible research
 \end{keywords}
 
@@ -149,7 +151,7 @@ method, $hp$-FEM, Reproducible research
 
 \pagestyle{myheadings}
 \thispagestyle{plain}
-\markboth{S.~GIANI AND P.~SOLIN}{Adaptive $hp$-FEM for Eigenvalue Problems}
+\markboth{P.~SOLIN AND S.~GIANI}{Adaptive $hp$-FEM for Eigenvalue Problems}
 
 
 \section{Introduction}\label{sec:intro}
@@ -165,12 +167,12 @@ stability analysis of fluid systems \cite{cliffe_adaptive_2010}
 The most common approach to solving eigenproblems is using eigensolvers. For larger problems it is 
 practical to employ iterative eigensolvers such as ARPACK \cite{arpack}. A characteristic common to 
 all eigensolvers is that even if the user is interested in one particular eigenpair only, several 
-additional eigenvalues and possibly eigenvectors need to be computed. These unwanted eigenpairs are 
+additional eigenvalues and possibly eigenvectors need to be computed. These auxiliary eigenpairs are 
 the byproduct of techniques such as deflation or orthogonalization that are used to filter out 
 unwanted solutions.
 
 The majority of eigensolvers are not specifically designed to work with adaptive finite element methods 
-(FEM), and their application on sequences of locally refined meshes leads to specific problems. 
+(FEM), and their application on sequences of locally refined meshes can lead to substantial problems. 
 In this paper we illustrate some of these problems and propose a novel iterative method that alleviates 
 them. We are going to adapt the Picard's and the Newton's method to solve eigenvalue problems
 in order to minimize the number of unwanted eigenpair exploiting the orthogonality between eigenvectors. 
@@ -221,7 +223,7 @@ on a $4\times 4$ mesh consisting of quadratic elements shown in Fig. \ref{fig:me
 \begin{center}
 \includegraphics[width=0.36\textwidth]{img/mesh_1.png}
 \end{center}
-\vspace{-5mm}
+%\vspace{-5mm}
 \caption{Initial mesh for automatic adaptivity.}
 \label{fig:mesh1}
 \end{figure}
@@ -239,25 +241,25 @@ are shown in the first and second row of Fig. \ref{fig:eigen1}, respectively.
 \includegraphics[width=0.4\textwidth]{img/eigen_3.png}\ \ \ 
 \includegraphics[width=0.4\textwidth]{img/eigen_4.png}\\
 \end{center}
-\vspace{-5mm}
+%\vspace{-5mm}
 \caption{Approximate eigenfunctions for $\lambda_2, \lambda_3$ and 
 $\lambda_5, \lambda_6$ on initial mesh.}
 \label{fig:eigen1}
 \end{figure}
 
-Assume that based on some a-posteriori error estimate, the mesh undergoes 
-$p$-refinement of the four interior elements, as shown in Fig. \ref{fig:mesh2}.
+Assume that the mesh undergoes $p$-refinement of the four interior elements, 
+as shown in Fig. \ref{fig:mesh2}.
 
 \begin{figure}[!ht]
 \begin{center}
 \includegraphics[width=0.36\textwidth]{img/mesh_2.png}
 \end{center}
-\vspace{-5mm}
+%\vspace{-5mm}
 \caption{Mesh after the first adaptivity step.}
 \label{fig:mesh2}
 \end{figure}
 
-After refining the mesh, the eigensolver is called again. 
+With the new mesh, the eigensolver is called again. 
 The resulting approximate eigenfunctions for $\lambda_2, \lambda_3$ and $\lambda_5, \lambda_6$
 are shown in the first and second row of Fig. \ref{fig:eigen2}, respectively.
 
@@ -269,23 +271,30 @@ are shown in the first and second row of Fig. \ref{fig:eigen2}, respectively.
 \includegraphics[width=0.4\textwidth]{img/eigen_7.png}\ \ \ 
 \includegraphics[width=0.4\textwidth]{img/eigen_8.png}\\
 \end{center}
-\vspace{-5mm}
+%\vspace{-5mm}
 \caption{Approximate eigenfunctions for $\lambda_2, \lambda_3$ and 
-$\lambda_5, \lambda_6$ after the first adaptivity step.}
+$\lambda_5, \lambda_6$ after the second call to the generalized 
+eigensolver (compare to Fig. \ref{fig:eigen1}).}
 \label{fig:eigen2}
 \end{figure}
 
-The reader can observe that the approximations changed dramatically after the 
-mesh was refined. This is known behavior that is due to the multiplicity of the 
-corresponding eigenvalues. To our best knowledge, contemporary generalized 
-eigensolvers do not offer any way to avoid this problem. As far as we know, the only way to deal specifically with repeated eigenvalues in the literature, is to adapt the mesh considering an entire basis of the eigenspace of the repeated eigenvalue. So, for example, this means that for a double eigenvalue, like $\lambda_2$, $\lambda_3$, the mesh would be refined using both the eigenfunctions $u_2$ and $u_3$, even if we are just interested in the eigenpair $(\lambda_3, u_3)$. A very clear drawback of this approach is that part of the degrees of freedom introduced by the adaptive procedure are not going to improve the accuracy of the eigenpair $(\lambda_3, u_3)$, because they are targeting the eigenpair $(\lambda_32 u_2)$. This way to proceed is used in \cite{thesis, grubii_estimators_2008}.
-{\red STEFANO, we have to be a bit careful here. Are there any works dealing 
-with repeated eigenvalues? If so, we have to cite them here.} {\red Pavel, there are many works where eigenvalues are considered, sometimes also repeated eigenvalues are considered. I have a couple of papers containing numerics for repeated eigenvalues. 
-But I wasn't able to find anything specific on multiple eigenvalues. 
-Normally you just apply to repeated eigenvalues the same method that you use for simple ones.
-Have you found anything? The only things slightly related in my opinion are \cite{thesis, grubii_estimators_2008}.}
-Instructions on how to reproduce 
-these results are provided in Section \ref{sec:reproducibility}.
+The reader can observe that the second call to the generalized eigensolver 
+changed the approximations dramatically. This phenomenon is present in the 
+following adaptivity steps as well. Since the object of adaptivity keeps 
+changing, doing adaptivity becomes in fact meaningless. 
+
+To our best knowledge, contemporary generalized eigensolvers do 
+not offer any systematic way to avoid this problem. There are only a few publications 
+that deal specifically with repeated eigenvalues, such as \cite{thesis, grubii_estimators_2008}.
+Their authors adapt the mesh considering an entire basis of the 
+eigenspace of the repeated eigenvalue. This means that for a double 
+eigenvalue such as, e.g., $\lambda_2 = \lambda_3$ the mesh would be refined using both 
+the eigenfunctions $u_2$ and $u_3$, even if one is just interested in the eigenpair 
+$(\lambda_3, u_3)$. This, however, does not solve the problem illustrated in Figs. 
+\ref{fig:eigen1} and \ref{fig:eigen2}. In addition, the degrees 
+of freedom that are targeting the eigenpair $(\lambda_2, u_2)$ are not going to 
+improve significantly the accuracy of the eigenpair $(\lambda_3, u_3)$ and in 
+fact they are wasted.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -369,7 +378,7 @@ a(u_{jn},v_{n})&=& \lambda_{j,n}\ b(u_{j,n},v_{n}),
 \section{Picard's Method}\label{sec:picard}
 
 Problem \eqref{eq:disc_prob} can be reformulated in matrix format as:
-\emph{seek eigenpairs of the form $(\lambda,\mathbf{u})\in
+\emph{Find eigenpairs of the form $(\lambda,\mathbf{u})\in
 \mathbb{R}\times \mathbb{R}^N$, where $N$ is the dimension of $V_n$,
 such that}
 \begin{equation}
@@ -388,7 +397,8 @@ $$
 $$
 where $\phi_i$ are the basis functions spanning $V_n$.
 
-The Picard's method, see Algorithm~\ref{alg:picard}, takes as arguments the matrices $\mathbf{A}$ and $\mathbf{B}$, an initial guess $\tilde u$ for the eigenfunction, a relative tolerance $\mathrm{Tol}$ and an absolute tolerance $\mathrm{AbsTol}$. {\red Pavel, the introduction of $\mathrm{AbsTol}$ should make both iterative algorithm to converge and stop correctly.} The algorithm returns an approximated eigenpair $(\lambda_{n},u_{n})$.
+The Picard's method, see Algorithm~\ref{alg:picard}, takes as arguments the matrices $\mathbf{A}$ and $\mathbf{B}$, an initial guess $\tilde u$ for the eigenfunction, a relative tolerance $\mathrm{Tol}$ and an absolute tolerance $\mathrm{AbsTol}$. 
+The algorithm returns an approximated eigenpair $(\lambda_{n},u_{n})$.
 Because we use this iterative method on a sequence of adaptively refined meshes, we normally set as initial guess
 the projection in the refined mesh of the eigenfunction of interest $u_{j,n-1}$.
 
@@ -413,9 +423,7 @@ $|\lambda^{m+1}-\lambda^m|>\mathrm{AbsTol}$}
 \end{algorithmic}
 \end{algorithm}
 
-
-
-The next theorem shows that the Picard's method always converges to the smallest eigenvalue.
+The next theorem shows that the Picard's method always converges to the smallest eigenvalue.\\
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{theorem}\label{th:picard_conv}
@@ -471,21 +479,19 @@ which converges again to $\lambda_1$.
 
 \end{proof}
 
-Theorem~\ref{th:picard_conv} shows that even if the initial guess $\mathbf{u}^1$ is very close to a certain discrete eigenfunction $u_{i,n}$, for some $i$, the method can always converges to a different eigenfunction or a linear combinations of eigenfunctions with corresponding eigenvalues smaller in module than $\lambda_{i,n}$. In real arithmetic, even if the initial guess $\mathbf{u}^1$ is orthogonal to all eigenfunctions of indexes less than $i$, for some $m>1$ the orthogonality could be perturbed, due to round-off errors, and the method can eventually converges anyway to a different eigenfunction or a linear combinations of eigenfunctions with corresponding eigenvalues smaller in module than $\lambda_{i,n}$.
+Theorem~\ref{th:picard_conv} shows that even if the initial guess $\mathbf{u}^1$ is very close to a certain discrete eigenfunction $u_{i,n}$, for some $i$, the method can always converge to a different eigenfunction or a linear combinations of eigenfunctions with corresponding eigenvalues smaller in module than $\lambda_{i,n}$. In real arithmetic, even if the initial guess $\mathbf{u}^1$ is orthogonal to all eigenfunctions of indexes less than $i$, for some $m>1$ the orthogonality could be perturbed, due to round-off errors, and the method can eventually converges anyway to a different eigenfunction or a linear combinations of eigenfunctions with corresponding eigenvalues smaller in module than $\lambda_{i,n}$.
 
 
 To illustrate this behavior, we refer to the numerical simulations in Section~\ref{ssec:ortho}, where we use the fifth eigenfunction corresponding to $\lambda_5 = 10$ (Fig. \ref{fig:picard} left) as a starting guess for the Picard's method.
 However, the Picard's method converges to the first eigenfunction corresponding 
 to $\lambda_1 = 2$ (Fig. \ref{fig:picard} right).
 
-\newpage
-
 \begin{figure}[!ht]
 \begin{center}
-\includegraphics[width=0.4\textwidth]{img/eigen_5_ex.png}\ \ \ 
-\includegraphics[width=0.433\textwidth]{img/eigen-new-1.png}
+\includegraphics[width=0.393\textwidth]{img/eigen_5_ex.png}\ \ \ 
+\includegraphics[width=0.43\textwidth]{img/eigen-new-1.png}
 \end{center}
-\vspace{-5mm}
+%\vspace{-5mm}
 \caption{The Picard's method converges from an initial guess that is very close to 
          the fifth eigenfunction (left) that corresponds to $\lambda_5 = 10$ to the 
          first eigenfunction (right) that corresponds to $\lambda_1 = 2$.}
@@ -565,7 +571,7 @@ Then, the Rayleigh quotient converges to $\lambda_j$ by the same arguments use b
 \end{proof}
 
 
-
+\vspace{4mm}
 \noindent
 {\bf Remark}: To make the Picard's method usable in practice, it is 
 recommended to enhance it with Anderson acceleration \cite{anderson}.
@@ -701,20 +707,20 @@ $$
 
 \section{Automatic $hp$-Adaptivity}\label{sec:adapt}
 
-With the Picard's and Newton's methods in hand, we can now proceed to automatic $hp$-adaptivity. 
+With the Picard's and Newton's methods in hand, we can now proceed to automatic $hp$-adaptivity.
+This part of the paper is not new but we need to present it to make the paper self-contained.
 We use an algorithm from \cite{solin3} that is an analogy to embedded higher-order ODE methods: 
 In each adaptivity step it 
 constructs an approximation pair with different orders of accuracy and uses their difference 
 as an a-posteriori error estimator. 
 
-Let $\cT^c_{0}$ be an initial coarse mesh. We construct an initial fine mesh $\cT^f_{0}$
+\begin{algorithm}[H] \caption{Automatic $hp$-Adaptivity} \label{alg:hp} 
+\begin{algorithmic}
+\STATE{Let $\cT^c_{0}$ be an initial coarse mesh. We construct an initial fine mesh $\cT^f_{0}$
 by refining all elements in space and moreover increasing their polynomial degrees by one.
 A generalized eigensolver is called one time only, 
 to obtain a solution pair $(\lambda^c_{0}, u^c_{0})$
-on the initial coarse mesh $\cT^c_{0}$. 
-
-\begin{algorithm}[H] \caption{Automatic $hp$-Adaptivity} \label{alg:hp} 
-\begin{algorithmic}
+on the initial coarse mesh $\cT^c_{0}$.}
 \STATE{Set $k := 0$}
 \REPEAT
 \STATE{Project the approximation $u^c_{k}$ to the mesh $\cT^f_{k}$. The projection 
@@ -730,7 +736,7 @@ where $\mathbf{A}^f_{k}$ and $\mathbf{B}^f_{k}$ are the stiffness and mass matri
 mesh $\cT^f_{k}$, respectively.} 
 
 The pair $(\tilde \lambda^f_{k}, P^f_k u^c_{k})$ is {\bf not a solution} to the generalized eigenproblem 
-on the mesh $\cT^f_{k}$, but it is a good initial guess. 
+on the mesh $\cT^f_{k}$, but it is used as an initial guess. 
 \STATE{
 Apply the Picard's or Newton's method as described in Sections \ref{sec:picard++} and \ref{sec:newton},
 to obtain a solution pair $(\lambda^f_{k}, u^f_{k})$ on the mesh $\cT^f_{k}$.}
@@ -768,7 +774,8 @@ Different finite element spaces can split the same multiple eigenspace in differ
 
 %\textcolor{red}{Pavel, I think we need another figure here. It would be easy to see the phenomenon on unstructured meshes.}
 
-We propose a way to always construct on a refined mesh, an approximation of the same eigenfunction as on the coarse mesh. The idea is based on the fact that for a sufficiently rich finite element space, the space $M_n(\lambda_j)=\mathrm{span}\{E(\lambda_{j,n}),E(\lambda_{j+1,n}),\dots E(\lambda_{j+m,n})\}$ is an approximation of the space $E(\lambda_j)$, see \cite{strang}. Let us denote the space $M_{n,1}(\lambda_j)$ as the subspace of $M_n(\lambda_j)$ of functions with unit norm in the $L^2$.
+We propose a way to always construct on a refined mesh, an approximation of the same eigenfunction as on the coarse mesh. The idea is based on the fact that for a sufficiently rich finite element space, the space 
+$M_n(\lambda_j)=\mathrm{span}\{E(\lambda_{j,n}),E(\lambda_{j+1,n}),\dots,$ $E(\lambda_{j+m,n})\}$ is an approximation of the space $E(\lambda_j)$, see \cite{strang}. Let us denote the space $M_{n,1}(\lambda_j)$ as the subspace of $M_n(\lambda_j)$ of functions with unit norm in the $L^2$.
 So for any function $U_{n-1}\in M_{n-1,1}(\lambda_j)$, we propose the function $U_{n}\in M_{n,1}(\lambda_j)$ that minimize the $\|U_{n-1}-U_{n}\|_{0,\Omega}$ as an approximation of $U_{n-1}$ on the refined mesh. For a sufficiently rich finite element space the minimizer is unique. By construction
 \begin{equation}\label{eq:const}
 U_n=\sum_{i=1}^{R} c_i \ u_{i,n},
@@ -1420,20 +1427,21 @@ Lemma~\ref{lm:adj}(i).
 
 \section{Numerical Results} \label{sec:numer}
 
-{\red We need to say that we are only interested in eigenfunction \#10 (for example)
-and compare the convergence {\em in this eigenfunction only} 
-using the standard approach (repeated calls to an 
-eigensolver that always solves for 10 first eigenfunctions) with our approach.}
+%{\red We need to say that we are only interested in eigenfunction \#10 (for example)
+%and compare the convergence {\em in this eigenfunction only} 
+%using the standard approach (repeated calls to an 
+%eigensolver that always solves for 10 first eigenfunctions) with our approach.}
 
-{\red Pavel, I have done these numerics a couple of days ago. If they are OK, I can make the pictures black and white.}
+%{\red Pavel, I have done these numerics a couple of days ago. If they are OK, I can make the pictures black and white.}
 
 \subsection{Orthogonality technologies}\label{ssec:ortho}
 
 In this first set of examples, we would like to show the advantages of the orthogonality technologies presented in Sections~\ref{sec:picard++},~\ref{sec:newton} and \ref{sec:imp_ortho}.
 We want to approximate the fifth eigenvalue, and the corresponding eigenfunction, on the square domain $[0,\pi]^2$ just calling the Picard's method as in Algorithm~\ref{alg:picard} with no orthogonalization and starting with four quadratic elements forming the initial structured mesh.
 So as always we compute the approximation of the first fifth eigenpair on the coarse mesh with an eigensolver, then we adapt the mesh for the fifth eigenpair and from that point on we use the Picard's method.
-As can be seen from the piece of output below, already on the first adapted mesh the Picard's method goes away from the correct value 10 for the eigenvalue and converges to the first eigenvalue: 
+As can be seen from the piece of output below, already on the first adapted mesh the Picard's method goes away from the correct value 10 for the eigenvalue and converges to the first eigenvalue: \\
 
+{\small
 \begin{verbatim}
 ---- Adaptivity step 1:
 ndof: 9, ndof_ref: 121
@@ -1463,15 +1471,21 @@ Initial guess for eigenvalue on reference mesh: 14.049870798404
 ---- Picard iter 11, ndof 121, eigenvalue: 2.000004557482, 
        picard_err_rel 0.000841063%,  picard_abs_rel 2.31489e-10
 \end{verbatim}
+}
+
+\vspace{4mm}
+\noindent
 This is a clear example of what was predicted in Theorem~\ref{th:picard_conv}.
 
-On the other hand, using the standard orthogonality, see Section~\ref{sec:picard++}, we cure this problem and the method converges to the correct eigenpair. In Figures~\ref{fig:conv_eig5} we show the convergence rate for  the fifth eigenvalue. As can be seen, the convergence curve is almost a straight line which suggest an exponential convergence rate.
+On the other hand, using the standard orthogonality (Section~\ref{sec:picard++}) we cure this problem and the method 
+converges to the correct eigenpair. In Figure~\ref{fig:conv_eig5} we show the convergence rate for the fifth eigenvalue. 
+As can be seen, the convergence curve is almost a straight line which means an exponential convergence rate.
 
 \begin{figure}[!ht]
 \begin{center}
 \includegraphics[width=0.8\textwidth]{img/ex_2.png}
 \end{center}
-\vspace{-5mm}
+%\vspace{-5mm}
 \caption{Convergence plot for the fifth eigenvalue.}
 \label{fig:conv_eig5}
 \end{figure}
@@ -1485,8 +1499,13 @@ On the other hand, using the standard orthogonality, see Section~\ref{sec:picard
 %\label{fig:sol_eig5}
 %\end{figure}
 
-However, when the standard orthogonality is used, five eigenpairs are computed on each adapted mesh, this means that overall 20 eigenpairs are computed. This is quite expensive, but the cost can be reduced using the improved orthogonality, see Section~\ref{sec:imp_ortho}. The convergence rate is exactly the same as in Figure~\ref{fig:conv_eig5}, but the number of computed eigenpairs is dramatically smaller. In Table~\ref{tab:imp_orhto} we reported the number of computed eigenpairs on each adapted mesh using either the standard or the improved orthogonality.
-It is worth to say that if we had used the eigensolver on the meshes, we would have computed five eigenpairs for each mesh, as the standard orthogonality.
+When the standard orthogonality is used, five eigenpairs are computed on each adapted mesh, this means that overall 
+20 eigenpairs are computed. This is quite expensive, but the cost can be reduced using the improved orthogonality
+(Section~\ref{sec:imp_ortho}). The convergence rate is exactly the same as in Figure~\ref{fig:conv_eig5}, but the 
+number of computed eigenpairs is dramatically smaller. In Table~\ref{tab:imp_orhto} we reported the number of 
+computed eigenpairs on each adapted mesh using either the standard or the improved orthogonality. It is worth 
+mentioning that if we had used the eigensolver on the meshes, we would have computed five eigenpairs for each 
+mesh, as the standard orthogonality.
 
 \begin{table}[h]
 \begin{center}
@@ -1516,7 +1535,7 @@ $n$ &  Standard &Improved\\
 
 In the next example we present the benefits of using the reconstruction technology, introduced in Section~\ref{sec:reco}, which makes possible to follow the approximation of the same continuous eigenfunction on a series of adaptively refined meshes, even if the corresponding eigenvalue has multiplicity greater than 1. The fact that, via the reconstruction, there are no changes in the approximations, should lead to a decrease in the computational cost, because changes in the approximations, like the one presented in Figures~\ref{fig:eigen1},~\ref{fig:eigen2}, could mislead the adaptive procedure to introduce more degrees of freedom in regions that are not going to be useful to reduce the error once the approximation is changed.
 
-In Table~\ref{tab:rec} we compare the results between Algorithm~\ref{alg:newton_impadapt} and using an eigensolver without the reconstruction technology on each refined mesh, both with $hp-$adaptivity. In particular in Table~\ref{tab:rec} we compare for each adaptively refined mesh of index $n$ the DOFs and the error in percentage for the 8th eigenpair (which belongs to a double eigenvalue) of problem \eqref{one}, starting with a mesh of 64 square elements and starting with order of polynomials 1. We also set the target tolerance for the error to 0.3.
+In Table~\ref{tab:rec} we compare the results between Algorithm~\ref{alg:newton_impadapt} and using an eigensolver without the reconstruction technology on each refined mesh, both with $hp$-adapt\-ivity. In particular in Table~\ref{tab:rec} we compare for each adaptively refined mesh of index $n$ the DOFs and the error in percentage for the 8th eigenpair (which belongs to a double eigenvalue) of problem \eqref{one}, starting with a mesh of 64 square elements and starting with order of polynomials 1. We also set the target tolerance for the error to 0.3.
 As can be seen the Newton method takes only 12 refinement of the mesh to reach the target tollerance, compared to 15 for using the eigensolver. Also, between the 3rd and the 4th refined meshes, the error actually increase  using the eigensolver, this is due to the fact that the approximation is changed dramatically between those two meshes and so the 4th mesh, which was refined using the information from the approximation on the 3rd mesh, is not very good to describe the approximation on the computed in the 4th mesh. Since the approximated continuous eigenfunction never changes using the reconstruction, there is no sign of any oscillation in the error for the Newton method.
 
 \begin{table}[h]
@@ -1561,19 +1580,25 @@ $n$ &  Dofs & Error \% &Dofs & Error \%\\
 \end{tabular}
 \end{center}
 
-\caption{Comparison between the Newton method and an eigensolver. }\label{tab:rec}
+\caption{Comparison between the Newton's method and an eigensolver. }\label{tab:rec}
 \end{table}
 
-\subsection{Case for adaptivity}\label{ssec:n_adapt}
+\subsection{Approximating eigenfunctions on individual meshes}\label{ssec:n_adapt}
 
-Now, we would like to illustrate that in general each eigenfunction should be approximated separately, because the adaptation of the mesh could vary considerably. This is because the adaptive procedure is able to capture the specific features of the eigenfunction and then adapt the mesh accordingly.
+Next we would like to illustrate that in general each eigenfunction should be approximated on its own mesh.
+We choose a classical L-shape domain example for the Laplace operator where the first eigenfunction exhibits  
+a singularity in the gradient at the re-entrant corner while the second one is completely smooth.
+The differences in the regularity are reflected in the adapted meshes: 
+For the first eigenfunction a great amount of $h$-refinement takes place at the re-entrant corner. 
+For the second eigenfunction we have an adapted mesh mostly characterized by $p$-refinement.
+These results are shown in Figures~\ref{fig:l_sh_eig1} and \ref{fig:l_sh_eig2}.
 
 \begin{figure}[!ht]
 \begin{center}
 \includegraphics[width=0.45\textwidth]{img/l-shape_eig1.png}\ \ \ 
-\includegraphics[width=0.433\textwidth]{img/l-shape_eig1_mesh.png}
+\includegraphics[width=0.42\textwidth]{img/l-shape_eig1_mesh.png}
 \end{center}
-\vspace{-5mm}
+%\vspace{-5mm}
 \caption{First eigenfunction for the L-shaped domain and corresponding adapted mesh.}
 \label{fig:l_sh_eig1}
 \end{figure}
@@ -1581,31 +1606,29 @@ Now, we would like to illustrate that in general each eigenfunction should be ap
 \begin{figure}[!ht]
 \begin{center}
 \includegraphics[width=0.45\textwidth]{img/l-shape_eig2.png}\ \ \ 
-\includegraphics[width=0.433\textwidth]{img/l-shape_eig2_mesh.png}
+\includegraphics[width=0.42\textwidth]{img/l-shape_eig2_mesh.png}
 \end{center}
-\vspace{-5mm}
+%\vspace{-5mm}
 \caption{Second eigenfunction for the L-shaped domain and corresponding adapted mesh.}
 \label{fig:l_sh_eig2}
 \end{figure}
 
-As can be seen in Figures~\ref{fig:l_sh_eig1} and \ref{fig:l_sh_eig2} we presented the first two eigenfunctions of the L-shaped domain with their corresponding adapted meshes.
-We choose this example because it is a classical one, in the sense that it well known that for this problem the regularity of the eigenfunction could vary. Here we have the first eigenfunctions that exhibits  
-a singularity in the gradient at the reentering corner. On the other hand, on the same domain with a reentering corner, the second eigenfunction is completely smooth. The differences in the regularity are reflected in the adapted meshes: for the first eigenfunction a great amount of $h$-refinement at the reentering corner, which is the correct way to tackle this kind of singularities, instead, for the second eigenfunction we have an adapted mesh mostly characterized by $p$-refinement, which is suitable for smooth functions.
+
 
 \section{Reproducibility of Results} \label{sec:reproducibility}
 
 The method presented in this paper is part of the open source C++ library 
 Hermes (http://hpfem.org/hermes), and it can be found in 
-example "eigen-adapt-iter". Whoever
+example "eigen-adapt-iter". If the reader
 has a problem with building the library on his/her computer, or with running 
 this example, should send
 a message to the mailing list hermes2d@googlegroups.com. For a model 
 implementation of the Anderson acceleration technique mentioned in Section 
-\ref{sec:picard++} visit the FEMhub Online Lab (http://femhub.org), where
+\ref{sec:picard++} visit the Networked Computing Laboratory (NCLab) at 
+http://nclab.com where
 it is part of the Published Worksheet "Fixed Point Iteration (with Acceleration)".
-In the Online Lab, anyone can freely experiment with the technique. The 
-Online Lab is powered with a 60-processor computer at the University of 
-Nevada, Reno.
+In NCLab, anyone can freely experiment with this technique and other numerical methods 
+in his/her web browser. 
 
 \section{Conclusion and Outlook}\label{sec:conclusion}
 
