@@ -1600,7 +1600,7 @@ These results are shown in Figures~\ref{fig:l_sh_eig1} and \ref{fig:l_sh_eig2}.
 
 \subsection{Domains with few reentering corners}\label{ssec:reent}
 
-We conclude the numerics section considering the model problem \eqref{one} on the square domain $\Omega$ with a square hole. Assuming that we are interested in the third eigenfunction, see Figure~\ref{fig:eigen1}(b),  we want to compare adapted meshes using either the eigensolver on each refined mesh or Algorithm~\ref{alg:newton_impadapt}, which is the most sophisticated incarnation of the Newton's method presented in this paper. In Figure~\ref{fig:adp_meshes} we reported the resulting adapted meshes after 23 iterations. As can be seen the mesh in Figure~\ref{fig:adp_meshes}(b) present a gradient in the size of the elements toward the reentering corners where the singularities are located (compare the mesh with Figure~\ref{fig:eigen1}(b)). On the other hand the mesh in Figure~\ref{fig:adp_meshes}(a) does not present any particular adaptive pattern around the reentering corners. This is due to the phenomenon already described in the motivation of this paper, Section~\ref{sec:motiv}, where it was explained that the order of the second and third eigenfunctions could change refining the mesh. Because such phenomenon has happened very often in the simulation, the adaptive procedure was unable to target any particular singularity. Instead, using the reconstruction technology, the target eigenfunction was fixed and so, it was very easy for the adaptive procedure to adapt the mesh accordingly. 
+We conclude the numerics section considering the model problem \eqref{one} on the square domain $\Omega$ with a square hole. Assuming that we are interested in the third eigenfunction, see Figure~\ref{fig:eigen1}(b),  we want to compare adapted meshes using either the eigensolver on each refined mesh or Algorithm~\ref{alg:newton_impadapt}, which is the most sophisticated incarnation of the Newton's method presented in this paper. In Figure~\ref{fig:adp_meshes} we reported the resulting adapted meshes after 24 iterations. As can be seen the mesh in Figure~\ref{fig:adp_meshes}(b) present a gradient in the size of the elements toward the reentering corners where the singularities are located (compare the mesh with Figure~\ref{fig:eigen1}(b)). On the other hand the mesh in Figure~\ref{fig:adp_meshes}(a) does not present any particular adaptive pattern around the reentering corners. This is due to the phenomenon already described in the motivation of this paper, Section~\ref{sec:motiv}, where it was explained that the order of the second and third eigenfunctions could change refining the mesh. Because such phenomenon has happened very often in the simulation, the adaptive procedure was unable to target any particular singularity. Instead, using the reconstruction technology, the target eigenfunction was fixed and so, it was very easy for the adaptive procedure to adapt the mesh accordingly. This phenomenon has also implications in the convergence rate, as can be seen in Figure~\ref{fig:conv_hole}, after 24 mesh adaptations, the error using Algorithm~\ref{alg:newton_impadapt} is much smaller than using a standard eigensolver, also the curve of the error using our method is monotone and always below the curve using just an eigensolver. 
 
 \begin{figure}[!ht]
 \begin{center}
@@ -1610,6 +1610,15 @@ We conclude the numerics section considering the model problem \eqref{one} on th
 %\vspace{-5mm}
 \caption{Adapted meshes using either (a) the eigensolver or (b) Algorithm~\ref{alg:newton_impadapt}.}
 \label{fig:adp_meshes}
+\end{figure}
+
+\begin{figure}[!ht]
+\begin{center}
+\includegraphics[width=0.8\textwidth]{img/conv.png}
+\end{center}
+%\vspace{-5mm}
+\caption{Convergence plot for the third eigenvalue.}
+\label{fig:conv_hole}
 \end{figure}
 
 \section{Reproducibility of Results} \label{sec:reproducibility}
