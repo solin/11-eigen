@@ -103,7 +103,7 @@
 \def\bfE{\mbox{\boldmath$E$}}
 \def\bfG{\mbox{\boldmath$G$}}
 
-\title{On Adaptive FEM for Elliptic Eigenvalue Problems}
+\title{An Iterative Finite Element Method\\ for Elliptic Eigenvalue Problems}
 
 % The thanks line in the title should be filled in if there is
 % any support acknowledgement for the overall work to be included
@@ -122,8 +122,9 @@ Prague, Czech Republic
 
 \begin{abstract}
 We consider the task of resolving accurately the $n$th eigenpair of a generalized
-eigenproblem rooted in some elliptic partial differential equation (PDE) using the finite 
-element method (FEM). Conventional adaptive FEM calls a generalized eigensolver after each mesh refinement step. This is not 
+eigenproblem rooted in some elliptic partial differential equation (PDE), using an adaptive finite 
+element method (FEM). Conventional adaptive FEM algorithms call 
+a generalized eigensolver after each mesh refinement step. This is not 
 practical in our situation since the generalized eigensolver needs to calculate $n$ 
 eigenpairs after each mesh refinement step, it can switch the order of eigenpairs,
 and for repeated eigenvalues it can return an arbitrary linear combination of eigenfunctions 
@@ -161,7 +162,7 @@ To name a few applications, let us mention automated multilevel substructuring
 methods for noise prediction in acoustics \cite{lalor_prediction_2007},
 analysis of photonic crystals \cite{pcf_apost,JoMeWi:95} and 
 plasmonic guides \cite{berini_plasmon-polariton_2000}, and 
-stability analysis of fluid systems \cite{cliffe_adaptive_2010}
+stability analysis of fluid systems \cite{cliffe_adaptive_2010}.
 
 The most common approach to solving eigenproblems is using eigensolvers. For larger problems it is 
 practical to employ iterative eigensolvers such as ARPACK \cite{arpack}. A characteristic common to 
@@ -173,7 +174,7 @@ unwanted solutions.
 The majority of eigensolvers are not specifically designed to work with adaptive finite element methods 
 (FEM), and their application on sequences of locally refined meshes can lead to substantial problems. 
 In this paper we illustrate some of these problems and propose a novel iterative method that alleviates 
-them. We are going to adapt the Picard's and the Newton's method to solve eigenvalue problems
+them. We are going to adapt the Picard's and Newton's methods to solve eigenvalue problems
 in order to minimize the number of unwanted eigenpair exploiting the orthogonality between eigenvectors. 
 In contrast to conventional adaptive methods that call an eigensolver after each mesh refinement,
 the present method is capable of following reliably a selected eigenpair on a sequence of adapted 
@@ -182,16 +183,14 @@ in the eigenspace is wanted.
 
 \subsection{Outline of the Paper}
 
-Section \ref{sec:motiv} illustrates difficulties associated with 
-adaptive methods that need to call an eigensolver in each adaptivity 
-step. Section \ref{sec:preli} introduces some notations and 
+Section \ref{sec:motiv} illustrates some difficulties associated with 
+conventional adaptive FEM algorithms. Section \ref{sec:preli} introduces notations and 
 preliminaries. Section \ref{sec:picard} presents a simple
 Picard's method and shows that it does not work as expected.
 The problem is fixed in Section \ref{sec:picard++} by adding 
 orthogonalization. Section \ref{sec:newton} presents 
 a Newton's method with orthogonalization. 
-Section \ref{sec:adapt} presents an outline of the adaptivity algorithm,
-which is needed in the following section.
+Section \ref{sec:adapt} presents an outline of the adaptivity algorithm.
 Section \ref{sec:reco}
 discusses a reconstruction technology for spectra perturbed 
 by discretization. This is used to devise an algorithm for 
@@ -210,15 +209,14 @@ on a simple eigenproblem of the form
 \begin{equation} \label{one}
 -\Delta u = \lambda u, \ \ \ u = 0 \ \mbox{on} \ \partial \Omega
 \end{equation}
-that is solved on a square domain with a hole, i.e. $\Omega = (0,\,1)^2\setminus [1/3,\,2/3]^2$.
-In this case the second and the third eigenvalues are repeated, i.e. $\lambda_2 = \lambda_3$.
+that is solved in a square domain with a hole, i.e., $\Omega = (0,\,1)^2\setminus [1/3,\,2/3]^2$.
 
 %the eigenvalues $0 < \lambda_1 \le \lambda_2 \le \ldots$ 
 %are known exactly, and it is of particular interest that $\lambda_2 = \lambda_3 = 5$ 
 %and $\lambda_5 = \lambda_6 = 10$ are repeated. 
 
 Equation (\ref{one}) is discretized via the finite element method
-on a mesh consisting of triangular elements shown in Fig. \ref{fig:mesh1}.\\
+on a mesh consisting of 16 quadratic ($p = 2$) triangular elements shown in Fig. \ref{fig:mesh1}.\\
 
 \begin{figure}[!ht]
 \begin{center}
@@ -230,8 +228,8 @@ on a mesh consisting of triangular elements shown in Fig. \ref{fig:mesh1}.\\
 \end{figure}
 
 %Here, the numbers inside of finite elements mean their polynomial degrees.
-Approximate eigenfunctions for $\lambda_2, \lambda_3$
-are shown in Fig. \ref{fig:eigen1}.
+In this case the second and the third eigenvalues are repeated, i.e., $\lambda_2 = \lambda_3$.
+The corresponding approximate eigenfunctions are shown in Fig. \ref{fig:eigen1}.
 
 %\clearpage
 
@@ -245,12 +243,15 @@ are shown in Fig. \ref{fig:eigen1}.
 \label{fig:eigen1}
 \end{figure}
 
-Then, after the first adaptation of the mesh and the a second call to the generalized 
-eigensolver,
-the resulting approximate eigenfunctions for $\lambda_2, \lambda_3$
+Let us assume that the objective of the computation is to resolve accurately the eigenfunction corresponding 
+to $\lambda_2$ (target eigenfunction). This eigenfunction contains singularities at the upper-left and lower-right corners of the hole
+and it is very smooth (almost constant) in the vicinity of the remaining two corners. Accordingly, in the first 
+mesh adaptation step, the mesh is refined towards the upper-left and lower-right corners of the hole. 
+
+On the refined mesh, a generalized eigensolver is called again. 
+The new approximate eigenfunctions for $\lambda_2, \lambda_3$ 
 are shown in Fig. \ref{fig:eigen2}.
 
-\clearpage
 \begin{figure}[!ht]
 \begin{center}
 \includegraphics[width=0.4\textwidth]{img/eig2_2.png}\ \ \ 
@@ -263,10 +264,14 @@ eigensolver (compare to Fig. \ref{fig:eigen1}).}
 \end{figure}
 
 The reader can observe that the second call to the generalized eigensolver 
-changed the order of the eigenfunctions. This is particularly dramatic in this case because the corners, where possible singularity are positioned, changed as well, so it is difficult for the adaptive procedure to keep track of the singularities.
-This phenomenon is present in the 
-following adaptivity steps as well. Since the object of adaptivity keeps 
-changing, doing adaptivity becomes in fact meaningless. 
+switched the order of the eigenfunctions. This means that the second round of 
+mesh refinements goes towards the upper-right and lower-left corners of the 
+hole, i.e., into regions where the target eigenfunction is flat,
+and no refinements are done where it has singularities.
+Obviously, this is inefficient. In a worst-case scenario, the eigenfunctions 
+are not switched back, and thus all following mesh refinements go into regions 
+where the target eigenfunction is flat, i.e., its singularities are never 
+resolved. 
 
 To our best knowledge, contemporary generalized eigensolvers do 
 not offer any systematic way to avoid this problem. There are only a few publications 
@@ -1036,13 +1041,13 @@ all eigenvalues of  \eqref{eq:var_prob} and all $N=\dim V_n$
 eigenvalues of \eqref{eq:disc_prob} are positive.
 We can order
 them as $0 < \lambda_1 \leq \lambda_2 \ldots $ and $0 < \lambda_{1,n}
-\leq \lambda_{2,n} \ldots \leq \lambda_{N,n}$. Moreover, we know (e.g. 
+\leq \lambda_{2,n} \ldots \leq \lambda_{N,n}$. Moreover, we know (e.g., 
 \cite{BaOs:89}) that  $\lambda_{j,n} \rightarrow \lambda_j$,
 for any
 $j$,  as  $V_n
 \rightarrow H^1(\Omega)$ and (by the minimax principle) 
 that $\lambda_{j,n}$ is monotone
-non-increasing, i.e.
+non-increasing, i.e.,
 \begin{equation}\label{eq:minimax_shift}
 \lambda_{j,n} \ \geq\  \lambda_{j,m}\  \geq\   \lambda_j , \quad
 \text{for all} \quad j = 1, \ldots , N, \quad \text{and all} \quad
