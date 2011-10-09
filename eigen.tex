@@ -244,9 +244,9 @@ The corresponding approximate eigenfunctions are shown in Fig. \ref{fig:eigen1}.
 \end{figure}
 
 Let us assume that the objective of the computation is to resolve accurately the eigenfunction corresponding 
-to $\lambda_2$ (target eigenfunction). This eigenfunction contains singularities at the upper-left and lower-right corners of the hole
+to $\lambda_3$ (target eigenfunction). This eigenfunction contains singularities at the upper-right and lower-left corners of the hole
 and it is very smooth (almost constant) in the vicinity of the remaining two corners. Accordingly, in the first 
-mesh adaptation step, the mesh is refined towards the upper-left and lower-right corners of the hole. 
+mesh adaptation step, the mesh is refined towards the upper-right and lower-left corners of the hole. 
 
 On the refined mesh, a generalized eigensolver is called again. 
 The new approximate eigenfunctions for $\lambda_2, \lambda_3$ 
@@ -265,7 +265,7 @@ eigensolver (compare to Fig. \ref{fig:eigen1}).}
 
 The reader can observe that the second call to the generalized eigensolver 
 switched the order of the eigenfunctions. This means that the second round of 
-mesh refinements goes towards the upper-right and lower-left corners of the 
+mesh refinements goes towards the upper-leftt and lower-right corners of the 
 hole, i.e., into regions where the target eigenfunction is flat,
 and no refinements are done where it has singularities.
 Obviously, this is inefficient. In a worst-case scenario, the eigenfunctions 
@@ -788,11 +788,11 @@ The couple $(\Lambda_n,U_n)$ is not a discrete eigenpair of problem \eqref{eq:va
 
 In this section we present two algorithms to compute approximations of eigenpairs. Each algorithm is based on a different method to compute the discrete spectrum, but all of them use the reconstruction technology to keep track of the eigenfunction of interest.
 
-In all algorithms we are going to use call an iterative eigensolver with calling interface
+In all algorithms we are going to use on the initial mesh an iterative eigensolver with calling interface
 $\{(\lambda_{j,n},u_{j,n})_{j=1}^{i}\}:=\mathrm{Eigensolver}(\mathbf{A},\mathbf{B},i,\mathrm{Tol},\mathrm{MaxIter})$, that computes the set of discrete eigenpairs $\{(\lambda_{j,n},u_{j,n})\}_{j=1}^{i}$ and where $\mathbf{A}$ is the stiffness matrix of the problem, $\mathbf{B}$ is the mass matrix of the problem  $i$ is the number of eigenpairs to compute, $\mathrm{Tol}$ is the requested tolerance for the eigenpairs and $\mathrm{MaxIter}$ is the maximum number of iterations. 
 
 
-All algorithm we describe below are based on the reconstruction technology which is guided by two parameters: $\mathrm{DTE}$ and $\mathrm{FIE}$. The parameter $\mathrm{DTE}$ should be equal to the multiplicity of the continuous eigenvalue $\lambda$ that the user want to approximate. All the algorithm works also when $\mathrm{DTE}$ contains an upper bound of the multiplicity of $\lambda$, so in practise the multiplicity of the target eigenvalue is not necessary to be known exactly. The parameter $\mathrm{FIE}$ should be equal to the index $i$ of the first discrete eigenvalue on the initial mesh $\lambda_{i,0}$ that approximates $\lambda$. The reconstruction technology is described in Algorithm~\eqref{alg:reconstruction}.
+All algorithm we describe below are based on the reconstruction technology which is guided by two parameters: $\mathrm{DTE}$ and $\mathrm{FIE}$. The parameter $\mathrm{DTE}$ should be equal to the multiplicity of the continuous eigenvalue $\lambda$ that the user want to approximate. All the algorithms work also when $\mathrm{DTE}$ contains an upper bound of the multiplicity of $\lambda$, so in practise the multiplicity of the target eigenvalue is not necessary to be known exactly. The parameter $\mathrm{FIE}$ should be equal to the index $i$ of the first discrete eigenvalue on the initial mesh $\lambda_{i,0}$ that approximates $\lambda$. The reconstruction technology is described in Algorithm~\eqref{alg:reconstruction}.
 
 \begin{algorithm}[H] \caption{Reconstruction algorithm} \label{alg:reconstruction} 
 \begin{algorithmic}
@@ -830,8 +830,8 @@ The first method is based on the Picard's method. The only three parameters not 
 %\STATE{Compute the residual $\eta$ for the couple $(\Lambda_0,U_0)$}
 \STATE{$m:=1$}
 \REPEAT
-\STATE{Construct $\mathbf{A}_m$ and $\mathbf{B}_m$}
 \STATE{Construct the mesh $\mathcal{T}_m$ and the finite element space $V_m$ adapting $\mathcal{T}_{m-1}$ and $V_{m-1}$}
+\STATE{Construct $\mathbf{A}_m$ and $\mathbf{B}_m$}
 \STATE{$(\lambda_{1,m},u_{1,m}):=\mathrm{Picard}
     (\mathbf{A}_m, \mathbf{B}_m,u_{1,m-1},\mathrm{Tol},\mathrm{AbsTol})$}
 \STATE{$j=1$}
@@ -847,7 +847,6 @@ The first method is based on the Picard's method. The only three parameters not 
 \STATE{$(\Lambda_m,U_m):=\mathrm{Reconstruction}
     (\{(\lambda_{j,m},u_{j,m})\}_{j=\mathrm{FIE}}^{\mathrm{FIE}+\mathrm{DTE}},
 (\Lambda_{m-1},U_{m-1}))$}
-\STATE{Compute the residual $\eta$ for the couple $(\Lambda_m,U_m)$}
 \STATE{$m:=m+1$}
 \UNTIL{ $m\leq M$ OR $\eta \leq \mathrm{err}$}
 \end{algorithmic}
@@ -871,8 +870,8 @@ Similarly we define the adaptive method based on the Newton's method.
 %\STATE{Compute the residual $\eta$ for the couple $(\Lambda_0,U_0)$}
 \STATE{$m:=1$}
 \REPEAT
-\STATE{Construct $\mathbf{A}_m$ and $\mathbf{B}_m$}
 \STATE{Construct the mesh $\mathcal{T}_m$ and the finite element space $V_m$ adapting $\mathcal{T}_{m-1}$ and $V_{m-1}$}
+\STATE{Construct $\mathbf{A}_m$ and $\mathbf{B}_m$}
 \STATE{$(\lambda_{1,m},u_{1,m}):=\mathrm{Newton}
     (\mathbf{A}_m, \mathbf{B}_m,u_{1,m-1},\mathrm{Tol},\mathrm{AbsTol})$}
 \STATE{$j=1$}
@@ -888,7 +887,6 @@ Similarly we define the adaptive method based on the Newton's method.
 \STATE{$(\Lambda_m,U_m):=\mathrm{Reconstruction}
     (\{(\lambda_{j,m},u_{j,m})\}_{j=\mathrm{FIE}}^{\mathrm{FIE}+\mathrm{DTE}},
 (\Lambda_{m-1},U_{m-1}))$}
-\STATE{Compute the residual $\eta$ for the couple $(\Lambda_m,U_m)$}
 \STATE{$m:=m+1$}
 \UNTIL{ $m\leq M$ OR $\eta \leq \mathrm{err}$}
 \end{algorithmic}
@@ -975,8 +973,8 @@ We conclude this section stating the adaptive algorithms with improved orthogona
 %\STATE{Compute the residual $\eta$ for the couple $(\Lambda_0,U_0)$}
 \STATE{$m:=1$}
 \REPEAT
-\STATE{Construct $\mathbf{A}_m$ and $\mathbf{B}_m$}
 \STATE{Construct the mesh $\mathcal{T}_m$ and the finite element space $V_m$ adapting $\mathcal{T}_{m-1}$ and $V_{m-1}$}
+\STATE{Construct $\mathbf{A}_m$ and $\mathbf{B}_m$}
 \STATE{$\{(\lambda_{j,m},u_{j,m})\}_{j=\mathrm{FIE}}^{\mathrm{DTE}+\mathrm{FIE}}:=$}
 \STATE{$\quad \quad \mathrm{PicardImpOrtho}
     (\mathbf{A}_m, \mathbf{B}_m,\{(\lambda_{j,m-1}, u_{j,m-1})\}_{j=\mathrm{FIE}}^{\mathrm{DTE}+\mathrm{FIE}},\mathrm{ThO})$}
@@ -984,7 +982,6 @@ We conclude this section stating the adaptive algorithms with improved orthogona
 \STATE{$(\Lambda_m,U_m):=\mathrm{Reconstruction}
     (\{(\lambda_{j,m},u_{j,m})\}_{j=\mathrm{FIE}}^{\mathrm{FIE}+\mathrm{DTE}},
 (\Lambda_{m-1},U_{m-1}))$}
-\STATE{Compute the residual $\eta$ for the couple $(\Lambda_m,U_m)$}
 \STATE{$m:=m+1$}
 \UNTIL{ $m\leq M$ OR $\eta \leq \mathrm{err}$}
 \end{algorithmic}
@@ -1008,8 +1005,8 @@ Similarly we define the adaptive method based on the Newton's method.
 %\STATE{Compute the residual $\eta$ for the couple $(\Lambda_0,U_0)$}
 \STATE{$m:=1$}
 \REPEAT
-\STATE{Construct $\mathbf{A}_m$ and $\mathbf{B}_m$}
 \STATE{Construct the mesh $\mathcal{T}_m$ and the finite element space $V_m$ adapting $\mathcal{T}_{m-1}$ and $V_{m-1}$}
+\STATE{Construct $\mathbf{A}_m$ and $\mathbf{B}_m$}
 \STATE{$\{(\lambda_{j,m},u_{j,m})\}_{j=\mathrm{FIE}}^{\mathrm{DTE}+\mathrm{FIE}}:=$}
 \STATE{$\quad \quad \mathrm{NewtonImpOrtho}
     (\mathbf{A}_m, \mathbf{B}_m,\{(\lambda_{j,m-1}, u_{j,m-1})\}_{j=\mathrm{FIE}}^{\mathrm{DTE}+\mathrm{FIE}},\mathrm{ThO})$}
@@ -1017,7 +1014,6 @@ Similarly we define the adaptive method based on the Newton's method.
 \STATE{$(\Lambda_m,U_m):=\mathrm{Reconstruction}
     (\{(\lambda_{j,m},u_{j,m})\}_{j=\mathrm{FIE}}^{\mathrm{FIE}+\mathrm{DTE}},
 (\Lambda_{m-1},U_{m-1}))$}
-\STATE{Compute the residual $\eta$ for the couple $(\Lambda_m,U_m)$}
 \STATE{$m:=m+1$}
 \UNTIL{ $m\leq M$ OR $\eta \leq \mathrm{err}$}
 
@@ -1031,7 +1027,7 @@ Similarly we define the adaptive method based on the Newton's method.
 
 In this section  we gather together some a priori estimates for eigenvalue
 problems.  The framework used in this section is an extension to the $hp-$case of the a priori results in 
-\cite{conv_sinum,pcf_apost}. Lemma~\ref{lm:adj} contains the a priori convergence results for eigenvalues and eigenfunctions in the $hp$ context. Moreover, in Theorem~\ref{th:adj_rec} we proved convergence a priori results for the reconstructed eigenpair $(\Lambda_n,U_n)$.
+\cite{conv_sinum,pcf_apost}. Lemma~\ref{lm:adj} contains the a priori convergence results for eigenvalues and eigenfunctions in the $hp$ context. Moreover, in Theorem~\ref{th:adj_rec} we proved convergence a priori results for the reconstructed pair $(\Lambda_n,U_n)$.
 
 
 
@@ -1151,7 +1147,7 @@ if and only if
 %\label{eq:basic2}
 %\end{equation}
 
-In order to make further progress we need some assumption on
+In order to make further progress we need some assumptions on
 regularity of solutions of elliptic problems associated with $a(\cdot,
 \cdot)$. Also from now on we assume that the eigenfunctions of \eqref{eq:var_prob} are at least in $H^2(\Omega)$ and that the sequence of adapted meshes are at most 1-irregular.
 %\textcolor{red}{If we are going to consider non-smooth problems, I need to change this assumption.}
@@ -1605,7 +1601,13 @@ These results are shown in Figures~\ref{fig:l_sh_eig1} and \ref{fig:l_sh_eig2}.
 
 \subsection{Domains with few reentering corners}\label{ssec:reent}
 
-We conclude the numerics section considering the model problem \eqref{one} on the square domain $\Omega$ with a square hole. Assuming that we are interested in the third eigenfunction, see Figure~\ref{fig:eigen1}(b),  we want to compare adapted meshes using either the eigensolver on each refined mesh or Algorithm~\ref{alg:newton_impadapt}, which is the most sophisticated incarnation of the Newton's method presented in this paper. In Figure~\ref{fig:adp_meshes} we reported the resulting adapted meshes after 24 iterations. As can be seen the mesh in Figure~\ref{fig:adp_meshes}(b) present a gradient in the size of the elements toward the reentering corners where the singularities are located (compare the mesh with Figure~\ref{fig:eigen1}(b)). On the other hand the mesh in Figure~\ref{fig:adp_meshes}(a) does not present any particular adaptive pattern around the reentering corners. This is due to the phenomenon already described in the motivation of this paper, Section~\ref{sec:motiv}, where it was explained that the order of the second and third eigenfunctions could change refining the mesh. Because such phenomenon has happened very often in the simulation, the adaptive procedure was unable to target any particular singularity. Instead, using the reconstruction technology, the target eigenfunction was fixed and so, it was very easy for the adaptive procedure to adapt the mesh accordingly. This phenomenon has also implications in the convergence rate, as can be seen in Figure~\ref{fig:conv_hole}, after 24 mesh adaptations, the error using Algorithm~\ref{alg:newton_impadapt} is much smaller than using a standard eigensolver, also the curve of the error using our method is monotone and always below the curve using just an eigensolver. 
+We conclude the numerics section considering the model problem \eqref{one} on the square domain $\Omega$ with a square hole. Assuming that we are interested in the third eigenfunction, see Figure~\ref{fig:eigen1}(b),  we want to compare adapted meshes using either the eigensolver on each refined mesh or Algorithm~\ref{alg:newton_impadapt}, which is the most sophisticated incarnation of the Newton's method presented in this paper. In Figure~\ref{fig:adp_meshes} we reported the resulting adapted meshes. As can be seen the mesh in Figure~\ref{fig:adp_meshes}(b) present a gradient in the size of the elements toward the reentering corners where the singularities are located (compare the mesh with Figure~\ref{fig:eigen1}(b)). On the other hand the mesh in Figure~\ref{fig:adp_meshes}(a) does not present any particular adaptive pattern around the reentering corners. This is due to the phenomenon already described in the motivation of this paper, Section~\ref{sec:motiv}, where it was explained that the position in the spectrum of the second and third eigenfunctions could change refining the mesh. Because such phenomenon has happened very often in the simulation, the adaptive procedure was unable to target any particular singularity. Instead, using the reconstruction technology, the target eigenfunction was fixed and so, it was very easy for the adaptive procedure to adapt the mesh accordingly. 
+This phenomenon has also implications in the convergence rate, as can be seen in Figure~\ref{fig:conv_hole} where the number of degrees of freedoms are plotted against the error for the third eigenvalue.
+It is clear from that picture that Algorithm~\ref{alg:newton_impadapt} converges much faster compared to a standard eigensolver. The curves in Figure~\ref{fig:conv_hole} seem to approximate straight lines, which suggests exponential convergence rate. In order to confirm that we included 
+Figure~\ref{fig:conv_hole_loglog}, where we plot the same curves, but in a 
+log-log scale. Looking at Figure~\ref{fig:conv_hole_loglog} it is clear that the convergence in both cases is faster than polynomial.
+Finally, in Figure~\ref{fig:conv_n} we compare the convergence rates of both Algorithm~\ref{alg:newton_impadapt} and the eigensolver in term of number of mesh refinements $n$.
+The gap in this case between the two methods is even bigger and it is clear that Algorithm~\ref{alg:newton_impadapt} performs much better.
 
 \begin{figure}[!ht]
 \begin{center}
@@ -1624,6 +1626,24 @@ We conclude the numerics section considering the model problem \eqref{one} on th
 %\vspace{-5mm}
 \caption{Convergence plot for the third eigenvalue.}
 \label{fig:conv_hole}
+\end{figure}
+
+\begin{figure}[!ht]
+\begin{center}
+\includegraphics[width=0.8\textwidth]{img/conv_loglog.png}
+\end{center}
+%\vspace{-5mm}
+\caption{Convergence plot for the third eigenvalue in log-log scale.}
+\label{fig:conv_hole_loglog}
+\end{figure}
+
+\begin{figure}[!ht]
+\begin{center}
+\includegraphics[width=0.8\textwidth]{img/conv_n.png}
+\end{center}
+%\vspace{-5mm}
+\caption{Convergence plot for the third eigenvalue in term of number of mesh refinements.}
+\label{fig:conv_n}
 \end{figure}
 
 \section{Reproducibility of Results} \label{sec:reproducibility}
